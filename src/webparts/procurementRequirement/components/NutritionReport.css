@@ -1,0 +1,1200 @@
+div[data-automation-id="CanvasLayout"] div.CanvasZone {
+    background-image: url('../Assets/SmartBackground.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Main */
+.EONewFormContainer {
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    border-radius: 5px;
+    padding: 1%;
+    background-color: white;
+    min-height: 400px;
+}
+.calculatedScore{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(50, 49, 48);
+    box-sizing: border-box;
+    box-shadow: none;
+    margin-top: 5%;
+}
+
+.EOFormSectionTitle {
+    display: block;
+    position: relative;
+    width: 100%;
+    text-align: right;
+    margin: 40px 0 20px 0;
+    padding-right: 16px;
+}
+
+.EOFormSectionTitle .gradText {
+    font-size: 22px;
+    font-weight: 600;
+    background: #020312;
+    background: -webkit-linear-gradient(to left, #020312 0%, #8754C9 100%);
+    background: -moz-linear-gradient(to left, #020312 0%, #8754C9 100%);
+    background: linear-gradient(to left, #020312 0%, #8754C9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.EOHeader {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+
+.EOHeader .EOHeaderContainer {
+    display: block;
+    position: relative;
+    float: right;
+    height: 100%;
+    background-image: url('../Assets/TitleHeader.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+}
+
+.EOHeader .EOLogoContainer {
+    position: relative;
+    float: right;
+    width: 30%;
+    height: 100%;
+    background-image: url('../Assets/smartTop.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    animation: bounce 2s ease-in both;
+}
+
+.EOHeader .EOHeaderContainer .EOHeaderText {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding: 15px 20px 15px 20px;
+    text-align: right;
+    font-size: 32px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    animation: EOMoveInText 2s ease-in both;
+    animation-delay: 1.3s;
+}
+
+.MarginTop {
+    margin-top: 60px;
+}
+
+.MarginBottom {
+    margin-bottom: 60px;
+}
+
+.AutoCompleteStyle {
+    margin-top: 16px;
+}
+
+/* Page */
+
+div[data-automation-id="pageHeader"] {
+    display: none;
+}
+
+/* Form */
+
+.RequiredField {
+    color: red;
+}
+
+.EOFormErrorMessage {
+    text-align: center;
+    display: block;
+    margin-top: 13px;
+    padding: 3px;
+    border-radius: 12px;
+    width: 100%;
+}
+
+.EOFormGroupRow {
+    /* margin-bottom: 1% !important; */
+    /* padding: 15px; */
+}
+
+.MainApprovalTitle {
+    width: 20%;
+    flex: 0 0 auto;
+}
+
+.MainApprovalInput {
+    width: 30%;
+    flex: 0 0 auto;
+}
+
+/* PlanBreakdown List*/
+
+.PlanBreakdown {
+    display: block;
+    position: relative;
+    width: 100%;
+    float: right;
+    overflow: auto;
+    padding-right: 0px;
+}
+
+.PlanBreakdownHeaderListItem {
+    display: block;
+    position: relative;
+    width: 100%;
+    float: right;
+    background: rgb(186, 158, 221);
+    background: linear-gradient(96deg, rgba(186, 158, 221, 1) 35%, rgba(135, 84, 201, 1) 100%);
+    color: white;
+    font-weight: bold;
+    padding: 0px !important;
+}
+
+.PlanBreakdownHeaderListItem div.PlanBreakdownHeaderContainer {
+    display: block;
+    position: relative;
+    width: 100%;
+    float: right;
+}
+
+.PlanBreakdownHeaderListItem div.PlanBreakdownHeaderContainer div.PlanBreakdownText {
+    display: block;
+    position: relative;
+    float: right;
+    text-align: center;
+    margin: 0.5%;
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.PlanBreakdownHeaderListItem div.PlanBreakdownHeaderContainer div.MainPlanBreakdownText {
+    position: relative;
+    float: right;
+    text-align: center;
+    margin: 0.5%;
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.PlanBreakdownHeaderListItem div.PlanBreakdownHeaderContainer div.PlanBreakdownText2 {
+    display: block;
+    position: relative;
+    float: right;
+    text-align: center;
+    margin: 0.5%;
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.PlanBreakdownHeaderListItem div.PlanBreakdownHeaderContainer div span {
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+.PlanBreakdownListItemContent {
+    height: auto;
+    overflow: auto;
+    padding: 0px !important;
+}
+
+.PlanBreakdownList {
+    display: block;
+    position: relative;
+    width: 100%;
+    float: right;
+}
+
+.PlanBreakdownList .NoDataInList {
+    display: block;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+}
+
+.PlanBreakdownList div.PlanBreakdownChoosenContentMain {
+    display: block;
+    position: relative;
+    float: right;
+    text-align: center;
+    margin: 0.5%;
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.PlanBreakdownList div.PlanBreakdownChoosenContent {
+    position: relative;
+    float: right;
+    text-align: center;
+    margin: 0.5%;
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.PlanBreakdownList div.PlanBreakdownChoosenContent2 {
+    display: block;
+    position: relative;
+    float: right;
+    text-align: center;
+    margin: 0.5%;
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.PlanBreakdownRemoveBtn {
+    display: block;
+    position: relative;
+    float: right;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    border-radius: 50%;
+}
+
+.PlanBreakdownRemoveBtn .DeleteImg {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: url('../Assets/delete.png');
+    background-repeat: no-repeat;
+    background-size: 55% 85%;
+    background-position: center;
+}
+
+.PlanBreakdownRemoveBtn:hover .DeleteImg {
+    background-image: url('../Assets/deletehover.png');
+}
+
+.AddLineButton {
+    display: block;
+    position: relative;
+    width: 100%;
+    text-align: left;
+    clear: both;
+    padding-top: 35px;
+}
+
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+
+.TextFieldFadeInTrans {
+    animation-name: TextFieldFadeIn;
+    animation-duration: 3s;
+    transition-timing-function: linear;
+    padding: 1%;
+}
+
+@keyframes TextFieldFadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes TextFieldFadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Spinner */
+
+.SpinnerComp {
+    width: 100%;
+    position: relative;
+    display: block;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+/* *** Loader dimension *** */
+.loading-screen {
+    position: relative;
+    height: 230px;
+    display: block;
+    width: 100%;
+}
+
+/* *** Center loader *** */
+.loading-screen .loader-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading-screen .loader-wrap .loading-text {
+    margin-top: 30px;
+    color: #8754C9;
+}
+
+.loader-animation {
+    height: 2em;
+    width: 2em;
+    border-radius: 100%;
+    background: #8754C9;
+    display: block;
+    margin: 4em auto;
+    position: relative;
+    animation: spin 2s ease infinite;
+}
+
+.loader-animation:before,
+.loader-animation:after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: inherit;
+    width: inherit;
+    background: inherit;
+    border-radius: inherit;
+    animation: spin 2s ease infinite;
+}
+
+.loader-animation:before {
+    left: -3em;
+}
+
+.loader-animation:after {
+    left: 3em;
+}
+
+/* *** Spin Animation *** */
+@keyframes spin {
+    0% {
+        top: 0;
+        transform: rotate(0deg);
+    }
+
+    50% {
+        top: -4em;
+        transform: rotate(-180deg);
+    }
+
+    100% {
+        top: 0;
+        transform: rotate(-360deg);
+    }
+}
+
+.letter {
+    position: relative;
+    top: -webkit-calc(50% - 60px);
+    top: calc(50% - 60px);
+    text-shadow: 0px 0px 3px white;
+    font-size: 35px;
+}
+
+.letter:nth-child(1) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 200ms;
+    animation: LoaderSpinnerfade 2s infinite 200ms;
+}
+
+.letter:nth-child(2) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 400ms;
+    animation: LoaderSpinnerfade 2s infinite 400ms;
+}
+
+.letter:nth-child(3) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 600ms;
+    animation: LoaderSpinnerfade 2s infinite 600ms;
+}
+
+.letter:nth-child(4) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 800ms;
+    animation: LoaderSpinnerfade 2s infinite 800ms;
+}
+
+.letter:nth-child(5) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 1000ms;
+    animation: LoaderSpinnerfade 2s infinite 1000ms;
+}
+
+.letter:nth-child(6) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 1200ms;
+    animation: LoaderSpinnerfade 2s infinite 1200ms;
+}
+
+.letter:nth-child(7) {
+    -webkit-animation: LoaderSpinnerfade 2s infinite 1400ms;
+    animation: LoaderSpinnerfade 2s infinite 1400ms;
+}
+
+/* *** Letter Fade Animation *** */
+@-webkit-keyframes LoaderSpinnerfade {
+    50% {
+        opacity: 0.02;
+    }
+}
+
+@keyframes LoaderSpinnerfade {
+    50% {
+        opacity: 0.02;
+    }
+}
+
+/*Disable Color*/
+
+.CustomDisableGray {
+    background-color: #c4cfda !important;
+}
+
+/* SavingLoader */
+
+.SavingLoader {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 90px;
+    z-index: 100;
+}
+
+.SavingLoader .SavingLoadertext {
+    position: relative;
+    display: block;
+    float: right;
+    width: 100%;
+    height: 30px;
+    color: #8754C9;
+    text-transform: uppercase;
+    font-size: 15px;
+    text-align: center;
+    letter-spacing: .5px;
+    font-weight: bold;
+}
+
+.SavingLoader .loaderContainer {
+    position: relative;
+    display: block;
+    float: right;
+    width: 100%;
+    height: 60px;
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 24px;
+    border-left: 8px solid #8754C9;
+    border-right: 8px solid #8754C9;
+    overflow: hidden;
+}
+
+.loader .ball {
+    height: 8px;
+    width: 0;
+    background: #8754C9;
+    position: relative;
+    margin: 0;
+}
+
+.loader .ball:nth-child(1) {
+    -webkit-animation: ball 2s ease-in-out infinite;
+    animation: ball 2s ease-in-out infinite;
+}
+
+.loader .ball:nth-child(2) {
+    -webkit-animation: ball 2s ease-in-out .1s infinite;
+    animation: ball 2s ease-in-out .1s infinite;
+}
+
+.loader .ball:nth-child(3) {
+    -webkit-animation: ball 2s ease-in-out .2s infinite;
+    animation: ball 2s ease-in-out .2s infinite;
+}
+
+@-webkit-keyframes ball {
+    0% {
+        left: 0;
+        width: 0px;
+    }
+
+    25% {
+        left: 0;
+        width: 300px;
+    }
+
+    50% {
+        left: 300px;
+        width: 0px;
+    }
+
+    75% {
+        left: 0;
+        width: 300px;
+    }
+
+    100% {
+        left: 0;
+        width: 0px;
+    }
+}
+
+@keyframes ball {
+    0% {
+        left: 0;
+        width: 0px;
+    }
+
+    25% {
+        left: 0;
+        width: 300px;
+    }
+
+    50% {
+        left: 300px;
+        width: 0px;
+    }
+
+    75% {
+        left: 0;
+        width: 300px;
+    }
+
+    100% {
+        left: 0;
+        width: 0px;
+    }
+}
+
+/* Error messages and buttons */
+
+.FormButtons {
+    width: 100%;
+    display: block;
+    position: relative;
+    text-align: center;
+    margin-top: 5%;
+}
+
+.FormButtons Button.SaveButton {
+    margin: 1%;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.FormButtons Button.CancelButton {
+    margin: 1%;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.CancelFormText {
+    width: 100%;
+    position: relative;
+    display: block;
+    float: right;
+    text-align: center;
+}
+
+.CancelFormAlertButtons {
+    width: 100%;
+    position: relative;
+    display: block;
+    text-align: center;
+}
+
+.CancelFormAlertButtons button.AlertSaveButton {
+    margin: 10px 5px 0px 5px !important;
+}
+
+.CancelFormAlertButtons Button.AlertCancelButton {
+    margin: 10px 5px 0px 5px !important;
+}
+
+button.FormErrorButton {
+    margin: 5px;
+    margin-bottom: 1rem !important;
+}
+
+.ValidationError {
+    color: red;
+    text-align: center;
+}
+
+.RotatedIcon {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+@keyframes EOMoveIn {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 70%;
+    }
+}
+
+@-webkit-keyframes EOMoveIn {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 70%;
+    }
+}
+
+@keyframes EOMoveInMobile {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@-webkit-keyframes EOMoveInMobile {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+
+@keyframes EOMoveInText {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20%, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@-webkit-keyframes EOMoveInText {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20%, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* Print */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        /*Chrome, Safari */
+        color-adjust: exact !important;
+        /*Firefox*/
+    }
+
+    @page {
+        margin: 5mm;
+        size: A4;
+    }
+
+    .EONewFormContainer {
+        display: block;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+        border-radius: 5px;
+        padding: 1%;
+        background-color: #E8E8E8;
+    }
+
+    .EOHeader .FormPrint {
+        display: none;
+    }
+}
+
+/* Helpers */
+
+.flex {
+    display: flex;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.align-right {
+    align-items: right;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-end {
+    align-items: flex-end;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.grades-title {
+    color: rgba(0, 0, 0, 0.54);
+    padding: 0;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.00938em;
+    margin: 0;
+}
+
+.section-label {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 900;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    line-height: 1;
+    letter-spacing: 0.00938em;
+    margin: 0;
+}
+
+/* Sweet Alert */
+
+.sa {
+    width: 100%;
+    display: block;
+    position: relative;
+    float: right;
+    height: 100px;
+    padding: 5px 26px 5px 26px;
+    background-color: #fff;
+    margin-top: 7px;
+}
+
+.sa-error {
+    border-radius: 50%;
+    border: 4px solid #f27474;
+    box-sizing: content-box;
+    height: 80px;
+    padding: 0;
+    position: relative;
+    background-color: #fff;
+    width: 80px;
+    animation: animateErrorIcon 0.5s;
+}
+
+.sa-error:after,
+.sa-error:before {
+    background: #fff;
+    content: '';
+    height: 120px;
+    position: absolute;
+    transform: rotate(45deg);
+    width: 60px;
+}
+
+.sa-error:before {
+    border-radius: 40px 0 0 40px;
+    width: 26px;
+    height: 80px;
+    top: -17px;
+    left: 5px;
+    transform-origin: 60px 60px;
+    transform: rotate(-45deg);
+}
+
+.sa-error:after {
+    border-radius: 0 120px 120px 0;
+    left: 30px;
+    top: -11px;
+    transform-origin: 0 60px;
+    transform: rotate(-45deg);
+    animation: rotatePlaceholder 4.25s ease-in;
+}
+
+.sa-error-x {
+    display: block;
+    position: relative;
+    z-index: 2;
+}
+
+.sa-error-placeholder {
+    border-radius: 50%;
+    border: 4px solid rgba(200, 0, 0, .2);
+    box-sizing: content-box;
+    height: 80px;
+    left: -4px;
+    position: absolute;
+    top: -4px;
+    width: 80px;
+    z-index: 2;
+}
+
+.sa-error-fix {
+    background-color: #fff;
+    height: 90px;
+    left: 28px;
+    position: absolute;
+    top: 8px;
+    transform: rotate(-45deg);
+    width: 5px;
+    z-index: 1;
+}
+
+.sa-error-left,
+.sa-error-right {
+    border-radius: 2px;
+    display: block;
+    height: 5px;
+    position: absolute;
+    z-index: 2;
+    background-color: #f27474;
+    top: 37px;
+    width: 47px;
+}
+
+.sa-error-left {
+    left: 17px;
+    transform: rotate(45deg);
+    animation: animateXLeft 0.75s;
+}
+
+.sa-error-right {
+    right: 16px;
+    transform: rotate(-45deg);
+    animation: animateXRight 0.75s;
+}
+
+.MuiAccordionDetails-root {
+    flex-direction: column;
+}
+
+.typography-padding-right {
+    /* padding-right: 31.97px; */
+    padding-right: 15px;
+}
+
+.grade-padding-right {
+    /* padding-right: 31.97px; */
+    padding-right: 28px;
+}
+
+.border-right {
+    border-right: 1px solid gainsboro;
+}
+
+.border-bottom {
+    border-bottom: 1px solid gainsboro;
+}
+#Baby{
+    padding: 2%;
+}
+#child{
+    padding: 2%;
+}
+#adult{
+    padding: 2%;
+}
+#time-picker{
+    padding: 2%;
+}
+#time-picker{
+    padding: 2%;
+}
+#date-picker-dialog{
+    padding: 2%;
+}
+#date-picker-dialog{
+    padding: 2%;
+}
+#HelperName{
+    padding: 2%;
+}
+#cooker{
+    padding: 2%;
+}
+#DayCareName{
+    padding: 2%;
+}
+.NumberOfMeals {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding: 2%;
+
+}
+
+.title-cell {
+    padding-right: 28px;
+}
+
+.fields-container {
+    padding: 0 !important;
+}
+
+
+
+
+.fields-container>* {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    border-top: 1px solid gainsboro;
+}
+
+.MuiFormLabel-root {
+    line-height: 2 !important;
+}
+
+.accordion-summary {
+    background: rgb(186, 158, 221);
+    background: linear-gradient(96deg, rgba(186, 158, 221, 1) 35%, rgba(135, 84, 201, 1) 100%);
+    color: white;
+}
+
+.accordion-title {
+    color: #fff;
+    font-weight: bold !important;
+}
+
+.total-label {
+    font-weight: bold !important;
+}
+
+.form-row-pad-0 {
+    padding: 0 !important;
+}
+
+.cell-pad {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.border-left {
+    border-left: 1px solid gainsboro;
+}
+
+form > div:nth-child(13){
+    margin-top: 3%;
+}
+@keyframes rotatePlaceholder {
+
+    0%,
+    5% {
+        transform: rotate(-45deg);
+    }
+
+    100%,
+    12% {
+        transform: rotate(-405deg);
+    }
+}
+
+@keyframes animateErrorIcon {
+    0% {
+        transform: rotateX(100deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes animateXLeft {
+
+    0%,
+    65% {
+        left: 82px;
+        top: 95px;
+        width: 0;
+    }
+
+    84% {
+        left: 14px;
+        top: 33px;
+        width: 47px;
+    }
+
+    100% {
+        left: 17px;
+        top: 37px;
+        width: 47px;
+    }
+}
+
+@keyframes animateXRight {
+
+    0%,
+    65% {
+        right: 82px;
+        top: 95px;
+        width: 0;
+    }
+
+    84% {
+        right: 14px;
+        top: 33px;
+        width: 47px;
+    }
+
+    100% {
+        right: 16px;
+        top: 37px;
+        width: 47px;
+    }
+}
+
+
+
+
+
+@media only screen and (max-width: 999px) and (min-width: 576px) {
+    .MainForm {
+        padding: 0%;
+    }
+
+    .EOHeader {
+        height: 100px;
+    }
+
+    .EOHeader .EOLogoContainer {
+        display: block;
+    }
+
+    .EOHeader .EOHeaderContainer {
+        width: 70%;
+        animation: EOMoveIn 2s ease-in both;
+    }
+
+
+}
+
+@media only screen and (min-width: 1000px) {
+
+    .MainForm {
+        padding: 0%;
+    }
+
+    .EOHeader {
+        height: 100px;
+    }
+
+    .EOHeader .EOLogoContainer {
+        display: block;
+    }
+
+    .EOHeader .EOHeaderContainer {
+        width: 70%;
+        animation: EOMoveIn 2s ease-in both;
+    }
+
+}
+
+@media only screen and (min-width: 364px) and (max-width: 575px) {
+    .field-col {
+        padding: 0 50px 0 50px;
+    }
+
+    .title-cell {
+        padding: 18px;
+    }
+
+    .MainForm {
+        padding: 1%;
+    }
+
+    .EOHeader {
+        height: 100px;
+    }
+
+    .EOHeader .EOLogoContainer {
+        display: none;
+    }
+
+    .EOHeader .EOHeaderContainer {
+        width: 100%;
+        animation: EOMoveInMobile 1.6s ease-in both;
+    }
+}
+
+@media only screen and (max-width: 363px) {
+    .field-col {
+        padding: 0 50px 0 50px;
+    }
+
+    .title-cell {
+        padding: 18px;
+    }
+
+    .MainForm {
+        padding: 1%;
+    }
+
+    .EOHeader {
+        height: 150px;
+    }
+
+    .EOHeader .EOLogoContainer {
+        display: none;
+    }
+
+    .EOHeader .EOHeaderContainer {
+        width: 100%;
+        animation: EOMoveInMobile 1.6s ease-in both;
+    }
+}
