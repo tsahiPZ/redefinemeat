@@ -24,11 +24,11 @@
     "properties": {
       "description": "ProcurementRequirement",
       "FormAutoSaveTiming": 20,
-      "listsData": "דוח תזונה",
-      "FormName": "דוח תזונה",
+      "emloyeeListsData": "c7c3c5d4-1600-475c-8b10-f038856b1d52",
+      "FormName": "דרישות רכש",
       "ReturnLink": "https://matnasimc.sharepoint.com/sites/SmartStart/Lists/NutritionReport/AllItems.aspx",
       "LinkToEditForm": "https://matnasimc.sharepoint.com/sites/SmartStart/SitePages/NutritionReportEdit.aspx",
-      "RecordsList": "דוח תזונה",
+      "approversListsData": "דוח תזונה",
       "sections": "שדות דוח תזונה"
     }
   }]

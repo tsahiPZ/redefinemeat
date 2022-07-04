@@ -63,4 +63,7 @@ export interface IProcurementRequirementState {
      subDepartmentArr:Array<string>;
      managerApproves:string;
      supplier:string;
+     WhatWasPurchased:string;
+     forWhat:string;
+     forDepartment:string;
 }

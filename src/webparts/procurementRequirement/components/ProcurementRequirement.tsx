@@ -132,7 +132,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       subDepartment:'',
       subDepartmentArr:[],
       managerApproves:'',
-      supplier:''
+      supplier:'',
+      WhatWasPurchased:'',
+      forWhat:'',
+      forDepartment:''
     };
   }
 
@@ -145,9 +148,80 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       }, 1)
     })
     // }, this.ResetForm);
+    this.StartNewForm();
+    this.SetVisitDateValue(new Date())
 
   }
+  StartNewForm = () => {
+    // get current user
+    let userEmail: string = '';
+    let companyList: Array<string> = [];
+    let competitor: Array<string> = [];
+    let dataSourcesArr: Array<string> = [];
+    let productsArr: Array<string> = [];
+    let UserGroups: Array<string> = [];
+    const web = Web(this.props.WebUri);
+    // Get current user groups.
+    // if from "Authorized access to forms" display button 
+    // web.currentUser.groups().then(UserGroupsResult => {
+    //   UserGroups = UserGroupsResult.map(Group => Group.Title)
+    //   // console.log('UserGroups after load:', this.UserGroups)
 
+
+    //   if (UserGroups.indexOf("AuthorizedAccessToForms") !== -1) {
+    //     this.setState({ competitorsLinkBtnFlag: true })
+    //     console.log("here");
+
+    //   }
+    // }).catch(Error => {
+    //   // console.log('Error:', Error)
+    // });
+
+
+    web.currentUser.get().then(result => {
+      // console.log(result);//test
+
+      this.GetCheckerPeoplePickerItems(result);
+
+      web.lists.getById(this.props.companyList).items.get().then(result => {
+        companyList = result.map(item => item.Title);
+        // web.lists.getById(this.props.competitorsListId).items.get().then(result => {
+        //   competitor = result.map(item => item.product);
+        web.lists.getById(this.props.categoryListId).items.get().then(result => {
+          dataSourcesArr = result.map(item => item.Title);
+          console.log(dataSourcesArr);
+          console.log(companyList);
+          web.lists.getById(this.props.competitorsListId).items.get().then(result => {
+            competitor = result.map(item => item.Title);
+            web.lists.getById(this.props.productsListId).items.get().then(result => {
+              productsArr = result.map(item => item.Title);
+              this.setState({
+                dataSourcesArr: dataSourcesArr,
+                companyNamesArr: companyList,
+                competitorNameArr: competitor,
+                productArr: productsArr
+              })
+            })
+
+          })
+
+
+
+        })
+      })
+
+      // }).catch(Err => {
+      //   console.log(Err);
+      //   // here Error modal
+
+      // })
+    }).catch(Err => {
+      console.log(Err);
+      // here Error modal
+
+    })
+
+  }
 
   AutoSave = () => {
     if (this.props.FormAutoSaveTiming !== null && !isNaN(this.props.FormAutoSaveTiming)) {
@@ -655,15 +729,16 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     this.setState({ IsModalOpen: !this.state.IsModalOpen })
   }
 
-  GetCheckerPeoplePickerItems = (items: any[]) => {
+  GetCheckerPeoplePickerItems = (item: any) => {
     try {
-      if (items.length == 1) {
+      if (item !== null) {
         this.setState({
-          CheckerId: items[0].id,
-          CheckerEmail: items[0].secondaryText.toLowerCase(),
+          CheckerId: item.Id,
+          CheckerEmail: item.Email.toLowerCase(),
           CheckerNameValidationError: false,
           ValidationError: false,
-
+        }, () => {
+          console.log(this.state.CheckerEmail);
         });
       } else {
         this.setState({
@@ -797,8 +872,40 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           <Button color="primary" onClick={this.ToggleModal}>המשך</Button>
                         </ModalFooter>
                       </Modal>
-
-
+                      <Row form className="">
+                        <Col md={12} sm={12}>
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={1}></Col>
+                            <Col lg={5} md={6} sm={8} className='field-col'>
+                              <ThemeProvider theme={DatePickerTheme}>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale} >
+                                  <KeyboardDatePicker
+                                    margin="normal"
+                                    id="date-picker-dialog"
+                                    label="תאריך ביקור"
+                                    format="dd/MM/yyyy"
+                                    value={this.state.VisitDate}
+                                    onChange={(newValue: any) => {
+                                      this.SetVisitDateValue(newValue);
+                                    }}
+                                    KeyboardButtonProps={{
+                                      'aria-label': 'שנה תאריך',
+                                    }}
+                                    size="small"
+                                    emptyLabel=''
+                                    orientation="landscape"
+                                    className="TextFieldFadeInTrans"
+                                    error={this.state.VisitDateValidationError}
+                                    helperText={this.state.VisitDateValidationError ? 'נא למלא תאריך' : ''}
+                                    required
+                                    fullWidth
+                                  />
+                                </MuiPickersUtilsProvider>
+                              </ThemeProvider>
+                            </Col>
+                          </FormGroup>
+                        </Col>
+                      </Row>
                       <Row form className="">
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
@@ -811,7 +918,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 personSelectionLimit={1}
                                 showtooltip={true}
                                 required={true}
-                                disabled={false}
+                                disabled={true}
                                 onChange={this.GetCheckerPeoplePickerItems}
                                 showHiddenInUI={true}
                                 principalTypes={[PrincipalType.User]}
@@ -903,10 +1010,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
                               <TextField
                                 id="cooker"
-                                label="שם המבשל\ת"
+                                label="ספק"
                                 type="string"
-                                name="cooker"
-                                value={this.state.cooker}
+                                name="supplier"
+                                value={this.state.supplier}
                                 onChange={this.onChange}
                                 margin="normal"
                                 size="small"
@@ -919,6 +1026,39 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </Col>
                       </Row>
                       {/*  */}
+                      <Col sm={1}></Col>
+                      <h4 style={{marginTop:'30px'}}>הבקשה / הדרישה:</h4>
+                      <Row form className="" style={{ marginTop: '5px' }}>
+                        <Col md={12} sm={12} >
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={1}></Col>
+                            <Col lg={5} md={6} sm={6} className='field-col'>
+
+                              <TextField
+                                id="outlined-multiline-static"
+                                label="מה נרכש? (תיאור כללי – ברגים / חלקי חילוף / ייעוץ וכד'. רצוי להוסיף קובץ מפורט)"
+                                type="string"
+                                name="WhatWasPurchased"
+                                inputProps={{ maxLength: 150 }}
+                                value={this.state.WhatWasPurchased}
+                                onChange={this.onChange}
+                                margin="normal"
+                                size="small"
+                                className="TextFieldFadeInTrans"
+                                multiline
+                                // error={this.state.descriptionValidationError}
+                                // helperText={this.state.descriptionValidationError ? 'Please enter any value' : ''}
+                                rows={4}
+                                variant="outlined"
+                                fullWidth={true}
+
+                              // fullWidth
+                              />
+
+                            </Col>
+                          </FormGroup>
+                        </Col>
+                      </Row>
                       <Row form className="">
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
@@ -968,68 +1108,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </Col>
                       </Row>
 
-                      <Row form className="">
-                        <Col md={12} sm={12}>
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
-                              <ThemeProvider theme={DatePickerTheme}>
-                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale} >
-                                  <KeyboardDatePicker
-                                    margin="normal"
-                                    id="date-picker-dialog"
-                                    label="תאריך ביקור"
-                                    format="dd/MM/yyyy"
-                                    value={this.state.VisitDate}
-                                    onChange={(newValue: any) => {
-                                      this.SetVisitDateValue(newValue);
-                                    }}
-                                    KeyboardButtonProps={{
-                                      'aria-label': 'שנה תאריך',
-                                    }}
-                                    size="small"
-                                    emptyLabel=''
-                                    orientation="landscape"
-                                    className="TextFieldFadeInTrans"
-                                    error={this.state.VisitDateValidationError}
-                                    helperText={this.state.VisitDateValidationError ? 'נא למלא תאריך' : ''}
-                                    required
-                                    fullWidth
-                                  />
-                                </MuiPickersUtilsProvider>
-                              </ThemeProvider>
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-
-                      <Row form className="" style={{ marginBottom: '30px' }}>
-                        <Col md={12} sm={12} >
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
-                              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
-                                <KeyboardTimePicker
-                                  margin="normal"
-                                  id="time-picker"
-                                  label="שעת הביקורת"
-                                  value={this.state.VisitDate}
-                                  onChange={this.SetReviewTime}
-                                  KeyboardButtonProps={{
-                                    'aria-label': 'הזן שעה',
-                                  }}
-                                  orientation="landscape"
-                                  fullWidth
-                                />
-                              </MuiPickersUtilsProvider>
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      {/* חלוקת הילדים לפי כיתות:*/}
 
 
-                      <h4>חלוקת הילדים לפי כיתות:</h4>
+                      
+
+                      
                       <Row form className="">
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">

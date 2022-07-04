@@ -14,7 +14,7 @@ import { PropertyFieldNumber } from '@pnp/spfx-property-controls/lib/PropertyFie
 
 export interface IProcurementRequirementWebPartProps {
   description: string;
-  listsData: string; // Stores the list ID(s)
+  emloyeeListsData: string; // Stores the list ID(s)
   FormName: string;
   DayCareList: string;
   ReturnLink: string;
@@ -33,7 +33,7 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
         description: this.properties.description,
         WebUri: this.context.pageContext.web.absoluteUrl,
         DayCareList: this.properties.DayCareList,
-        listsData: this.properties.listsData,
+        emloyeeListsData: this.properties.emloyeeListsData,
         sections:this.properties.sections,
         FormName: this.properties.FormName,
         ReturnLink: this.properties.ReturnLink,
@@ -67,7 +67,7 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
                 }),
-                PropertyPaneTextField('listsData', {
+                PropertyPaneTextField('emloyeeListsData', {
                   label: 'ListsData'
                 }),
                 PropertyPaneTextField('sections', {
@@ -89,8 +89,8 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                 PropertyPaneTextField('LinkToEditForm', {
                   label: "Link To Edit Form"
                 }),
-                PropertyPaneTextField('RecordsList', {
-                  label: "Records List Name"
+                PropertyPaneTextField('approversListsData', {
+                  label: "Approvers List Name"
                 }),
                 PropertyPaneTextField('ReturnLink', {
                   label: "Return Link"
