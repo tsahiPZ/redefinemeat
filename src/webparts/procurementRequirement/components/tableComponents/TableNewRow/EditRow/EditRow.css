@@ -1,0 +1,146 @@
+/* General */
+
+.modal-content .modal-header .modal-title {
+    font-size: 26px;
+    background: #020312;
+    background: -webkit-linear-gradient(to left, #020312 0%, #8754C9 100%);
+    background: -moz-linear-gradient(to left, #020312 0%, #8754C9 100%);
+    background: linear-gradient(to left, #020312 0%, #8754C9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.modal-header{
+    direction: ltr;
+
+}
+/* Form */
+
+.AddItemGroup {
+    width: 100%;
+    display: block;
+    position: relative;
+    float: right;
+}
+.MuiInputBase-inputMultiline {
+    direction: ltr;
+}
+.AddItem {
+    width: 100%;
+    display: block;
+    position: relative;
+    float: right;
+    border: none;
+}
+
+.AddItem .AddItemContainer {
+    display: block;
+    position: relative;
+    float: right;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.FooterContainer{
+    width: 100%;
+    display: block;
+    position: relative;
+}
+
+.AddItemButtons {
+    width: 100%;
+    display: block;
+    position: relative;
+    float: right;
+    text-align: center;
+}
+
+.AddItemButtons Button.SaveButton {
+    margin: 0% 2% 0.5% 2%;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: none;
+
+}
+
+.AddItemButtons Button.CancelButton {
+    margin: 0% 2% 0.5% 2%;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: none;
+
+}
+
+.ErrorMessage {
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.PlanBreakdownEditBtn {
+    display: block;
+    position: relative;
+    float: right;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    border-radius: 50%;
+}
+
+.PlanBreakdownEditBtn .EditeImg {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../../../Assets/edit.png');
+    background-repeat: no-repeat;
+    background-size: 100% 85%;
+    background-position: center;
+}
+
+.PlanBreakdownEditBtn:hover .EditeImg {
+    background-image: url('../../../../Assets/edithover.png');
+}
+
+/* Query */
+
+@media only screen and (max-width: 999px) and (min-width: 576px) {
+    .PlanBreakdownEditBtn {
+        width: 95%;
+    }
+
+    .AddItem .AddItemContainer {
+        width: 44%;
+    }
+
+    .modal-dialog {
+        max-width: 80%!important;
+    }
+}
+
+@media only screen and (min-width: 1000px) {
+    .PlanBreakdownEditBtn {
+        width: 45%;
+    }
+
+    .AddItem .AddItemContainer {
+        width: 44%;
+    }
+
+    .modal-dialog {
+        max-width: 60%!important;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .PlanBreakdownEditBtn {
+        width: 45%;
+    }
+
+    .AddItem .AddItemContainer {
+        width: 94%;
+    }
+
+    .modal-dialog {
+        max-width: 100%!important;
+    }
+}

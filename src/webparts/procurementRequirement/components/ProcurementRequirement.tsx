@@ -63,6 +63,18 @@ import heLocale from "date-fns/locale/he";
 import { stubString } from 'lodash';
 
 import { escape } from '@microsoft/sp-lodash-subset';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TableNewRows from './tableComponents/TableNewRow/TableNewRow';
+import AddRow from './tableComponents/TableNewRow/AddRow/AddRow';
+
+
 export default class ProcurementRequirement extends React.Component<IProcurementRequirementProps, IProcurementRequirementState> {
   constructor(props) {
     super(props);
@@ -89,7 +101,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       score: 0,
 
       FieldsData: {},
-      ScoreOptions: ['0','1', '2', '3'],
+      ScoreOptions: ['0', '1', '2', '3'],
 
       CheckerNameValidationError: false,
       DayCareNameValidationError: false,
@@ -127,18 +139,56 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       // relevant params
       applicantName: '',
       applicantId: '',
-      department:'',
-      deparmentsArr:[],
-      subDepartment:'',
-      subDepartmentArr:[],
-      managerApproves:'',
-      supplier:'',
-      WhatWasPurchased:'',
-      forWhat:'',
-      forDepartment:''
+      department: '',
+      deparmentsArr: [],
+      subDepartment: '',
+      subDepartmentArr: [],
+      managerApproves: '',
+      supplier: '',
+      supplierArr: [],
+      WhatWasPurchased: '',
+      forWhat: '',
+      forDepartment: '',
+      tableRows: [{
+        identyfier: 11155,
+        Amount: 120,
+        PricePerUnit: 120,
+        Cost: 120 * 5,
+        description: 'test',
+        date: '10/1/20'
+      }]
     };
   }
+  // table functions
+  delItem = (item: any) => {
+    let tempArr = this.state.tableRows.filter(row => row !== item)
+    this.setState({
+      tableRows: tempArr
+    })
+  }
 
+  updateItem = (item: any, newData: any) => {
+    let tempArr = this.state.tableRows;
+    for(let i = 0 ; i < this.state.tableRows.length ; i++)
+    {
+      if(this.state.tableRows[i] === item)
+      {
+       tempArr.splice(i, 1, newData);
+      }
+    }
+  }
+
+  addRow = (item:any) => {
+    console.log(item);
+    
+    let tempArr = [...this.state.tableRows,item];
+    this.setState({
+      tableRows:tempArr
+    })
+  }
+
+
+  // 
   componentDidMount = () => {
     this.setState({
       FormIsActiveStatus: true,//  delete at finishes
@@ -183,25 +233,25 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       this.GetCheckerPeoplePickerItems(result);
 
-      web.lists.getById(this.props.companyList).items.get().then(result => {
+      web.lists.getById(this.props.emloyeeListsData).items.get().then(result => {
         companyList = result.map(item => item.Title);
         // web.lists.getById(this.props.competitorsListId).items.get().then(result => {
         //   competitor = result.map(item => item.product);
-        web.lists.getById(this.props.categoryListId).items.get().then(result => {
+        web.lists.getById(this.props.approversListsData).items.get().then(result => {
           dataSourcesArr = result.map(item => item.Title);
           console.log(dataSourcesArr);
           console.log(companyList);
-          web.lists.getById(this.props.competitorsListId).items.get().then(result => {
+          web.lists.getById(this.props.supplier).items.get().then(result => {
             competitor = result.map(item => item.Title);
-            web.lists.getById(this.props.productsListId).items.get().then(result => {
-              productsArr = result.map(item => item.Title);
-              this.setState({
-                dataSourcesArr: dataSourcesArr,
-                companyNamesArr: companyList,
-                competitorNameArr: competitor,
-                productArr: productsArr
-              })
-            })
+            // web.lists.getById(this.props.productsListId).items.get().then(result => {
+            //   productsArr = result.map(item => item.Title);
+            //   this.setState({
+            //     dataSourcesArr: dataSourcesArr,
+            //     companyNamesArr: companyList,
+            //     competitorNameArr: competitor,
+            //     productArr: productsArr
+            //   })
+            // })
 
           })
 
@@ -437,7 +487,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
     const FieldsDataJson = JSON.stringify(this.state.FieldsData)
     console.log(this.state.FieldsData);
-    
+
     return {
       ...FieldsValues,
       FieldsDataJson,
@@ -457,13 +507,13 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       Baby: this.state.Baby,
       child: this.state.child,
       adult: this.state.adult,
-      finalScore:this.state.score
+      finalScore: this.state.score
     }
   }
 
   ValidateForm = () => {
     console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
-    
+
     var Validated = true;
     if ((this.state.VisitDate === null && this.state.VisitDate === undefined && !isNaN(this.state.VisitDate.getTime())) &&
       (this.state.DayCareName === null && this.state.DayCareName === '' && this.state.CheckerEmail === ''
@@ -827,8 +877,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
 
 
-
   public render(): React.ReactElement<IProcurementRequirementProps> {
+
     return (
       <div className={styles.procurementRequirement} >
         {/* <h1>Gulp Serve</h1> */}
@@ -1008,16 +1058,23 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             <Col sm={1}></Col>
                             <Col lg={5} md={6} sm={8} className='field-col'>
 
-                              <TextField
-                                id="cooker"
-                                label="ספק"
-                                type="string"
-                                name="supplier"
+                              <Autocomplete
                                 value={this.state.supplier}
-                                onChange={this.onChange}
-                                margin="normal"
-                                size="small"
-                                className="TextFieldFadeInTrans"
+                                onChange={(event, newValue) => {
+                                  this.SetDayCareValue(newValue);
+                                }}
+                                id="supplier"
+                                options={this.state.supplierArr}
+                                renderInput={(params) =>
+                                  <TextField
+                                    {...params}
+                                    label="ספק"
+                                    error={this.state.DayCareValidationError}
+                                    helperText={this.state.DayCareValidationError ? 'נא למלא שם מעון' : ''}
+                                    required
+                                  />}
+                                size="medium"
+                                className="TextFieldFadeInTrans AutoCompleteStyle"
                                 fullWidth
                               />
 
@@ -1027,7 +1084,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                       </Row>
                       {/*  */}
                       <Col sm={1}></Col>
-                      <h4 style={{marginTop:'30px'}}>הבקשה / הדרישה:</h4>
+                      <h4 style={{ marginTop: '30px', marginRight: '20px' }}>הבקשה / הדרישה:</h4>
                       <Row form className="" style={{ marginTop: '5px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
@@ -1059,23 +1116,31 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </FormGroup>
                         </Col>
                       </Row>
-                      <Row form className="">
+                      <Row form className="" style={{ marginTop: '5px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={5} md={6} sm={6} className='field-col'>
 
                               <TextField
-                                id="HelperName"
-                                label="שם העוזרת"
+                                id="outlined-multiline-static"
+                                label="לטובת מה?"
                                 type="string"
-                                name="HelperName"
-                                value={this.state.HelperName}
+                                name="forWhat"
+                                inputProps={{ maxLength: 150 }}
+                                value={this.state.forWhat}
                                 onChange={this.onChange}
                                 margin="normal"
                                 size="small"
                                 className="TextFieldFadeInTrans"
-                                fullWidth
+                                multiline
+                                // error={this.state.descriptionValidationError}
+                                // helperText={this.state.descriptionValidationError ? 'Please enter any value' : ''}
+                                rows={4}
+                                variant="outlined"
+                                fullWidth={true}
+
+                              // fullWidth
                               />
 
                             </Col>
@@ -1084,115 +1149,66 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                       </Row>
 
                       {/*  */}
-                      <Row form className="">
+                      <Row form style={{ marginTop: '5px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={5} md={6} sm={6} className='field-col'>
 
                               <TextField
-                                id="NumberOfMeals"
-                                label="מספר מנות"
-                                type="number"
-                                name="NumberOfMeals"
-                                value={this.state.NumberOfMeals}
+                                id="d"
+                                label="עבור מחלקה:"
+                                type="string"
+                                name="productElseStr"
+                                value={this.state.forDepartment}
                                 onChange={this.onChange}
                                 margin="normal"
                                 size="small"
+                                // error={this.state.productValidationError}
+                                // helperText={this.state.productValidationError ? 'Please enter any value' : ''}
                                 className="TextFieldFadeInTrans"
                                 fullWidth
                               />
-
                             </Col>
                           </FormGroup>
                         </Col>
                       </Row>
-
-
-
-                      
-
-                      
-                      <Row form className="">
+                      <Row form style={{ marginTop: '5px', marginRight: '2%', marginLeft: '2%' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
 
-                              <TextField
-                                id="Baby"
-                                label="תינוקות :3 חודשים- 1.3 שנים"
-                                type="number"
-                                name="Baby"
-                                value={this.state.Baby}
-                                onChange={this.onChange}
-                                margin="normal"
-                                size="small"
-                                className="TextFieldFadeInTrans"
-                                fullWidth
-                              />
+                            <TableContainer component={Paper}>
+                              <Table aria-label="simple table">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell align="left">מק"ט</TableCell>
+                                    <TableCell align="left">כמות</TableCell>
+                                    <TableCell align="left">מחיר ליחידה</TableCell>
+                                    <TableCell align="left">עלות</TableCell>
+                                    <TableCell align="left">תיאור</TableCell>
+                                    <TableCell align="left">תאריך הגעה צפוי</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {this.state.tableRows.map((row) => (
 
-                            </Col>
+                                    <TableNewRows updateItem={this.updateItem} deleteItem={this.delItem} row={row} />
+
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
                           </FormGroup>
                         </Col>
                       </Row>
-                      <Row form className="">
-                        <Col md={12} sm={12} >
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                      <div style={{display:'flex',justifyContent:'center',alignItems:'center',marginTop:'3%'}}>
+                        <AddRow  IsDisabled={false} OnAddItem={this.addRow} />
 
-                              <TextField
-                                id="child"
-                                label="פעוטות: 2 -1.3  שנים"
-                                type="number"
-                                name="child"
-                                value={this.state.child}
-                                onChange={this.onChange}
-                                margin="normal"
-                                size="small"
-                                className="TextFieldFadeInTrans"
-                                fullWidth
-                              />
+                      </div>
 
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      {/*  */}
-                      <Row form className="">
-                        <Col md={12} sm={12} >
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                      <Row form>
 
-                              <TextField
-                                id="adult"
-                                label="בוגרים: 3 - 2 שנים"
-                                type="number"
-                                name="adult"
-                                value={this.state.adult}
-                                onChange={this.onChange}
-                                margin="normal"
-                                size="small"
-                                className="TextFieldFadeInTrans"
-                                fullWidth
-                              />
-
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-
-
-                       <Row form>
-                        <Row >
-                          <div className='calculatedScore'>
-                            <span> ציון משוכלל</span>
-                            <span style={{marginLeft:'2%'}}>:</span>
-                            <span>{this.state.score}</span>
-                          </div>
-                        </Row>
                         <ThemeProvider theme={ButtonsTheme}>
                           <div className='FormButtons'>
                             <Button

@@ -74,13 +74,14 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
 .EOHeader .EOLogoContainer {
     position: relative;
     float: right;
-    width: 30%;
+    width: 15%;
     height: 100%;
-    background-image: url('../Assets/smartTop.png');
+    background-image: url('../Assets/companyLogo.png');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
     animation: bounce 2s ease-in both;
+    margin-right: 12%;
 }
 
 .EOHeader .EOHeaderContainer .EOHeaderText {

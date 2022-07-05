@@ -31,5 +31,5 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"
-  ]
+, "src/webparts/procurementRequirement/components/tableComponents/TableNewRow"  ]
 }

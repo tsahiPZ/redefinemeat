@@ -16,12 +16,14 @@ export interface IProcurementRequirementWebPartProps {
   description: string;
   emloyeeListsData: string; // Stores the list ID(s)
   FormName: string;
-  DayCareList: string;
+  // DayCareList: string;
   ReturnLink: string;
   WebUri: string;
   FormAutoSaveTiming: number;
   LinkToEditForm: string;
   sections: string;
+  approversListsData:string;
+  supplier:string;
 }
 
 export default class ProcurementRequirementWebPart extends BaseClientSideWebPart<IProcurementRequirementWebPartProps> {
@@ -32,14 +34,15 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
       {
         description: this.properties.description,
         WebUri: this.context.pageContext.web.absoluteUrl,
-        DayCareList: this.properties.DayCareList,
+        // DayCareList: this.properties.DayCareList,
         emloyeeListsData: this.properties.emloyeeListsData,
-        sections:this.properties.sections,
         FormName: this.properties.FormName,
         ReturnLink: this.properties.ReturnLink,
-        FormAutoSaveTiming: this.properties.FormAutoSaveTiming,
         LinkToEditForm: this.properties.LinkToEditForm,
-        context: this.context       }
+        context: this.context,
+        approversListsData:this.properties.approversListsData,
+        supplier:this.properties.supplier 
+           }
     );
 
     ReactDom.render(element, this.domElement);
@@ -70,27 +73,14 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                 PropertyPaneTextField('emloyeeListsData', {
                   label: 'ListsData'
                 }),
-                PropertyPaneTextField('sections', {
-                  label: 'read sections from list to display'
-                }),
-                PropertyFieldNumber("FormAutoSaveTiming", {
-                  key: "FormAutoSaveTiming",
-                  label: "The Form Will Be Saved Every (Seconds)",
-                  description: "Please enter integers only",
-                  value: this.properties.FormAutoSaveTiming,
-                  maxValue: 6000,
-                  minValue: 1,
-                  disabled: false
+                PropertyPaneTextField('approversListsData', {
+                  label: "Approvers List Name"
                 }),
                 PropertyPaneTextField('FormName', {
                   label: "Form Name"
                 }),
-
                 PropertyPaneTextField('LinkToEditForm', {
                   label: "Link To Edit Form"
-                }),
-                PropertyPaneTextField('approversListsData', {
-                  label: "Approvers List Name"
                 }),
                 PropertyPaneTextField('ReturnLink', {
                   label: "Return Link"

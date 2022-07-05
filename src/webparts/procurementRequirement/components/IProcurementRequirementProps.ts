@@ -9,5 +9,7 @@ export interface IProcurementRequirementProps {
   context: any;
   FormAutoSaveTiming: number;
   LinkToEditForm: string;
-  emloyeeListsData:string
+  emloyeeListsData:string;
+  approversListsData:string;
+  supplier:string;
 }
