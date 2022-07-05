@@ -177,7 +177,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
             toggle={this.toggle}
             close={<IconButton aria-label="Add" className='SmallCloseButton' onClick={this.toggle} size="medium">
               <IoCloseSharp /></IconButton>}>
-            New Row
+            הוסף פריט
           </ModalHeader>
           <ModalBody dir='ltr'>
             <Form>

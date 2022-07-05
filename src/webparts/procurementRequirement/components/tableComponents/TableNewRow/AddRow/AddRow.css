@@ -3,9 +3,9 @@
 .modal-content .modal-header .modal-title {
     font-size: 26px;
     background: #020312;
-    background: -webkit-linear-gradient(to left, #020312 0%, #8754C9 100%);
-    background: -moz-linear-gradient(to left, #020312 0%, #8754C9 100%);
-    background: linear-gradient(to left, #020312 0%, #8754C9 100%);
+    background: -webkit-linear-gradient(to left, #020312 0%, #e70909 100%);
+    background: -moz-linear-gradient(to left, #020312 0%, #e70909 100%);
+    background: linear-gradient(to left, #020312 0%, #e70909 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -17,8 +17,12 @@
     /* direction: ltr; */
     direction: rtl;
 }
+
 .modal-header{
     /* direction: ltr; */
+    direction: rtl;
+}
+.modal-header, .MuiInputBase-inputMultiline {
     direction: rtl;
 }
 /* Form */
