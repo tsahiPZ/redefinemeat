@@ -12,4 +12,5 @@ export interface IProcurementRequirementProps {
   emloyeeListsData:string;
   approversListsData:string;
   supplier:string;
+  moneyTypesListId:string;
 }

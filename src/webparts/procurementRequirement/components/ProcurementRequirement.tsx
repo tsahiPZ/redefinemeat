@@ -5,6 +5,8 @@ import { IProcurementRequirementState } from './IProcurementRequirementState';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './NutritionReport.css';
+import "@pnp/sp/attachments";
+import { IAttachmentFileInfo } from "@pnp/sp/attachments";
 
 import 'date-fns';
 import 'animate.css';
@@ -14,7 +16,7 @@ import {
   Popover, PopoverHeader, PopoverBody, Toast, ToastHeader, ToastBody
 } from 'reactstrap';
 import {
-  TextField, Button,
+  TextField, Button,IconButton
 } from '@material-ui/core';
 import {
   Autocomplete, Alert
@@ -23,7 +25,7 @@ import { ThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { DatePickerTheme } from '../Models/DatePickerTheme';
 import { theme } from '../Models/theme';
 import { ButtonsTheme } from '../Models/ButtonsTheme';
-import { SwitchTheme } from '../Models/SwitchTheme'
+// import { SwitchTheme } from '../Models/SwitchTheme'
 import { jss } from '../Models/jss';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import {
@@ -41,18 +43,18 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import FormLabel from '@material-ui/core/FormLabel';
 
-import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+// import Switch from '@material-ui/core/Switch';
+// import Grid from '@material-ui/core/Grid';
+// import Typography from '@material-ui/core/Typography';
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists/web";
 import "@pnp/sp/fields";
 
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import Accordion from '@material-ui/core/Accordion';
+// import AccordionSummary from '@material-ui/core/AccordionSummary';
+// import AccordionDetails from '@material-ui/core/AccordionDetails';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 // import { spfi, SPFx } from "@pnp/sp";
@@ -73,7 +75,17 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TableNewRows from './tableComponents/TableNewRow/TableNewRow';
 import AddRow from './tableComponents/TableNewRow/AddRow/AddRow';
-
+import {
+ Input
+} from 'reactstrap';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 export default class ProcurementRequirement extends React.Component<IProcurementRequirementProps, IProcurementRequirementState> {
   constructor(props) {
@@ -150,7 +162,12 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       forWhat: '',
       forDepartment: '',
       tableRows: [],
-      cost:0
+      cost:0,
+      MoreDataFiles1: [],
+      MoreDataFilesProps1: [],
+      FileNameError: false,
+      moneyTypeArr:[],
+      moneyTypeChosen:''
     };
   }
   // table functions
@@ -235,6 +252,61 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
 
   // ============== End tableFunctions ============== 
+
+  // file upload functions
+
+  handleUploadFile = e => {
+    const Allfiles = e.target.files;
+    let FilesProperties = []
+    let Files = [];
+    let IDCounter = this.state.MoreDataFilesProps1.length;
+    console.log(Allfiles.length);
+
+    // If there are any files
+    if (Allfiles && Allfiles.length > 0) {
+      // Create Files Properties Array
+      for (let i = 0; Allfiles.length > i; i++) {
+        FilesProperties.push({ ID: IDCounter.toString(), FileName: Allfiles[i].name, FileType: Allfiles[i].type });
+        Files.push(Allfiles[i]);
+        IDCounter++;
+      }
+
+      this.setState({
+        MoreDataFiles1: [...this.state.MoreDataFiles1, ...Files],
+        MoreDataFilesProps1: [...this.state.MoreDataFilesProps1, ...FilesProperties],
+        FileNameError: false,
+      });
+
+      e.target.value = null;
+    }
+  }
+  // Triger system default File picker
+  TriggerUploadFiles = e => {
+    e.preventDefault();
+    document.getElementById("MoreDataFiles1").click()
+  }
+  
+
+  RemoveFile = (ID: string) => {
+    let FilesProperties = [...this.state.MoreDataFilesProps1]
+    let Files = [...this.state.MoreDataFiles1];
+
+    FilesProperties.splice(parseInt(ID), 1);
+    Files.splice(parseInt(ID), 1);
+
+    // Sort IDs
+    for (let i = 0; FilesProperties.length > i; i++) {
+      FilesProperties[i].ID = i;
+    }
+
+    this.setState({
+      MoreDataFiles1: [...Files],
+      MoreDataFilesProps1: [...FilesProperties],
+      FileNameError: false,
+    });
+
+  }
+  // ============= files upload functions END =====================
   componentDidMount = () => {
     this.setState({
       FormIsActiveStatus: true,//  delete at finishes
@@ -281,36 +353,36 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       web.lists.getById(this.props.emloyeeListsData).items.get().then(result => {
         companyList = result.map(item => item.Title);
+        console.log(result);
+        
         // web.lists.getById(this.props.competitorsListId).items.get().then(result => {
         //   competitor = result.map(item => item.product);
         web.lists.getById(this.props.approversListsData).items.get().then(result => {
-          dataSourcesArr = result.map(item => item.Title);
-          console.log(dataSourcesArr);
-          console.log(companyList);
+          console.log(result);
+          
           web.lists.getById(this.props.supplier).items.get().then(result => {
-            competitor = result.map(item => item.Title);
-            // web.lists.getById(this.props.productsListId).items.get().then(result => {
-            //   productsArr = result.map(item => item.Title);
-            //   this.setState({
-            //     dataSourcesArr: dataSourcesArr,
-            //     companyNamesArr: companyList,
-            //     competitorNameArr: competitor,
-            //     productArr: productsArr
-            //   })
-            // })
+            console.log(result);
+            web.lists.getById(this.props.moneyTypesListId).items.get().then(result => {
+              console.log(result);
+              
+            })
 
+          }).catch(Err => {
+            console.log(Err);
+            // here Error modal
+    
           })
 
-
-
+        }).catch(Err => {
+          console.log(Err);
+          // here Error modal
+  
         })
+      }).catch(Err => {
+        console.log(Err);
+        // here Error modal
+
       })
-
-      // }).catch(Err => {
-      //   console.log(Err);
-      //   // here Error modal
-
-      // })
     }).catch(Err => {
       console.log(Err);
       // here Error modal
@@ -1228,12 +1300,12 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                               <Table aria-label="simple table">
                                 <TableHead>
                                   <TableRow>
-                                    <TableCell align="left">מק"ט</TableCell>
-                                    <TableCell align="left">כמות</TableCell>
-                                    <TableCell align="left">מחיר ליחידה</TableCell>
-                                    <TableCell align="left">עלות</TableCell>
-                                    <TableCell align="left">תיאור</TableCell>
-                                    <TableCell align="left">תאריך הגעה צפוי</TableCell>
+                                    <TableCell style={{fontWeight:'bold',color:'#d7182a'}} align="left">מק"ט</TableCell>
+                                    <TableCell style={{fontWeight:'bold',color:'#d7182a'}}  align="left">כמות</TableCell>
+                                    <TableCell style={{fontWeight:'bold',color:'#d7182a'}}  align="left">מחיר ליחידה</TableCell>
+                                    <TableCell style={{fontWeight:'bold',color:'#d7182a'}}  align="left">עלות</TableCell>
+                                    <TableCell style={{fontWeight:'bold',color:'#d7182a'}}  align="left">תיאור</TableCell>
+                                    <TableCell style={{fontWeight:'bold',color:'#d7182a'}}  align="left">תאריך הגעה צפוי</TableCell>
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -1260,7 +1332,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={6} className='field-col'>
+                            <Col lg={12} md={12} sm={12} className='field-col'>
 
                               <TextField
                                 id="d"
@@ -1283,7 +1355,68 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         
 
                       </div>
+                      <Row form>
+                        <Col md={12} sm={12}>
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={4}></Col>
+                            <Col lg={4} md={4} sm={4} className='field-col'>
+                              {/* <div className='AddItemContainer'> ,application/msword,ods,.pps,.ppt,.pptx,.msg,.oft,.ost,.pst,.vcf */}
+                              <Input type="file" accept="image/*,.pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsm,.xls,.xlsx"
+                                name="MoreDataFiles1" id="MoreDataFiles1" onChange={this.handleUploadFile} bsSize="sm"  style={{ 'opacity': '0' }} />
+                              <Button style={{ backgroundColor: '#d7182a', color: 'white', textTransform: "none" }} onClick={this.TriggerUploadFiles} name="TriggerUpload1" className="SaveFilesButton">
+                                <InsertDriveFileIcon id='fileIcon' />
+                                צירוף קובץ הצעת מחיר</Button>
+                              {/* </div> */}
+                            </Col>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row form>
+                        <Col md={12} sm={12}>
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={3}></Col>
+                            <Col sm={8} md={6} lg={6}>
+                              <List >
+                                {/* <ul className="ListOfFiles"> */}
+                                {this.state.MoreDataFilesProps1.map(({ ID, FileName }) => (
+                                  // <CSSTransition key={"ListOfFiles1" + ID} timeout={500} classNames='fade'>
+                                  //   <li className="ListOfFilesItem">
+                                  //     <div>
+                                  //       <span className="RemoveFile" onClick={() => this.RemoveFile(ID)}><ClearIcon /></span>
+                                  //       <a className="ListOfFilesItemName" href={URL.createObjectURL(this.state.MoreDataFiles1[parseInt(ID)])} download={FileName}>{FileName}</a>
+                                  //     </div>
+                                  //   </li>
+                                  // </CSSTransition>
+                                  <div >
+                                    <ListItem>
+                                      <ListItemAvatar>
+                                        <Avatar>
+                                          {/* <FolderIcon /> */}
+                                          <InsertDriveFileIcon id='fileIcon' />
+                                        </Avatar>
+                                      </ListItemAvatar>
+                                      <ListItemText
+                                        primary={FileName}
 
+                                      />
+                                      <ListItemSecondaryAction>
+                                        <IconButton edge="end" aria-label="delete" onClick={() => this.RemoveFile(ID)}>
+                                          <DeleteIcon />
+                                        </IconButton>
+                                      </ListItemSecondaryAction>
+                                    </ListItem>
+                                  </div>
+                                ))}
+                                {/* </ul> */}
+                              </List>
+
+                              {this.state.FileNameError ? <Alert variant="outlined" severity="error">Each file must be given a unique name</Alert> : null}
+
+                            </Col>
+                          </FormGroup>
+
+                        </Col>
+                      </Row>
                       <Row form>
 
                         <ThemeProvider theme={ButtonsTheme}>

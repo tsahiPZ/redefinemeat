@@ -12,6 +12,7 @@
 .MuiTableCell-alignLeft {
     text-align: right;
     overflow-wrap: anywhere;
+    
 }
 .MuiInputBase-inputMultiline {
     /* direction: ltr; */
@@ -62,6 +63,7 @@
     position: relative;
     float: left;
     text-align: center;
+    direction: rtl;
 }
 
 .AddItemButtons Button.SaveButton {

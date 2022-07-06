@@ -69,4 +69,10 @@ export interface IProcurementRequirementState {
      forDepartment:string;
      tableRows:Array<any>;
      cost:number;
+     MoreDataFiles1: Array<File>;
+     MoreDataFilesProps1: Array<any>;
+     FileNameError: boolean;
+     moneyTypeArr:Array<string>,
+     moneyTypeChosen:string
+
 }

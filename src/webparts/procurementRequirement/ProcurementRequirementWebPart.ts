@@ -24,6 +24,9 @@ export interface IProcurementRequirementWebPartProps {
   sections: string;
   approversListsData:string;
   supplier:string;
+  suppliersListId:string,
+  sumGapsListId:string,
+  moneyTypesListId:string
 }
 
 export default class ProcurementRequirementWebPart extends BaseClientSideWebPart<IProcurementRequirementWebPartProps> {
@@ -41,7 +44,8 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
         LinkToEditForm: this.properties.LinkToEditForm,
         context: this.context,
         approversListsData:this.properties.approversListsData,
-        supplier:this.properties.supplier 
+        supplier:this.properties.supplier ,
+        moneyTypesListId:this.properties.moneyTypesListId
            }
     );
 
@@ -74,7 +78,16 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                   label: 'ListsData'
                 }),
                 PropertyPaneTextField('approversListsData', {
-                  label: "Approvers List Name"
+                  label: "Suppliers List Id"
+                }),
+                PropertyPaneTextField('suppliersListId', {
+                  label: "Suppliers List Id"
+                }),
+                PropertyPaneTextField('moneyTypesListId', {
+                  label: "Money Types List Id"
+                }),
+                PropertyPaneTextField('sumGapsListId', {
+                  label: "Return Link"
                 }),
                 PropertyPaneTextField('FormName', {
                   label: "Form Name"
@@ -85,6 +98,7 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                 PropertyPaneTextField('ReturnLink', {
                   label: "Return Link"
                 }),
+
               ]
             }
           ]

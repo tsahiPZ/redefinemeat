@@ -3,7 +3,7 @@ export const AddButtonTheme = createTheme({
     direction: 'rtl', // Both here and <body dir="rtl">
     palette: {
         primary: {
-            main: '#63b3da'
+            main:'#d7182a'
         }
     },
 });

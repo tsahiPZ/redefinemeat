@@ -52,6 +52,7 @@
     position: relative;
     float: right;
     text-align: center;
+    direction: rtl;
 }
 
 .AddItemButtons Button.SaveButton {

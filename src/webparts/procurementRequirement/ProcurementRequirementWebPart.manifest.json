@@ -28,7 +28,10 @@
       "FormName": "דרישות רכש",
       "ReturnLink": "https://matnasimc.sharepoint.com/sites/SmartStart/Lists/NutritionReport/AllItems.aspx",
       "LinkToEditForm": "https://matnasimc.sharepoint.com/sites/SmartStart/SitePages/NutritionReportEdit.aspx",
-      "approversListsData": "דוח תזונה"
+      "approversListsData": "דוח תזונה",
+      "suppliersListId":"6d297890-8991-4eb0-abf9-f1595fb6b0ff",
+      "sumGapsListId":"962aba64-b385-497c-973b-0b083748868e",
+      "moneyTypesListId":"f3bc4641-a205-41e2-8372-30c8ef8bfd65"
     }
   }]
 }
