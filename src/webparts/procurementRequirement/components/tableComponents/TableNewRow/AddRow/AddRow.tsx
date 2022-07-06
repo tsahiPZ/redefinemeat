@@ -65,7 +65,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
       pricePerUnit: 0,
       cost: 0,
       description: '',
-      date: null,
+      date: new Date(),
       validation: false
     });
   };
@@ -132,6 +132,33 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
   };
 
   onChange = (e: { target: { name: any; value: any; }; }) => {
+    switch(e.target.name)
+    {
+      case 'amount':
+        if(isNaN(e.target.value)){
+          {
+            // validate true 
+            return;
+          }
+        } 
+      case 'pricePerUnit':
+        if(isNaN(e.target.value)){
+          {
+            // validate true 
+            return;
+          }
+        } 
+    }
+    // if(e.target.name === 'amount' )
+    // {
+    //   if(isNaN(e.target.value)){
+    //     {
+    //       // validate true 
+    //       return;
+    //     }
+    //   } 
+
+    // }
     const newState = { [e.target.name]: e.target.value } as Pick<IAddRowStates, keyof IAddRowStates>;
     this.setState(newState);
     // this.setState({
@@ -220,6 +247,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
                         // helperText={this.state.yearValidate ? 'Enter a 4-digit date in the following format: 19xx' : ''}
                         required
                         inputProps={{
+                          
                           style: {
                             marginTop: 10
                           }
@@ -299,7 +327,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
                             marginTop: 10
                           }
                         }}
-                        placeholder='תאריך הגעה צפוי'
+                        placeholder='תאור'
                       />
                     </div>
                     <div className='AddItemContainer'>&nbsp;</div>

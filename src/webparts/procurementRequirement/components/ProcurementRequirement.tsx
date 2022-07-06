@@ -149,14 +149,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       WhatWasPurchased: '',
       forWhat: '',
       forDepartment: '',
-      tableRows: [{
-        identyfier: 11155,
-        Amount: 120,
-        PricePerUnit: 120,
-        Cost: 120 * 5,
-        description: 'test',
-        date: '10/1/20'
-      }]
+      tableRows: [],
+      cost:0
     };
   }
   // table functions
@@ -167,28 +161,80 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     })
   }
 
-  updateItem = (item: any, newData: any) => {
+  updateItem = ( newData: any) => {
+    // checks
+    console.log(newData);
+
+    console.log(this.state.tableRows);
+    
+    // 
     let tempArr = this.state.tableRows;
-    for(let i = 0 ; i < this.state.tableRows.length ; i++)
+
+    if(tempArr.length===1)
     {
-      if(this.state.tableRows[i] === item)
+      let tempArr = [];
+      tempArr.push(newData)
+      this.setState({
+        tableRows:tempArr
+      },()=>{
+        this.calcCosts();
+  
+      })
+      
+    }else{
+      
+      for(let i = 0 ; i < this.state.tableRows.length ; i++)
       {
-       tempArr.splice(i, 1, newData);
+        if(this.state.tableRows[i].rowID === newData.rowID)
+        {
+         tempArr.splice(i, 1, newData);
+        }
       }
+      this.setState({
+        tableRows:tempArr
+      },()=>{
+        this.calcCosts();
+  
+      })
     }
+    
+    console.log('here');
+    console.log(tempArr);
+    
+   
   }
 
   addRow = (item:any) => {
     console.log(item);
-    
+    console.log(this.state.tableRows);
+
     let tempArr = [...this.state.tableRows,item];
     this.setState({
       tableRows:tempArr
+    },()=>{
+      this.calcCosts();
+
+    })
+
+  }
+
+  calcCosts = () => {
+    let sum = 0;
+    console.log(this.state.tableRows);
+    this.state.tableRows.forEach(element => {
+      console.log(element);
+      
+      sum += element.cost;
+    });
+    this.setState({
+      cost:sum
+    },()=>{
+      console.log(this.state.cost);
+      
     })
   }
 
-
-  // 
+  // ============== End tableFunctions ============== 
   componentDidMount = () => {
     this.setState({
       FormIsActiveStatus: true,//  delete at finishes
@@ -1191,19 +1237,50 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {this.state.tableRows.map((row) => (
+                                
 
-                                    <TableNewRows updateItem={this.updateItem} deleteItem={this.delItem} row={row} />
+                                  {this.state.tableRows ? this.state.tableRows.map((row) => (
 
-                                  ))}
+                                    <TableNewRows OnEditItem={this.updateItem}  deleteItem={this.delItem} row={row} />
+
+                                  )) : <div></div>}
                                 </TableBody>
                               </Table>
                             </TableContainer>
                           </FormGroup>
                         </Col>
                       </Row>
-                      <div style={{display:'flex',justifyContent:'center',alignItems:'center',marginTop:'3%'}}>
+                      <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',marginTop:'3%'}}>
+                        
+                        {this.state.tableRows.length === 0 ?<p> <h5>אין נתונים בטבלה</h5></p> : <div></div>}
+                        
                         <AddRow  IsDisabled={false} OnAddItem={this.addRow} />
+                        {/* if table emty set message */}
+                        <Row form style={{ marginTop: '5px' }}>
+                        <Col md={12} sm={12} >
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={1}></Col>
+                            <Col lg={5} md={6} sm={6} className='field-col'>
+
+                              <TextField
+                                id="d"
+                                label="עלות:"
+                                type="string"
+                                name="productElseStr"
+                                value={this.state.cost}
+                                margin="normal"
+                                size="small"
+                                // error={this.state.productValidationError}
+                                // helperText={this.state.productValidationError ? 'Please enter any value' : ''}
+                                className="TextFieldFadeInTrans"
+                                fullWidth
+                              />
+                            </Col>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                        
+                        
 
                       </div>
 

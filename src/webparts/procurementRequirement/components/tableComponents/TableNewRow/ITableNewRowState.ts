@@ -4,5 +4,6 @@ export interface ITableNewRowState{
     pricePerUnit:0,
     cost:0,
     description:string,
-    date:string
+    date:string,
+    editVisability:boolean;
 }

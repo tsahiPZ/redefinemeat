@@ -68,4 +68,5 @@ export interface IProcurementRequirementState {
      forWhat:string;
      forDepartment:string;
      tableRows:Array<any>;
+     cost:number;
 }
