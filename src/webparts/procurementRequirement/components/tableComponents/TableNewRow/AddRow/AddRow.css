@@ -12,7 +12,6 @@
 .MuiTableCell-alignLeft {
     text-align: right;
     overflow-wrap: anywhere;
-    
 }
 .MuiInputBase-inputMultiline {
     /* direction: ltr; */

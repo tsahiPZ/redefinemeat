@@ -24,14 +24,15 @@
     "properties": {
       "description": "ProcurementRequirement",
       "FormAutoSaveTiming": 20,
-      "emloyeeListsData": "c7c3c5d4-1600-475c-8b10-f038856b1d52",
+      "emloyeeListsData": "5ceef4e4-1ab4-4de6-a52b-1a9045064276",
       "FormName": "דרישות רכש",
       "ReturnLink": "https://matnasimc.sharepoint.com/sites/SmartStart/Lists/NutritionReport/AllItems.aspx",
       "LinkToEditForm": "https://matnasimc.sharepoint.com/sites/SmartStart/SitePages/NutritionReportEdit.aspx",
-      "approversListsData": "דוח תזונה",
+      "approversListsData": "e2a76210-748c-4ef3-b4fe-c4cb044da54f",
       "suppliersListId":"6d297890-8991-4eb0-abf9-f1595fb6b0ff",
       "sumGapsListId":"962aba64-b385-497c-973b-0b083748868e",
-      "moneyTypesListId":"f3bc4641-a205-41e2-8372-30c8ef8bfd65"
+      "moneyTypesListId":"f3bc4641-a205-41e2-8372-30c8ef8bfd65",
+      "departmentsAndSubDeplistid" : "894c2a5b-ce7b-4f86-96ab-8e252d8460dc"
     }
   }]
 }

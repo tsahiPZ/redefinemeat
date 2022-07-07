@@ -11,6 +11,7 @@ export interface IProcurementRequirementProps {
   LinkToEditForm: string;
   emloyeeListsData:string;
   approversListsData:string;
-  supplier:string;
+  suppliersListId:string;
   moneyTypesListId:string;
+  departmentsAndSubDeplistid:string;
 }

@@ -22,11 +22,11 @@ export interface IProcurementRequirementWebPartProps {
   FormAutoSaveTiming: number;
   LinkToEditForm: string;
   sections: string;
-  approversListsData:string;
-  supplier:string;
-  suppliersListId:string,
-  sumGapsListId:string,
-  moneyTypesListId:string
+  approversListsData: string;
+  suppliersListId: string,
+  sumGapsListId: string,
+  moneyTypesListId: string
+  departmentsAndSubDeplistid:string;
 }
 
 export default class ProcurementRequirementWebPart extends BaseClientSideWebPart<IProcurementRequirementWebPartProps> {
@@ -43,10 +43,11 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
         ReturnLink: this.properties.ReturnLink,
         LinkToEditForm: this.properties.LinkToEditForm,
         context: this.context,
-        approversListsData:this.properties.approversListsData,
-        supplier:this.properties.supplier ,
-        moneyTypesListId:this.properties.moneyTypesListId
-           }
+        approversListsData: this.properties.approversListsData,
+        suppliersListId: this.properties.suppliersListId,
+        moneyTypesListId: this.properties.moneyTypesListId,
+        departmentsAndSubDeplistid:this.properties.departmentsAndSubDeplistid
+      }
     );
 
     ReactDom.render(element, this.domElement);
@@ -85,6 +86,9 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                 }),
                 PropertyPaneTextField('moneyTypesListId', {
                   label: "Money Types List Id"
+                }),
+                PropertyPaneTextField('departmentsAndSubDeplistid', {
+                  label: "departmentsAndSubDep list id"
                 }),
                 PropertyPaneTextField('sumGapsListId', {
                   label: "Return Link"

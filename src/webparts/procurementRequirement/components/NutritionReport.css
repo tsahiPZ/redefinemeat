@@ -4,7 +4,13 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
     background-size: cover;
     background-position: center;
 }
-
+.sectionTitle{
+    border-radius: 15px;
+    background-color: '#d7182a';
+}
+.MuiAutocomplete-popper {
+    direction: rtl;
+}
 /* Main */
 .EONewFormContainer {
     display: block;

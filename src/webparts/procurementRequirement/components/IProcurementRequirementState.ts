@@ -64,6 +64,19 @@ export interface IProcurementRequirementState {
      managerApproves:string;
      supplier:string;
      supplierArr:Array<string>;
+     employeeArr:Array<string>;
+     employeeDetails:any;
+
+     // approval vars
+     approversArr:Array<any>;
+     teamLead:string;
+     vp:string;
+     director:string;
+     // approval validtions 
+     teamLeadFlag:boolean;
+     vpFlag:boolean;
+     directorFlag:boolean;
+     // ==================
      WhatWasPurchased:string;
      forWhat:string;
      forDepartment:string;
@@ -74,5 +87,7 @@ export interface IProcurementRequirementState {
      FileNameError: boolean;
      moneyTypeArr:Array<string>,
      moneyTypeChosen:string
-
+     TermsOfPayment:string;
+     managerEmail:string;
+     managerId:string;
 }
