@@ -26,13 +26,14 @@
       "FormAutoSaveTiming": 20,
       "emloyeeListsData": "5ceef4e4-1ab4-4de6-a52b-1a9045064276",
       "FormName": "דרישות רכש",
-      "ReturnLink": "https://matnasimc.sharepoint.com/sites/SmartStart/Lists/NutritionReport/AllItems.aspx",
-      "LinkToEditForm": "https://matnasimc.sharepoint.com/sites/SmartStart/SitePages/NutritionReportEdit.aspx",
+      "ReturnLink": "https://newmeat.sharepoint.com/sites/HQ/Lists/List6/AllItems.aspx",
+      "LinkToEditForm": "https://newmeat.sharepoint.com/sites/HQ",
       "approversListsData": "e2a76210-748c-4ef3-b4fe-c4cb044da54f",
       "suppliersListId":"6d297890-8991-4eb0-abf9-f1595fb6b0ff",
       "sumGapsListId":"962aba64-b385-497c-973b-0b083748868e",
       "moneyTypesListId":"f3bc4641-a205-41e2-8372-30c8ef8bfd65",
-      "departmentsAndSubDeplistid" : "894c2a5b-ce7b-4f86-96ab-8e252d8460dc"
+      "departmentsAndSubDeplistid" : "894c2a5b-ce7b-4f86-96ab-8e252d8460dc",
+      "saveToTableId":"7c05637c-810d-4064-9b4f-aae030d52ad3"
     }
   }]
 }

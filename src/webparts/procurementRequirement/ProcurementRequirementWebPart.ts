@@ -27,6 +27,8 @@ export interface IProcurementRequirementWebPartProps {
   sumGapsListId: string,
   moneyTypesListId: string
   departmentsAndSubDeplistid:string;
+  saveToTableId:string;
+  
 }
 
 export default class ProcurementRequirementWebPart extends BaseClientSideWebPart<IProcurementRequirementWebPartProps> {
@@ -46,7 +48,9 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
         approversListsData: this.properties.approversListsData,
         suppliersListId: this.properties.suppliersListId,
         moneyTypesListId: this.properties.moneyTypesListId,
-        departmentsAndSubDeplistid:this.properties.departmentsAndSubDeplistid
+        departmentsAndSubDeplistid:this.properties.departmentsAndSubDeplistid,
+        sumGapsListId:this.properties.sumGapsListId,
+        saveToTableId:this.properties.saveToTableId
       }
     );
 
@@ -74,6 +78,9 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('saveToTableId', {
+                  label: 'save to table id'
                 }),
                 PropertyPaneTextField('emloyeeListsData', {
                   label: 'ListsData'

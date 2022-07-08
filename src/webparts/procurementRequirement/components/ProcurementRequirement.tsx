@@ -12,7 +12,7 @@ import 'date-fns';
 import 'animate.css';
 import DateFnsUtils from '@date-io/date-fns';
 import {
-  Col, Row, Form, FormGroup, Fade,
+  Col, Row, Form, FormGroup, Fade, Label,
   Popover, PopoverHeader, PopoverBody, Toast, ToastHeader, ToastBody
 } from 'reactstrap';
 import {
@@ -92,7 +92,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     super(props);
     // Set States (information managed within the component), When state changes, the component responds by re-rendering
     this.state = {
-
+      ApprovelsOptions: ['בחר', 'מאשר', 'לא מאשר'],
       // NewState 
       CheckerId: null,
       CheckerEmail: '',
@@ -149,6 +149,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
 
       // relevant params
+      isLocked: false,
       applicantName: '',
       applicantId: '',
       department: '',
@@ -181,8 +182,30 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       // ==================
       employeeArr: [],
       employeeDetails: null,
-      managerEmail:'',
-      managerId:''
+      managerEmail: '',
+      managerId: '',
+      Status: 'עדיין לא הופץ',
+      teamLeadSign: '',
+      vpSign: '',
+      directorSign: '',
+      directorData: null,
+      teamLeadData: null,
+      vpData: null,
+      teamLeadStatus: '',
+      directorStatus: '',
+      vpStatus: '',
+      temaLeadComment: '',
+      directorComment: '',
+      vpComment: '',
+      vpScale: 0,
+      directorScale: 0,
+      teamLeaderScale: 0,
+      isTeamLead: false,
+      isDirector: false,
+      isVp: false,
+      sendMailToTeamLead: true,
+      sendMailToDirector: true,
+      sendMailToVp: true
     };
   }
   // table functions
@@ -321,8 +344,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   // ============= files upload functions END =====================
   componentDidMount = () => {
     this.setState({
-      FormIsActiveStatus: true,//  delete at finishes
-      IsLoading: false,//was true
+      // FormIsActiveStatus: true,//  delete at finishes
+      IsLoading: true,//was true
       LoadingInterval: setInterval(() => {
         this.setState(PrevState => ({ LoadingTime: PrevState.LoadingTime + 1 }))
       }, 1)
@@ -356,11 +379,15 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     let tempEmployeeDataArr: Array<any> = [];
     let tempMoneyTypeArr: Array<any> = [];
     let tempDepartmentsArr: Array<any> = [];
-    let userId:number;
-    let tempMangerId:number;
-    let tempDepartment:string;
-    let tempSubDepartment:string;
-    let tempMangerEmail:string
+    let userId: number;
+    let tempMangerId: number;
+    let tempDepartment: string;
+    let tempSubDepartment: string;
+    let tempMangerEmail: string;
+    let tempDirectorData: any, tempVpData: any, tempTeamLeadData: any;
+    let tempApproversData: any;
+    let vpScale: number, directorScale: number, teamLeadScale: number, scalesArr: Array<any>;
+
     web.getUserById
     web.currentUser.get().then(result => {
       console.log(result);
@@ -369,27 +396,121 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       this.GetCheckerPeoplePickerItems(result);
       web.lists.getById(this.props.emloyeeListsData).items.get().then(result => {
+        console.log("here");
+
         tempEmployeeDataArr = result;
         tempEmployeeDataArr.forEach(employee => {
-          if(employee.fullNameId === userId)
-          {
+          console.log("here loop");
+          if (employee.fullNameId === userId) {
+            console.log("here manager");
+            // check if creator is a team leader
+            if (userId === employee.managerId) {
+              // mark as true
+              this.setState({
+                isTeamLead: true,
+                sendMailToTeamLead: false
+              },()=>{
+                console.log("im teamlead");
+                
+              })
+            }
             web.getUserById(employee.managerId).get().then(result => {
               console.log(result);
-              tempMangerEmail = result.Email
-              
+              tempMangerEmail = result.Email;
+              tempTeamLeadData = result;
+
+
+            }).catch(Err => {
+              console.log(Err);
+              // here Error modal
+              this.setState({
+                FormSubmitError: true
+              });
             })
             tempMangerId = employee.managerId;
             tempDepartment = employee.department;
-            if(employee.subDepartment)
-            {
+            if (employee.subDepartment) {
               tempSubDepartment = employee.subDepartment
             }
           }
         })
-        // web.lists.getById(this.props.competitorsListId).items.get().then(result => {
-        //   competitor = result.map(item => item.product);
-        web.lists.getById(this.props.emloyeeListsData).items.get().then(result => {
+        // get managers scales
+        web.lists.getById(this.props.sumGapsListId).items.get().then(result => {
+          // set Scales
+          scalesArr = result;
+          teamLeadScale = scalesArr[0].TeamLead;
+          directorScale = scalesArr[0].Director;
+          vpScale = scalesArr[0].VP;
+        }).catch(Err => {
+          console.log(Err);
+          // here Error modal
+          this.setState({
+            FormSubmitError: true
+          });
+
+        })
+        web.lists.getById(this.props.approversListsData).items.get().then(result => {
+          console.log(result);
           tempApproversArr = result;
+          tempApproversArr.forEach(approvers => {
+            console.log(approvers.department);
+            console.log(approvers.subDepartment);
+            console.log(tempDepartment);
+            console.log(tempSubDepartment);
+
+
+            if (approvers.department === tempDepartment && approvers.subDepartment === tempSubDepartment) {
+              console.log(approvers);
+              tempApproversData = approvers;
+              web.getUserById(tempApproversData.vpId).get().then(result => {
+                tempVpData = result;
+                // check if Vp
+                if (userId === tempVpData.Id) {
+                  // mark as true
+                  this.setState({
+                    isVp: true,
+                    sendMailToDirector: false,
+                    sendMailToVp: false,
+                    sendMailToTeamLead: false
+                  },()=>{
+                    console.log("im vp");
+                    
+                  })
+                }
+              }).catch(Err => {
+                console.log(Err);
+                // here Error modal
+                this.setState({
+                  FormSubmitError: true
+                });
+              })
+              web.getUserById(tempApproversData.DirectorId).get().then(result => {
+                tempDirectorData = result;
+                console.log(tempDirectorData);
+                
+                // check if director
+                if (userId === tempDirectorData.Id) {
+                  // mark as true
+                  this.setState({
+                    isDirector: true,
+                    sendMailToDirector: false,
+                    sendMailToTeamLead: false
+                  },()=>{
+                    console.log("im director");
+                    
+                  })
+                }
+              }).catch(Err => {
+                console.log(Err);
+                // here Error modal
+                this.setState({
+                  FormSubmitError: true
+                });
+              })
+
+            }
+          })
+
           web.lists.getById(this.props.moneyTypesListId).items.get().then(result => {
             tempMoneyTypeArr = result;
             web.lists.getById(this.props.departmentsAndSubDeplistid).items.get().then(result => {
@@ -401,56 +522,91 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                   this.setState({
                     supplierArr: tempSupplierArr.map(item => item.Title),
                     approversArr: tempApproversArr,
-                    deparmentsArr: tempDepartmentsArr,
+                    deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
                     moneyTypeArr: tempMoneyTypeArr.map(item => item.Title),
                     employeeArr: tempEmployeeDataArr,
-                    department:tempDepartment,
-                    subDepartment:tempSubDepartment,
-                    managerEmail:tempMangerEmail
+                    department: tempDepartment,
+                    forDepartment: tempDepartment,
+                    subDepartment: tempSubDepartment,
+                    managerEmail: tempMangerEmail,
+                    teamLeadData: tempTeamLeadData,
+                    directorData: tempDirectorData,
+                    vpData: tempVpData,
+                    IsLoading: false,
+                    FormIsActiveStatus: true,
+                    teamLeaderScale: teamLeadScale,
+                    directorScale: directorScale,
+                    vpScale: vpScale
                   }, () => {
                     console.log(this.state.supplierArr);
                     console.log(this.state.approversArr);
                     console.log(this.state.deparmentsArr);
                     console.log(this.state.moneyTypeArr);
                     console.log(this.state.employeeArr);
+                    console.log(tempDirectorData);
+                    console.log(tempDirectorData);
+                    console.log(tempVpData);
+                    console.log(this.state.teamLeaderScale);
+                    console.log(this.state.directorScale);
+                    console.log(this.state.vpScale);
+                    
+                    // this.setState({
+                    //   FormSubmitError:true
+                    // })
+
+
 
                   })
                 }).catch(Err => {
                   console.log(Err);
                   // here Error modal
-
+                  this.setState({
+                    FormSubmitError: true
+                  })
                 })
               }).catch(Err => {
                 console.log(Err);
                 // here Error modal
-
+                this.setState({
+                  FormSubmitError: true
+                })
               })
             }).catch(Err => {
               console.log(Err);
               // here Error modal
-
+              this.setState({
+                FormSubmitError: true
+              })
             })
 
           }).catch(Err => {
             console.log(Err);
             // here Error modal
-
+            this.setState({
+              FormSubmitError: true
+            })
           })
 
         }).catch(Err => {
           console.log(Err);
           // here Error modal
-
+          this.setState({
+            FormSubmitError: true
+          })
         })
       }).catch(Err => {
         console.log(Err);
         // here Error modal
-
+        this.setState({
+          FormSubmitError: true
+        })
       })
     }).catch(Err => {
       console.log(Err);
       // here Error modal
-
+      this.setState({
+        FormSubmitError: true
+      })
     })
 
   }
@@ -651,45 +807,63 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     window.location.href = this.props.ReturnLink;
   }
 
+  createApprovalRoad = () => {
+    // check who will get mail
+    let globalCost = this.state.cost;
 
+    
+    // set the conditions 
+    if(globalCost  <= this.state.teamLeaderScale)
+    {
+      this.setState({
+        sendMailToDirector:false,
+        sendMailToVp:false
+      })
+    }
+    if(globalCost <= this.state.directorScale && globalCost  > this.state.teamLeaderScale )
+    {
+      this.setState({
+        sendMailToDirector:true,
+        sendMailToTeamLead:true,
+        sendMailToVp:false
+      })
+    }
+    if( globalCost  > this.state.directorScale )
+    {
+      this.setState({
+        sendMailToDirector:true,
+        sendMailToTeamLead:true,
+        sendMailToVp:true
+      })
+    }
+  }
 
   GetItemToSave = () => {
 
-    const FieldsValues = Object.keys(this.state.FieldsData).reduce((Acc, CurrSection) => {
-      const CurrSectionFieldsValues = Object.keys(this.state.FieldsData[CurrSection]).reduce((Acc, CurrField) => {
-        Acc[CurrField] = this.state.FieldsData[CurrSection][CurrField]['Score'] === '' ? 0 : Number(this.state.FieldsData[CurrSection][CurrField]['Score']);
-        return Acc
-      }, {})
-      Acc = { ...Acc, ...CurrSectionFieldsValues }
-      return Acc
-    }, {})
-
-    console.log('FieldsValue:', FieldsValues)
-    console.log('FieldsValue length:', Object.keys(FieldsValues).length)
-
-    const FieldsDataJson = JSON.stringify(this.state.FieldsData)
+    this.createApprovalRoad();
+    const tableRows = JSON.stringify(this.state.tableRows)
     console.log(this.state.FieldsData);
 
     return {
-      ...FieldsValues,
-      FieldsDataJson,
+      tableData: tableRows,
       Title: this.state.DayCareName,
-      VisitDate: this.state.VisitDate,
-      CheckerId: this.state.CheckerId,
-      CheckerEmail: this.state.CheckerEmail,
-      DirectorId: this.state.DirectorId,
-      DirectorEmail: this.state.DirectorEmail,
-      NumberOfMeals: this.state.NumberOfMeals,
-      GeneralImpression: this.state.GeneralImpression === '' ? 0 : Number(this.state.GeneralImpression),
-      // LabResultsFindings: this.state.LabResultsFindings,
-      // LabResultsRisk: this.state.LabResultsRisk,
-      // LabResultsSuggestions: this.state.LabResultsSuggestions,
-      HelperName: this.state.HelperName,
-      cooker: this.state.cooker,
-      Baby: this.state.Baby,
-      child: this.state.child,
-      adult: this.state.adult,
-      finalScore: this.state.score
+      date: this.state.VisitDate,
+      department: this.state.department,
+      subDepartment: this.state.subDepartment,
+      supplier: this.state.supplier,
+      whatPurchased: this.state.WhatWasPurchased,
+      forWhat: this.state.forWhat,
+      forDepartment: this.state.forDepartment,
+      teamLeaderStatus: this.state.sendMailToTeamLead ? "לשלוח" : "מאושר",
+      directorStatus: this.state.sendMailToDirector ? "לשלוח" : "מאושר",
+      vpStatus: this.state.sendMailToVp ? "לשלוח" : "מאושר",
+      formStatus: "בתהליך",
+      vpScale:this.state.vpScale,
+      directorScale:this.state.directorScale,
+      teamLeadScale:this.state.teamLeaderScale,
+      teamLeadMail: this.state.managerEmail,
+      directorMail: this.state.directorData.Email,
+      vpMail: this.state.vpData.Email
     }
   }
 
@@ -729,7 +903,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   // Save The form
   SaveForm = (OnClick: boolean) => {
     // If butten save was clicked
-    let TitleName = this.state.DayCareName + " " + this.ConvertToDisplayDate();
+    let TitleName = this.state.deparmentsArr + " " + this.ConvertToDisplayDate();
     this.GetItemToSave();
     if (OnClick) {
       // Start Saving loader
@@ -747,7 +921,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         const itemToUpdate = this.GetItemToSave()
 
         // Update item
-        web.lists.getByTitle(this.props.listsData).items.getById(this.state.FormId).update({
+        web.lists.getByTitle(this.props.saveToTableId).items.getById(this.state.FormId).update({
           ...itemToUpdate,
           FormLink: {
             "__metadata": { "type": "SP.FieldUrlValue" },
@@ -773,10 +947,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
         const itemToSave = this.GetItemToSave()
         console.log('itemToSave:', itemToSave)
-        web.lists.getByTitle(this.props.listsData).items.add(itemToSave).then(AddResult => {
+        web.lists.getById(this.props.saveToTableId).items.add(itemToSave).then(AddResult => {
           console.log('AddResult:', AddResult)
-          web.lists.getByTitle(this.props.listsData).items.getById(AddResult.data.ID).update({
-            FormLink: {
+          web.lists.getById(this.props.saveToTableId).items.getById(AddResult.data.ID).update({
+            formLink: {
               "__metadata": { "type": "SP.FieldUrlValue" },
               "Description": TitleName,
               "Url": this.props.LinkToEditForm + "?FormID=" + AddResult.data.ID
@@ -940,6 +1114,15 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       if (supplier !== '' && supplier !== 'בחר') {
         this.setState({
           supplier: supplier
+        });
+      }
+    }
+  }
+  SetForDepartmentValue = (department: string) => {
+    if (department !== null && department !== '') {
+      if (department !== '' && department !== 'בחר') {
+        this.setState({
+          forDepartment: department
         });
       }
     }
@@ -1396,7 +1579,37 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                       </Row>
 
                       {/*  */}
-                      <Row form style={{ marginTop: '5px' }}>
+                      <Row form className="">
+                        <Col md={12} sm={12} >
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={1}></Col>
+                            <Col lg={5} md={6} sm={8} className='field-col'>
+
+                              <Autocomplete
+                                value={this.state.forDepartment}
+                                onChange={(event, newValue) => {
+                                  this.SetForDepartmentValue(newValue);
+                                }}
+                                id="supplier"
+                                options={this.state.deparmentsArr}
+                                renderInput={(params) =>
+                                  <TextField
+                                    {...params}
+                                    label="עבור מחלקה:"
+                                    error={this.state.DayCareValidationError}
+                                    helperText={this.state.DayCareValidationError ? 'נא למלא שם מעון' : ''}
+                                    required
+                                  />}
+                                size="medium"
+                                className="TextFieldFadeInTrans AutoCompleteStyle"
+                                fullWidth
+                              />
+
+                            </Col>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      {/* <Row form style={{ marginTop: '5px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
@@ -1419,7 +1632,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             </Col>
                           </FormGroup>
                         </Col>
-                      </Row>
+                      </Row> */}
                       <Row form style={{ marginTop: '5px', marginRight: '2%', marginLeft: '2%' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
@@ -1599,6 +1812,112 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             </FormGroup>
                           </Col>
                         </Row>
+                        <div className='sectionTitle' style={{ backgroundColor: '#d7182a', borderRadius: '15px' }}>
+                          <h4 style={{ marginTop: '30px', marginRight: '20px', color: 'white', padding: '1%' }}>סבב אישורים:</h4>
+                        </div>
+                        {/*  */}
+                        <Row form>
+                          <div className="EOFormSectionTitle">אישורים</div>
+                        </Row>
+                        <Row form>
+                          <Col md={12} sm={12}>
+                            <FormGroup row className="EOFormGroupRow">
+                              <Col sm={4}></Col>
+                              <Label for="Status" sm={1}>סטטוס</Label>
+                              <Col sm={3}>
+                                <Input type="text" name="Status" id="Status" onChange={this.onChange} value={this.state.Status} bsSize="sm" disabled />
+                              </Col>
+                              <Col sm={4}></Col>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row form>
+                          <Col md={12} sm={12}>
+                            <FormGroup row className="EOFormGroupRow">
+                              <Col className="ApproverRole"><div className="ApproverHeader">תפקיד</div></Col>
+                              <Col className="ApproverApprovel"><div className="ApproverHeader">אישור</div></Col>
+                              <Col className="ApproverSign"><div className="ApproverHeader">חתימה</div></Col>
+                              <Col className="ApproverComment"><div className="ApproverHeader">הערות</div></Col>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+
+
+                        <Row form>
+                          <Col md={12} sm={12}>
+                            <FormGroup row className="EOFormGroupRow">
+                              <Label className="ApproverTitle" for="DepartmentManagerName">ראש צוות מאשר</Label>
+                              <Col className="ApproverName">
+                                <Input type="text" name="DepartmentManagerName" id="DepartmentManagerName" onChange={this.onChange} value={this.state.teamLeadData.Title} bsSize="sm" disabled />
+                              </Col>
+                              <Col className="ApproverApprovel">
+                                <Input className="form-select form-select-sm" type="select" name="teamLeadStatus" id="DepartmentManagerApprove" onChange={this.onChange} value={this.state.teamLeadStatus} bsSize="sm" disabled>
+                                  {this.state.ApprovelsOptions.map((Title, Index) => (
+                                    <option key={"DepartmentManagerApprove" + Index}>{Title}</option>
+                                  ))}
+                                </Input>
+                              </Col>
+                              <Col className="ApproverSign">
+                                <Input type="text" name="teamLeadSign" id="DepartmentManagerSign" onChange={this.onChange} value={this.state.teamLeadSign} bsSize="sm" disabled />
+                              </Col>
+                              <Col className="ApproverComment">
+                                <Input type="textarea" rows="1" name="temaLeadComment" id="DepartmentManagerComment" onChange={this.onChange} value={this.state.temaLeadComment} bsSize="sm" disabled />
+                              </Col>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+
+                        <Row form>
+                          <Col md={12} sm={12}>
+                            <FormGroup row className="EOFormGroupRow">
+                              <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
+                              <Col className="ApproverName">
+                                <Input type="text" name="PayrollDepartmentName" id="PayrollDepartmentName" onChange={this.onChange} value={this.state.directorData.Title} bsSize="sm" disabled />
+                              </Col>
+                              <Col className="ApproverApprovel">
+                                <Input className="form-select form-select-sm" type="select" name="directorStatus" id="PayrollDepartmentApprove" onChange={this.onChange} value={this.state.directorStatus} bsSize="sm" disabled>
+                                  {this.state.ApprovelsOptions.map((Title, Index) => (
+                                    <option key={"PayrollDepartmentApprove" + Index}>{Title}</option>
+                                  ))}
+                                </Input>
+                              </Col>
+                              <Col className="ApproverSign">
+                                <Input type="text" name="directorSign" id="PayrollDepartmentSign" onChange={this.onChange} value={this.state.directorSign} bsSize="sm" disabled />
+                              </Col>
+                              <Col className="ApproverComment">
+                                <Input type="textarea" rows="1" name="directorComment" id="PayrollDepartmentComment" onChange={this.onChange} value={this.state.directorComment} bsSize="sm" disabled />
+                              </Col>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+
+                        <Row form>
+                          <Col md={12} sm={12}>
+                            <FormGroup row className="EOFormGroupRow">
+                              <Label className="ApproverTitle" for="SystemName">VP</Label>
+                              <Col className="ApproverName">
+                                <Input type="text" name="SystemName" id="SystemName" onChange={this.onChange} value={this.state.vpData.Title} bsSize="sm" disabled />
+                              </Col>
+                              <Col className="ApproverApprovel">
+                                <Input className="form-select form-select-sm" type="select" name="vpStatus" id="SystemApprove" onChange={this.onChange} value={this.state.vpStatus} bsSize="sm" disabled>
+                                  {this.state.ApprovelsOptions.map((Title, Index) => (
+                                    <option key={"SystemApprove" + Index}>{Title}</option>
+                                  ))}
+                                </Input>
+                              </Col>
+                              <Col className="ApproverSign">
+                                <Input type="text" name="SystemSign" id="SystemSign" onChange={this.onChange} value={this.state.vpSign} bsSize="sm" disabled />
+                              </Col>
+                              <Col className="ApproverComment">
+                                <Input type="textarea" rows="1" name="SystemComment" id="SystemComment" onChange={this.onChange} value={this.state.vpComment} bsSize="sm" disabled />
+                              </Col>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+
+
+
+                        {/*  */}
                         <ThemeProvider theme={ButtonsTheme}>
                           <div className='FormButtons'>
                             <Button

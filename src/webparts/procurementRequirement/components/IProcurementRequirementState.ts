@@ -90,4 +90,29 @@ export interface IProcurementRequirementState {
      TermsOfPayment:string;
      managerEmail:string;
      managerId:string;
+     ApprovelsOptions:Array<string>,
+     Status:string;
+     teamLeadStatus:'',
+     directorStatus:'',
+     vpStatus:''
+     // approvals vals
+     teamLeadSign:string;
+     vpSign:string;
+     directorSign:string;
+     teamLeadData:any;
+     vpData:any;
+     directorData:any;
+     temaLeadComment:string;
+     directorComment:string;
+     vpComment:string;
+     isLocked:boolean;
+     vpScale: number;
+     directorScale: number;
+     teamLeaderScale: number;
+     isTeamLead:boolean;
+     isDirector:boolean;
+     isVp:boolean;
+     sendMailToTeamLead:boolean;
+     sendMailToDirector:boolean;
+     sendMailToVp:boolean;
 }

@@ -14,4 +14,6 @@ export interface IProcurementRequirementProps {
   suppliersListId:string;
   moneyTypesListId:string;
   departmentsAndSubDeplistid:string;
+  sumGapsListId:string;
+  saveToTableId:string;
 }
