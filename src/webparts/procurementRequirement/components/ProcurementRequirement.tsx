@@ -157,7 +157,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       subDepartment: '',
       subDepartmentArr: [],
       managerApproves: '',
-      supplier: '',
+      supplier: 'בחר',
       supplierArr: [],
       WhatWasPurchased: '',
       forWhat: '',
@@ -168,7 +168,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       MoreDataFilesProps1: [],
       FileNameError: false,
       moneyTypeArr: [],
-      moneyTypeChosen: '',
+      moneyTypeChosen: 'בחר',
       TermsOfPayment: 'שוטף 30',
       // approval vars
       approversArr: [],
@@ -205,7 +205,14 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       isVp: false,
       sendMailToTeamLead: true,
       sendMailToDirector: true,
-      sendMailToVp: true
+      sendMailToVp: true,
+      // validations
+      supplierValidation:false,
+      moneyTypeValidation:false,
+      departmentValidation:false,
+      forWhatValidation:false,
+      WhatWasPurchasedValidation:false,
+      tableValidation:false
     };
   }
   // table functions
@@ -520,10 +527,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 web.lists.getById(this.props.suppliersListId).items.get().then(result => {
                   tempSupplierArr = result;
                   this.setState({
-                    supplierArr: tempSupplierArr.map(item => item.Title),
+                    supplierArr: [...tempSupplierArr.map(item => item.Title),"בחר"],
                     approversArr: tempApproversArr,
                     deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
-                    moneyTypeArr: tempMoneyTypeArr.map(item => item.Title),
+                    moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title),"בחר"],
                     employeeArr: tempEmployeeDataArr,
                     department: tempDepartment,
                     forDepartment: tempDepartment,
@@ -538,17 +545,18 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     directorScale: directorScale,
                     vpScale: vpScale
                   }, () => {
-                    console.log(this.state.supplierArr);
-                    console.log(this.state.approversArr);
-                    console.log(this.state.deparmentsArr);
-                    console.log(this.state.moneyTypeArr);
-                    console.log(this.state.employeeArr);
-                    console.log(tempDirectorData);
-                    console.log(tempDirectorData);
-                    console.log(tempVpData);
-                    console.log(this.state.teamLeaderScale);
-                    console.log(this.state.directorScale);
-                    console.log(this.state.vpScale);
+                    // tests
+                    // console.log(this.state.supplierArr);
+                    // console.log(this.state.approversArr);
+                    // console.log(this.state.deparmentsArr);
+                    // console.log(this.state.moneyTypeArr);
+                    // console.log(this.state.employeeArr);
+                    // console.log(tempDirectorData);
+                    // console.log(tempDirectorData);
+                    // console.log(tempVpData);
+                    // console.log(this.state.teamLeaderScale);
+                    // console.log(this.state.directorScale);
+                    // console.log(this.state.vpScale);
                     
                     // this.setState({
                     //   FormSubmitError:true
@@ -863,24 +871,67 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       teamLeadScale:this.state.teamLeaderScale,
       teamLeadMail: this.state.managerEmail,
       directorMail: this.state.directorData.Email,
-      vpMail: this.state.vpData.Email
+      vpMail: this.state.vpData.Email,
+      moneyType:this.state.moneyTypeChosen
     }
   }
 
   ValidateForm = () => {
-    console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
-
-    var Validated = true;
-    if ((this.state.VisitDate === null && this.state.VisitDate === undefined && !isNaN(this.state.VisitDate.getTime())) &&
-      (this.state.DayCareName === null && this.state.DayCareName === '' && this.state.CheckerEmail === ''
-        && this.state.CheckerEmail === null && this.state.Baby === null && this.state.child === null && this.state.adult === null)) {
-      Validated = false
-      this.setState({
-        ValidationError: true,
-        DayCareValidationError: true
-      })
+    // console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
+    let supplierValidation:boolean = false;
+    let validated:boolean = true;
+    if(this.state.supplier === "בחר" || this.state.supplier === "")
+    {
+      supplierValidation=true;
+      validated=false;
     }
-    return Validated
+    let moneyTypeValidation:boolean = false;
+    if(this.state.moneyTypeChosen === "בחר" || this.state.moneyTypeChosen === "")
+    {
+      moneyTypeValidation=true;
+      validated=false;
+    }
+    let forDepartmentValidation:boolean = false;
+    if(this.state.forDepartment === "בחר" || this.state.forDepartment === "")
+    {
+      forDepartmentValidation=true;
+      validated=false;
+      
+    }
+
+    let forWhatValidation:boolean = false;
+    if(this.state.forWhat === "")
+    {
+      forWhatValidation=true;
+      validated=false;
+      
+    }
+    let WhatWasPurchasedValidation:boolean = false;
+    if(this.state.WhatWasPurchased === "")
+    {
+      WhatWasPurchasedValidation=true;
+      validated=false;
+      
+    }
+    let tableValidation:boolean = false;
+    if(this.state.tableRows.length < 1)
+    {
+      tableValidation=true;
+      validated=false;
+      
+    }
+
+    this.setState({
+      supplierValidation:supplierValidation,
+      moneyTypeValidation:moneyTypeValidation,
+      departmentValidation:forDepartmentValidation,
+      WhatWasPurchasedValidation:WhatWasPurchasedValidation,
+      forWhatValidation:forWhatValidation,
+      tableValidation:tableValidation
+
+    })
+
+    return validated
   }
 
   ConvertToDisplayDate = () => {
@@ -911,7 +962,28 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         IsSaving: true
       });
     }
-
+    let fileInfos: IAttachmentFileInfo[] = [];
+    for (let i = 0; this.state.MoreDataFiles1.length > i; i++) {
+      let File = this.state.MoreDataFiles1[i];
+      console.log(File); //test
+      // Use File Reader to read file as ArrayBuffer
+      let reader = new FileReader();
+      reader.onload = (function (file) {
+        return function (e) {
+          //Push the converted file into array
+          // Deal with duplicates
+          let checkDuplicate = fileInfos.filter(item => item.name === file.name);
+          // console.log(checkDuplicate); //for test
+          if (checkDuplicate.length === 0) {
+            fileInfos.push({
+              "name": file.name,
+              "content": file //e.target.result
+            });
+          }
+        }
+      })(File);
+      reader.readAsArrayBuffer(File);
+    }
     if (this.ValidateForm()) {
       let web = Web(this.props.WebUri);
 
@@ -957,6 +1029,19 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             }
           }).then(UpdateResult => {
             console.log('UpdateResult:', UpdateResult)
+            web.lists.getById(this.props.saveToTableId).items.getById(AddResult.data.ID).attachmentFiles.addMultiple(fileInfos).then(Item => {
+              this.CloseTheForm();
+            }).catch(Err => {
+              // TODO Deal with errors
+              console.error(Err);
+              this.setState({
+                IsSaving: false,
+                FormSubmitError: true,
+                FormSubmitErrorMessage: 'The form was probably submitted successfully but one or more of the documents you attached was submitted in an incorrect format and therefore was not saved.'
+  
+                // FormSubmitErrorMessage: '.הטופס כנראה נשלח בהצלחה אך אחד או יותר מהמסמכים שצירפת הוגש בפורמט לא תקין ולכן לא נשמר'
+              });
+            });
             if (OnClick) {
               // If butten save was clicked
               this.CloseTheForm();
@@ -1417,6 +1502,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 value={this.state.department}
                                 margin="normal"
                                 size="small"
+                                disabled
                                 // error={this.state.productValidationError}
                                 // helperText={this.state.productValidationError ? 'Please enter any value' : ''}
                                 className="TextFieldFadeInTrans"
@@ -1440,6 +1526,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 value={this.state.subDepartment}
                                 margin="normal"
                                 size="small"
+                                disabled
                                 // error={this.state.productValidationError}
                                 // helperText={this.state.productValidationError ? 'Please enter any value' : ''}
                                 className="TextFieldFadeInTrans"
@@ -1497,8 +1584,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                   <TextField
                                     {...params}
                                     label="ספק"
-                                    error={this.state.DayCareValidationError}
-                                    helperText={this.state.DayCareValidationError ? 'נא למלא שם מעון' : ''}
+                                    error={this.state.supplierValidation}
+                                    helperText={this.state.supplierValidation ? 'נא לבחור ספק' : ''}
                                     required
                                   />}
                                 size="medium"
@@ -1519,7 +1606,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={6} className='field-col'>
+                            <Col lg={10} md={10} sm={10} className='field-col'>
 
                               <TextField
                                 id="outlined-multiline-static"
@@ -1533,8 +1620,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 size="small"
                                 className="TextFieldFadeInTrans"
                                 multiline
-                                // error={this.state.descriptionValidationError}
-                                // helperText={this.state.descriptionValidationError ? 'Please enter any value' : ''}
+                                error={this.state.WhatWasPurchasedValidation}
+                                helperText={this.state.WhatWasPurchasedValidation ? 'יש למלא פרטים' : ''}
                                 rows={4}
                                 variant="outlined"
                                 fullWidth={true}
@@ -1550,7 +1637,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={6} className='field-col'>
+                            <Col lg={10} md={10} sm={10} className='field-col'>
 
                               <TextField
                                 id="outlined-multiline-static"
@@ -1564,8 +1651,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 size="small"
                                 className="TextFieldFadeInTrans"
                                 multiline
-                                // error={this.state.descriptionValidationError}
-                                // helperText={this.state.descriptionValidationError ? 'Please enter any value' : ''}
+                                error={this.state.forWhatValidation}
+                                helperText={this.state.forWhatValidation ? 'יש למלא פרטים' : ''}
                                 rows={4}
                                 variant="outlined"
                                 fullWidth={true}
@@ -1665,7 +1752,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </Col>
                       </Row>
                       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '3%' }}>
-
+                        {this.state.tableValidation? <p> <h5>יש צורך למלא לפחות שורה אחת בטבלה</h5></p> : <div></div>}              
                         {this.state.tableRows.length === 0 ? <p> <h5>אין נתונים בטבלה</h5></p> : <div></div>}
 
                         <AddRow IsDisabled={false} OnAddItem={this.addRow} />
@@ -1776,8 +1863,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                   <TextField
                                     {...params}
                                     label="מטבע תשלום"
-                                    error={this.state.DayCareValidationError}
-                                    helperText={this.state.DayCareValidationError ? 'נא למלא שם מעון' : ''}
+                                    error={this.state.moneyTypeValidation}
+                                    helperText={this.state.moneyTypeValidation ? 'נא לבחור מטבע תשלום' : ''}
                                     required
                                   />}
                                 size="medium"

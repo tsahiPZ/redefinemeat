@@ -115,4 +115,10 @@ export interface IProcurementRequirementState {
      sendMailToTeamLead:boolean;
      sendMailToDirector:boolean;
      sendMailToVp:boolean;
+     supplierValidation:boolean;
+     moneyTypeValidation:boolean;
+     departmentValidation:boolean;
+     forWhatValidation:boolean;
+     WhatWasPurchasedValidation:boolean;
+     tableValidation:boolean;
 }

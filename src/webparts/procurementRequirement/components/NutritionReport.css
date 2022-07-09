@@ -395,14 +395,14 @@ div[data-automation-id="pageHeader"] {
 
 .loading-screen .loader-wrap .loading-text {
     margin-top: 30px;
-    color: #8754C9;
+    color: #d7182a;
 }
 
 .loader-animation {
     height: 2em;
     width: 2em;
     border-radius: 100%;
-    background: #8754C9;
+    background: #d7182a;
     display: block;
     margin: 4em auto;
     position: relative;
