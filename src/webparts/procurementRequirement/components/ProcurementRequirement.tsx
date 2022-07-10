@@ -204,9 +204,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       isTeamLead: false,
       isDirector: false,
       isVp: false,
-      sendMailToTeamLead: true,
-      sendMailToDirector: true,
-      sendMailToVp: true,
+      sendMailToTeamLead: false,
+      sendMailToDirector: false,
+      sendMailToVp: false,
       // validations
       supplierValidation: false,
       moneyTypeValidation: false,
@@ -418,6 +418,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             // check if creator is a team leader
             if (userId === employee.managerId) {
               // mark as true
+
               this.setState({
                 isTeamLead: true,
                 sendMailToTeamLead: false
@@ -819,38 +820,78 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
 
   createApprovalRoad = () => {
-    // check who will get mail
-    let globalCost = this.state.cost;
+        // check who will get mail
+        let globalCost = this.state.cost;
+        console.log(globalCost);
+        
+    
+        // set the conditions 
+        if (globalCost <= this.state.teamLeaderScale) {
+           
+          console.log("here team leader" );
+          
+          this.setState({
+            sendMailToTeamLead:!this.state.isTeamLead,
+            sendMailToDirector: false,
+            sendMailToVp: false,
+            // Status: this.state.isTeamLead  ? 'הסתיים' : 'בתהליך'
+          },() => {
+            console.log(this.state.sendMailToTeamLead);
+            console.log(this.state.sendMailToDirector);
+            console.log(this.state.sendMailToVp);
+            this.SaveForm(true)
+    
+           //  return;
+          })
+          
+        }
+        if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale) {
+          console.log("here director" );
+          console.log(this.state.isDirector);
+    
+          this.setState({
+            sendMailToDirector:!this.state.isDirector,
+            sendMailToTeamLead: !this.state.isTeamLead,
+            sendMailToVp: false,
+            // Status: this.state.isDirector ? 'הסתיים' : 'בתהליך'
+    
+          },() => {
+            console.log(this.state.sendMailToTeamLead);
+            console.log(this.state.sendMailToDirector);
+            console.log(this.state.sendMailToVp);
+            this.SaveForm(true)
+           //  return;
+          })
+          
+        }
+        if (globalCost > this.state.directorScale) {
+          console.log("here vp" );
+    
+          this.setState({
+            sendMailToDirector: !this.state.isDirector,
+            sendMailToTeamLead: this.state.isDirector || this.state.isTeamLead ? false : true,
+            sendMailToVp: true,
+            // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
+          },() => {
+            console.log(this.state.sendMailToTeamLead);
+            console.log(this.state.sendMailToDirector);
+            console.log(this.state.sendMailToVp);
+            this.SaveForm(true)
+           //  return;
+          })
+          
+        }
 
-
-    // set the conditions 
-    if (globalCost <= this.state.teamLeaderScale) {
-      this.setState({
-        sendMailToDirector: false,
-        sendMailToVp: false
-      })
-    }
-    if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale) {
-      this.setState({
-        sendMailToDirector: true,
-        sendMailToTeamLead: true,
-        sendMailToVp: false
-      })
-    }
-    if (globalCost > this.state.directorScale) {
-      this.setState({
-        sendMailToDirector: true,
-        sendMailToTeamLead: true,
-        sendMailToVp: true
-      })
-    }
   }
 
   GetItemToSave = () => {
 
-    this.createApprovalRoad();
+
     const tableRows = JSON.stringify(this.state.tableRows)
     console.log(this.state.FieldsData);
+    console.log(this.state.sendMailToTeamLead);
+    console.log(this.state.sendMailToDirector);
+    console.log(this.state.sendMailToVp);
 
     return {
       tableData: tableRows,
@@ -880,6 +921,12 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       creatorFullName:this.state.userData.Title
     }
   }
+
+saveData = () =>{
+  console.log();
+  
+}
+
 
   ValidateForm = () => {
     // console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
@@ -954,7 +1001,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   SaveForm = (OnClick: boolean) => {
     // If butten save was clicked
     let TitleName = this.state.userData.Title+ " " + this.ConvertToDisplayDate();
-    this.GetItemToSave();
+    // this.createApprovalRoad();
     if (OnClick) {
       // Start Saving loader
       this.setState({
@@ -1015,7 +1062,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         });
 
       } else {
-
+        
         const itemToSave = this.GetItemToSave()
         console.log('itemToSave:', itemToSave)
         web.lists.getById(this.props.saveToTableId).items.add(itemToSave).then(AddResult => {
@@ -1786,7 +1833,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                       <Row form>
                         <Col md={12} sm={12}>
                           <FormGroup row className="EOFormGroupRow">
-                            <Col sm={4}></Col>
+                            <Col sm={5}></Col>
                             <Col lg={4} md={4} sm={4} className='field-col'>
                               {/* <div className='AddItemContainer'> ,application/msword,ods,.pps,.ppt,.pptx,.msg,.oft,.ost,.pst,.vcf */}
                               <Input type="file" accept="image/*,.pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsm,.xls,.xlsx"
@@ -2021,7 +2068,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                               className='SaveButton TextFieldFadeInTrans'
                               endIcon={<AiOutlineSend className='RotatedIcon' />}
                               disabled={this.state.IsSaving}
-                              onClick={() => this.SaveForm(true)}
+                              onClick={() => this.createApprovalRoad()}
                             >
                               שמירה
                             </Button>
