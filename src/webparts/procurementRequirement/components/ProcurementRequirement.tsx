@@ -92,7 +92,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     super(props);
     // Set States (information managed within the component), When state changes, the component responds by re-rendering
     this.state = {
-      ApprovelsOptions: ['בחר', 'מאשר', 'לא מאשר'],
+      ApprovelsOptions: ['בחר', 'מאושר', 'לא מאשר'],
       // NewState 
       CheckerId: null,
       CheckerEmail: '',
@@ -190,6 +190,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       directorSign: '',
       directorData: null,
       teamLeadData: null,
+      userData:null,
       vpData: null,
       teamLeadStatus: '',
       directorStatus: '',
@@ -207,12 +208,13 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       sendMailToDirector: true,
       sendMailToVp: true,
       // validations
-      supplierValidation:false,
-      moneyTypeValidation:false,
-      departmentValidation:false,
-      forWhatValidation:false,
-      WhatWasPurchasedValidation:false,
-      tableValidation:false
+      supplierValidation: false,
+      moneyTypeValidation: false,
+      departmentValidation: false,
+      forWhatValidation: false,
+      WhatWasPurchasedValidation: false,
+      tableValidation: false,
+
     };
   }
   // table functions
@@ -285,6 +287,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       sum += element.cost;
     });
+    if (sum >= this.state.vpScale) {
+
+    }
     this.setState({
       cost: sum
     }, () => {
@@ -295,9 +300,21 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
   // ============== End tableFunctions ============== 
 
+  approvalsWhoTakePart = (title: string, price: number) => {
+    if (title === 'vp' && price >= this.state.directorScale) {
+      return true;
+    }
+    if (title === 'director' && price >= this.state.teamLeaderScale) {
+      return true;
+    }
+  }
+
+
   // file upload functions
 
   handleUploadFile = e => {
+
+    console.log('other file');
     const Allfiles = e.target.files;
     let FilesProperties = []
     let Files = [];
@@ -305,23 +322,26 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     console.log(Allfiles.length);
 
     // If there are any files
-    if (Allfiles && Allfiles.length > 0) {
-      // Create Files Properties Array
-      for (let i = 0; Allfiles.length > i; i++) {
-        FilesProperties.push({ ID: IDCounter.toString(), FileName: Allfiles[i].name, FileType: Allfiles[i].type });
-        Files.push(Allfiles[i]);
-        IDCounter++;
-      }
+    // if (Allfiles && Allfiles.length > 0) {
+    //   // Create Files Properties Array
+    //   for (let i = 0; Allfiles.length > i; i++) {
+    //     FilesProperties.push({ ID: IDCounter.toString(), FileName: Allfiles[i].name, FileType: Allfiles[i].type });
+    //     Files.push(Allfiles[i]);
+    //     IDCounter++;
+    //   }
+    FilesProperties.push({ ID: '0', FileName: Allfiles[0].name, FileType: Allfiles[0].type });
+    Files.push(Allfiles[0]);
+    this.setState({
+      MoreDataFiles1: Files,
+      MoreDataFilesProps1: FilesProperties,
+      FileNameError: false,
+    });
 
-      this.setState({
-        MoreDataFiles1: [...this.state.MoreDataFiles1, ...Files],
-        MoreDataFilesProps1: [...this.state.MoreDataFilesProps1, ...FilesProperties],
-        FileNameError: false,
-      });
-
-      e.target.value = null;
-    }
+    e.target.value = null;
   }
+
+
+
   // Triger system default File picker
   TriggerUploadFiles = e => {
     e.preventDefault();
@@ -365,28 +385,12 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   StartNewForm = () => {
     // get current user
     const web = Web(this.props.WebUri);
-    // Get current user groups.
-    // if from "Authorized access to forms" display button 
-    // web.currentUser.groups().then(UserGroupsResult => {
-    //   UserGroups = UserGroupsResult.map(Group => Group.Title)
-    //   // console.log('UserGroups after load:', this.UserGroups)
-
-
-    //   if (UserGroups.indexOf("AuthorizedAccessToForms") !== -1) {
-    //     this.setState({ competitorsLinkBtnFlag: true })
-    //     console.log("here");
-
-    //   }
-    // }).catch(Error => {
-    //   // console.log('Error:', Error)
-    // });
-
     let tempSupplierArr: Array<any> = [];
     let tempApproversArr: Array<any> = [];
     let tempEmployeeDataArr: Array<any> = [];
     let tempMoneyTypeArr: Array<any> = [];
     let tempDepartmentsArr: Array<any> = [];
-    let userId: number;
+    let userId: number,userData:any;
     let tempMangerId: number;
     let tempDepartment: string;
     let tempSubDepartment: string;
@@ -398,6 +402,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     web.getUserById
     web.currentUser.get().then(result => {
       console.log(result);
+      userData = result;
       userId = result.Id
       // console.log(result);//test
 
@@ -416,9 +421,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               this.setState({
                 isTeamLead: true,
                 sendMailToTeamLead: false
-              },()=>{
+              }, () => {
                 console.log("im teamlead");
-                
+
               })
             }
             web.getUserById(employee.managerId).get().then(result => {
@@ -479,9 +484,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     sendMailToDirector: false,
                     sendMailToVp: false,
                     sendMailToTeamLead: false
-                  },()=>{
+                  }, () => {
                     console.log("im vp");
-                    
+
                   })
                 }
               }).catch(Err => {
@@ -494,7 +499,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               web.getUserById(tempApproversData.DirectorId).get().then(result => {
                 tempDirectorData = result;
                 console.log(tempDirectorData);
-                
+
                 // check if director
                 if (userId === tempDirectorData.Id) {
                   // mark as true
@@ -502,9 +507,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     isDirector: true,
                     sendMailToDirector: false,
                     sendMailToTeamLead: false
-                  },()=>{
+                  }, () => {
                     console.log("im director");
-                    
+
                   })
                 }
               }).catch(Err => {
@@ -527,10 +532,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 web.lists.getById(this.props.suppliersListId).items.get().then(result => {
                   tempSupplierArr = result;
                   this.setState({
-                    supplierArr: [...tempSupplierArr.map(item => item.Title),"בחר"],
+                    supplierArr: [...tempSupplierArr.map(item => item.Title), "בחר"],
                     approversArr: tempApproversArr,
                     deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
-                    moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title),"בחר"],
+                    moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title), "בחר"],
                     employeeArr: tempEmployeeDataArr,
                     department: tempDepartment,
                     forDepartment: tempDepartment,
@@ -543,7 +548,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     FormIsActiveStatus: true,
                     teamLeaderScale: teamLeadScale,
                     directorScale: directorScale,
-                    vpScale: vpScale
+                    vpScale: vpScale,
+                    userData:userData
                   }, () => {
                     // tests
                     // console.log(this.state.supplierArr);
@@ -551,19 +557,16 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     // console.log(this.state.deparmentsArr);
                     // console.log(this.state.moneyTypeArr);
                     // console.log(this.state.employeeArr);
-                    // console.log(tempDirectorData);
-                    // console.log(tempDirectorData);
-                    // console.log(tempVpData);
+                    console.log(tempTeamLeadData);
+                    console.log(tempDirectorData);
+                    console.log(tempVpData);
                     // console.log(this.state.teamLeaderScale);
                     // console.log(this.state.directorScale);
                     // console.log(this.state.vpScale);
-                    
+
                     // this.setState({
                     //   FormSubmitError:true
                     // })
-
-
-
                   })
                 }).catch(Err => {
                   console.log(Err);
@@ -819,29 +822,26 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     // check who will get mail
     let globalCost = this.state.cost;
 
-    
+
     // set the conditions 
-    if(globalCost  <= this.state.teamLeaderScale)
-    {
+    if (globalCost <= this.state.teamLeaderScale) {
       this.setState({
-        sendMailToDirector:false,
-        sendMailToVp:false
+        sendMailToDirector: false,
+        sendMailToVp: false
       })
     }
-    if(globalCost <= this.state.directorScale && globalCost  > this.state.teamLeaderScale )
-    {
+    if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale) {
       this.setState({
-        sendMailToDirector:true,
-        sendMailToTeamLead:true,
-        sendMailToVp:false
+        sendMailToDirector: true,
+        sendMailToTeamLead: true,
+        sendMailToVp: false
       })
     }
-    if( globalCost  > this.state.directorScale )
-    {
+    if (globalCost > this.state.directorScale) {
       this.setState({
-        sendMailToDirector:true,
-        sendMailToTeamLead:true,
-        sendMailToVp:true
+        sendMailToDirector: true,
+        sendMailToTeamLead: true,
+        sendMailToVp: true
       })
     }
   }
@@ -866,68 +866,67 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       directorStatus: this.state.sendMailToDirector ? "לשלוח" : "מאושר",
       vpStatus: this.state.sendMailToVp ? "לשלוח" : "מאושר",
       formStatus: "בתהליך",
-      vpScale:this.state.vpScale,
-      directorScale:this.state.directorScale,
-      teamLeadScale:this.state.teamLeaderScale,
+      vpScale: this.state.vpScale,
+      directorScale: this.state.directorScale,
+      teamLeadScale: this.state.teamLeaderScale,
       teamLeadMail: this.state.managerEmail,
       directorMail: this.state.directorData.Email,
       vpMail: this.state.vpData.Email,
-      moneyType:this.state.moneyTypeChosen
+      moneyType: this.state.moneyTypeChosen,
+      teamLeadFullName:this.state.teamLeadData.Title,
+      directorFullName:this.state.directorData.Title,
+      vpFullName:this.state.vpData.Title,
+      creatorEmail:this.state.userData.Email,
+      creatorFullName:this.state.userData.Title
     }
   }
 
   ValidateForm = () => {
     // console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
-    let supplierValidation:boolean = false;
-    let validated:boolean = true;
-    if(this.state.supplier === "בחר" || this.state.supplier === "")
-    {
-      supplierValidation=true;
-      validated=false;
+    let supplierValidation: boolean = false;
+    let validated: boolean = true;
+    if (this.state.supplier === "בחר" || this.state.supplier === "") {
+      supplierValidation = true;
+      validated = false;
     }
-    let moneyTypeValidation:boolean = false;
-    if(this.state.moneyTypeChosen === "בחר" || this.state.moneyTypeChosen === "")
-    {
-      moneyTypeValidation=true;
-      validated=false;
+    let moneyTypeValidation: boolean = false;
+    if (this.state.moneyTypeChosen === "בחר" || this.state.moneyTypeChosen === "") {
+      moneyTypeValidation = true;
+      validated = false;
     }
-    let forDepartmentValidation:boolean = false;
-    if(this.state.forDepartment === "בחר" || this.state.forDepartment === "")
-    {
-      forDepartmentValidation=true;
-      validated=false;
-      
+    let forDepartmentValidation: boolean = false;
+    if (this.state.forDepartment === "בחר" || this.state.forDepartment === "") {
+      forDepartmentValidation = true;
+      validated = false;
+
     }
 
-    let forWhatValidation:boolean = false;
-    if(this.state.forWhat === "")
-    {
-      forWhatValidation=true;
-      validated=false;
-      
+    let forWhatValidation: boolean = false;
+    if (this.state.forWhat === "") {
+      forWhatValidation = true;
+      validated = false;
+
     }
-    let WhatWasPurchasedValidation:boolean = false;
-    if(this.state.WhatWasPurchased === "")
-    {
-      WhatWasPurchasedValidation=true;
-      validated=false;
-      
+    let WhatWasPurchasedValidation: boolean = false;
+    if (this.state.WhatWasPurchased === "") {
+      WhatWasPurchasedValidation = true;
+      validated = false;
+
     }
-    let tableValidation:boolean = false;
-    if(this.state.tableRows.length < 1)
-    {
-      tableValidation=true;
-      validated=false;
-      
+    let tableValidation: boolean = false;
+    if (this.state.tableRows.length < 1) {
+      tableValidation = true;
+      validated = false;
+
     }
 
     this.setState({
-      supplierValidation:supplierValidation,
-      moneyTypeValidation:moneyTypeValidation,
-      departmentValidation:forDepartmentValidation,
-      WhatWasPurchasedValidation:WhatWasPurchasedValidation,
-      forWhatValidation:forWhatValidation,
-      tableValidation:tableValidation
+      supplierValidation: supplierValidation,
+      moneyTypeValidation: moneyTypeValidation,
+      departmentValidation: forDepartmentValidation,
+      WhatWasPurchasedValidation: WhatWasPurchasedValidation,
+      forWhatValidation: forWhatValidation,
+      tableValidation: tableValidation
 
     })
 
@@ -954,7 +953,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   // Save The form
   SaveForm = (OnClick: boolean) => {
     // If butten save was clicked
-    let TitleName = this.state.deparmentsArr + " " + this.ConvertToDisplayDate();
+    let TitleName = this.state.userData.Title+ " " + this.ConvertToDisplayDate();
     this.GetItemToSave();
     if (OnClick) {
       // Start Saving loader
@@ -1038,7 +1037,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 IsSaving: false,
                 FormSubmitError: true,
                 FormSubmitErrorMessage: 'The form was probably submitted successfully but one or more of the documents you attached was submitted in an incorrect format and therefore was not saved.'
-  
+
                 // FormSubmitErrorMessage: '.הטופס כנראה נשלח בהצלחה אך אחד או יותר מהמסמכים שצירפת הוגש בפורמט לא תקין ולכן לא נשמר'
               });
             });
@@ -1752,7 +1751,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </Col>
                       </Row>
                       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '3%' }}>
-                        {this.state.tableValidation? <p> <h5>יש צורך למלא לפחות שורה אחת בטבלה</h5></p> : <div></div>}              
+                        {this.state.tableValidation ? <p> <h5>יש צורך למלא לפחות שורה אחת בטבלה</h5></p> : <div></div>}
                         {this.state.tableRows.length === 0 ? <p> <h5>אין נתונים בטבלה</h5></p> : <div></div>}
 
                         <AddRow IsDisabled={false} OnAddItem={this.addRow} />
@@ -1807,15 +1806,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             <Col sm={8} md={6} lg={6}>
                               <List >
                                 {/* <ul className="ListOfFiles"> */}
-                                {this.state.MoreDataFilesProps1.map(({ ID, FileName }) => (
-                                  // <CSSTransition key={"ListOfFiles1" + ID} timeout={500} classNames='fade'>
-                                  //   <li className="ListOfFilesItem">
-                                  //     <div>
-                                  //       <span className="RemoveFile" onClick={() => this.RemoveFile(ID)}><ClearIcon /></span>
-                                  //       <a className="ListOfFilesItemName" href={URL.createObjectURL(this.state.MoreDataFiles1[parseInt(ID)])} download={FileName}>{FileName}</a>
-                                  //     </div>
-                                  //   </li>
-                                  // </CSSTransition>
+
+                                {this.state.MoreDataFilesProps1.length > 0 ? this.state.MoreDataFilesProps1.map(({ ID, FileName }) => (
                                   <div >
                                     <ListItem>
                                       <ListItemAvatar>
@@ -1824,10 +1816,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                           <InsertDriveFileIcon id='fileIcon' />
                                         </Avatar>
                                       </ListItemAvatar>
-                                      <ListItemText
+                                      {/* <ListItemText
                                         primary={FileName}
 
-                                      />
+                                      /> */}
+                                      <a className="ListOfFilesItemName" href={URL.createObjectURL(this.state.MoreDataFiles1[parseInt(ID)])} download={FileName}>{FileName}</a>
                                       <ListItemSecondaryAction>
                                         <IconButton edge="end" aria-label="delete" onClick={() => this.RemoveFile(ID)}>
                                           <DeleteIcon />
@@ -1835,7 +1828,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                       </ListItemSecondaryAction>
                                     </ListItem>
                                   </div>
-                                ))}
+                                ))
+                                  : <div></div>}
                                 {/* </ul> */}
                               </List>
 
@@ -1884,6 +1878,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                               <Col lg={5} md={6} sm={8} className='field-col'>
                                 <TextField
                                   id="d"
+                                  onChange={this.onChange}
                                   label="תנאי תשלום:"
                                   type="string"
                                   name="TermsOfPayment"
@@ -1929,7 +1924,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </Col>
                         </Row>
 
-
                         <Row form>
                           <Col md={12} sm={12}>
                             <FormGroup row className="EOFormGroupRow">
@@ -1954,55 +1948,59 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </Col>
                         </Row>
 
-                        <Row form>
-                          <Col md={12} sm={12}>
-                            <FormGroup row className="EOFormGroupRow">
-                              <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
-                              <Col className="ApproverName">
-                                <Input type="text" name="PayrollDepartmentName" id="PayrollDepartmentName" onChange={this.onChange} value={this.state.directorData.Title} bsSize="sm" disabled />
-                              </Col>
-                              <Col className="ApproverApprovel">
-                                <Input className="form-select form-select-sm" type="select" name="directorStatus" id="PayrollDepartmentApprove" onChange={this.onChange} value={this.state.directorStatus} bsSize="sm" disabled>
-                                  {this.state.ApprovelsOptions.map((Title, Index) => (
-                                    <option key={"PayrollDepartmentApprove" + Index}>{Title}</option>
-                                  ))}
-                                </Input>
-                              </Col>
-                              <Col className="ApproverSign">
-                                <Input type="text" name="directorSign" id="PayrollDepartmentSign" onChange={this.onChange} value={this.state.directorSign} bsSize="sm" disabled />
-                              </Col>
-                              <Col className="ApproverComment">
-                                <Input type="textarea" rows="1" name="directorComment" id="PayrollDepartmentComment" onChange={this.onChange} value={this.state.directorComment} bsSize="sm" disabled />
-                              </Col>
-                            </FormGroup>
-                          </Col>
-                        </Row>
+                        {this.approvalsWhoTakePart('director', this.state.cost) ?
+                          < Row form>
+                            <Col md={12} sm={12}>
+                              <FormGroup row className="EOFormGroupRow">
+                                <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
+                                <Col className="ApproverName">
+                                  <Input type="text" name="PayrollDepartmentName" id="PayrollDepartmentName" onChange={this.onChange} value={this.state.directorData.Title} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverApprovel">
+                                  <Input className="form-select form-select-sm" type="select" name="directorStatus" id="PayrollDepartmentApprove" onChange={this.onChange} value={this.state.directorStatus} bsSize="sm" disabled>
+                                    {this.state.ApprovelsOptions.map((Title, Index) => (
+                                      <option key={"PayrollDepartmentApprove" + Index}>{Title}</option>
+                                    ))}
+                                  </Input>
+                                </Col>
+                                <Col className="ApproverSign">
+                                  <Input type="text" name="directorSign" id="PayrollDepartmentSign" onChange={this.onChange} value={this.state.directorSign} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverComment">
+                                  <Input type="textarea" rows="1" name="directorComment" id="PayrollDepartmentComment" onChange={this.onChange} value={this.state.directorComment} bsSize="sm" disabled />
+                                </Col>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          : <div></div>}
 
-                        <Row form>
-                          <Col md={12} sm={12}>
-                            <FormGroup row className="EOFormGroupRow">
-                              <Label className="ApproverTitle" for="SystemName">VP</Label>
-                              <Col className="ApproverName">
-                                <Input type="text" name="SystemName" id="SystemName" onChange={this.onChange} value={this.state.vpData.Title} bsSize="sm" disabled />
-                              </Col>
-                              <Col className="ApproverApprovel">
-                                <Input className="form-select form-select-sm" type="select" name="vpStatus" id="SystemApprove" onChange={this.onChange} value={this.state.vpStatus} bsSize="sm" disabled>
-                                  {this.state.ApprovelsOptions.map((Title, Index) => (
-                                    <option key={"SystemApprove" + Index}>{Title}</option>
-                                  ))}
-                                </Input>
-                              </Col>
-                              <Col className="ApproverSign">
-                                <Input type="text" name="SystemSign" id="SystemSign" onChange={this.onChange} value={this.state.vpSign} bsSize="sm" disabled />
-                              </Col>
-                              <Col className="ApproverComment">
-                                <Input type="textarea" rows="1" name="SystemComment" id="SystemComment" onChange={this.onChange} value={this.state.vpComment} bsSize="sm" disabled />
-                              </Col>
-                            </FormGroup>
-                          </Col>
-                        </Row>
+                        {this.approvalsWhoTakePart('vp', this.state.cost) ?
 
 
+                          <Row form>
+                            <Col md={12} sm={12}>
+                              <FormGroup row className="EOFormGroupRow">
+                                <Label className="ApproverTitle" for="SystemName">VP</Label>
+                                <Col className="ApproverName">
+                                  <Input type="text" name="SystemName" id="SystemName" onChange={this.onChange} value={this.state.vpData.Title} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverApprovel">
+                                  <Input className="form-select form-select-sm" type="select" name="vpStatus" id="SystemApprove" onChange={this.onChange} value={this.state.vpStatus} bsSize="sm" disabled>
+                                    {this.state.ApprovelsOptions.map((Title, Index) => (
+                                      <option key={"SystemApprove" + Index}>{Title}</option>
+                                    ))}
+                                  </Input>
+                                </Col>
+                                <Col className="ApproverSign">
+                                  <Input type="text" name="vpSign" id="SystemSign" onChange={this.onChange} value={this.state.vpSign} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverComment">
+                                  <Input type="textarea" rows="1" name="vpComment" id="SystemComment" onChange={this.onChange} value={this.state.vpComment} bsSize="sm" disabled />
+                                </Col>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          : <div></div>}
 
                         {/*  */}
                         <ThemeProvider theme={ButtonsTheme}>

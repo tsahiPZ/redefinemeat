@@ -11,6 +11,10 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
 .MuiAutocomplete-popper {
     direction: rtl;
 }
+.ListOfFilesItemName{
+    text-decoration:none;
+    color:#330911;
+}
 /* Main */
 .EONewFormContainer {
     display: block;

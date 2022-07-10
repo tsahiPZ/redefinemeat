@@ -320,7 +320,7 @@ export default class EditRow extends React.Component<IEditRowProps, IEditRowStat
                     className='CancelButton'
                     onClick={ ()=>  this.props.closeModal()}
                   >
-                    Cancel
+                    ביטול
                   </Button>
                   <Button
                     variant="contained"
@@ -328,7 +328,7 @@ export default class EditRow extends React.Component<IEditRowProps, IEditRowStat
                     className='SaveButton'
                     onClick={this.SaveItem}
                   >
-                    save
+                    שמור
                   </Button>
                 </div>
               </ThemeProvider>

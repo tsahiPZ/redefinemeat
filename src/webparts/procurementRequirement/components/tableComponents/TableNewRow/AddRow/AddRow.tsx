@@ -357,7 +357,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
                     className='CancelButton'
                     onClick={this.toggle}
                   >
-                    Cancel
+                    ביטול
                   </Button>
                   <Button
                     variant="contained"
@@ -365,7 +365,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
                     className='SaveButton'
                     onClick={this.SaveItem}
                   >
-                    Add
+                    הוסף
                   </Button>
                 </div>
               </ThemeProvider>

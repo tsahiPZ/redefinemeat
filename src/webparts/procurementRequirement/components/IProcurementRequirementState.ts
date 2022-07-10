@@ -121,4 +121,5 @@ export interface IProcurementRequirementState {
      forWhatValidation:boolean;
      WhatWasPurchasedValidation:boolean;
      tableValidation:boolean;
+     userData:any;
 }
