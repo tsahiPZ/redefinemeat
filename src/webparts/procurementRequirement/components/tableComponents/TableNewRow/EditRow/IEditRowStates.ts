@@ -8,4 +8,5 @@ export interface IEditRowStates {
     description:string;
     date:Date;
     validation:boolean;
+    rowID:string;
 }

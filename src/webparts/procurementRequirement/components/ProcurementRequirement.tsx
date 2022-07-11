@@ -190,7 +190,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       directorSign: '',
       directorData: null,
       teamLeadData: null,
-      userData:null,
+      userData: null,
       vpData: null,
       teamLeadStatus: '',
       directorStatus: '',
@@ -219,10 +219,20 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
   // table functions
   delItem = (item: any) => {
-    let tempArr = this.state.tableRows.filter(row => row !== item)
+    console.log(item);
+
+    let tempArr = this.state.tableRows.filter(row => row.rowID !== item.rowID);
+    console.log(tempArr);
+    
     this.setState({
       tableRows: tempArr
+    },() =>{
+      this.calcCosts();
+      console.log(this.state.tableRows);
     })
+
+
+
   }
 
   updateItem = (newData: any) => {
@@ -390,7 +400,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     let tempEmployeeDataArr: Array<any> = [];
     let tempMoneyTypeArr: Array<any> = [];
     let tempDepartmentsArr: Array<any> = [];
-    let userId: number,userData:any;
+    let userId: number, userData: any;
     let tempMangerId: number;
     let tempDepartment: string;
     let tempSubDepartment: string;
@@ -550,7 +560,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     teamLeaderScale: teamLeadScale,
                     directorScale: directorScale,
                     vpScale: vpScale,
-                    userData:userData
+                    userData: userData
                   }, () => {
                     // tests
                     // console.log(this.state.supplierArr);
@@ -820,67 +830,75 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
 
   createApprovalRoad = () => {
-        // check who will get mail
-        let globalCost = this.state.cost;
-        console.log(globalCost);
-        
-    
-        // set the conditions 
-        if (globalCost <= this.state.teamLeaderScale) {
-           
-          console.log("here team leader" );
-          
-          this.setState({
-            sendMailToTeamLead:!this.state.isTeamLead,
-            sendMailToDirector: false,
-            sendMailToVp: false,
-            // Status: this.state.isTeamLead  ? 'הסתיים' : 'בתהליך'
-          },() => {
-            console.log(this.state.sendMailToTeamLead);
-            console.log(this.state.sendMailToDirector);
-            console.log(this.state.sendMailToVp);
-            this.SaveForm(true)
-    
-           //  return;
-          })
-          
-        }
-        if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale) {
-          console.log("here director" );
-          console.log(this.state.isDirector);
-    
-          this.setState({
-            sendMailToDirector:!this.state.isDirector,
-            sendMailToTeamLead: !this.state.isTeamLead,
-            sendMailToVp: false,
-            // Status: this.state.isDirector ? 'הסתיים' : 'בתהליך'
-    
-          },() => {
-            console.log(this.state.sendMailToTeamLead);
-            console.log(this.state.sendMailToDirector);
-            console.log(this.state.sendMailToVp);
-            this.SaveForm(true)
-           //  return;
-          })
-          
-        }
-        if (globalCost > this.state.directorScale) {
-          console.log("here vp" );
-    
-          this.setState({
-            sendMailToDirector: !this.state.isDirector,
-            sendMailToTeamLead: this.state.isDirector || this.state.isTeamLead ? false : true,
-            sendMailToVp: true,
-            // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
-          },() => {
-            console.log(this.state.sendMailToTeamLead);
-            console.log(this.state.sendMailToDirector);
-            console.log(this.state.sendMailToVp);
-            this.SaveForm(true)
-           //  return;
-          })
-          
-        }
+    // check who will get mail
+    let globalCost = this.state.cost;
+    console.log(globalCost);
+
+
+    // set the conditions 
+    if (globalCost <= this.state.teamLeaderScale) {
+
+      console.log("here team leader");
+
+      this.setState({
+        teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
+        directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',
+
+        sendMailToTeamLead: !this.state.isTeamLead,
+        sendMailToDirector: false,
+        sendMailToVp: false,
+        // Status: this.state.isTeamLead  ? 'הסתיים' : 'בתהליך'
+      }, () => {
+        console.log(this.state.sendMailToTeamLead);
+        console.log(this.state.sendMailToDirector);
+        console.log(this.state.sendMailToVp);
+        this.SaveForm(true)
+
+        //  return;
+      })
+
+    }
+    if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale) {
+      console.log("here director");
+      console.log(this.state.isDirector);
+
+      this.setState({
+        teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
+        directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',        sendMailToDirector: !this.state.isDirector,
+        sendMailToTeamLead: !this.state.isTeamLead,
+        sendMailToVp: false,
+        // Status: this.state.isDirector ? 'הסתיים' : 'בתהליך'
+
+      }, () => {
+        console.log(this.state.sendMailToTeamLead);
+        console.log(this.state.sendMailToDirector);
+        console.log(this.state.sendMailToVp);
+        this.SaveForm(true)
+        //  return;
+      })
+
+    }
+    if (globalCost > this.state.directorScale) {
+      console.log("here vp");
+
+      this.setState({
+        teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
+        directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',        sendMailToDirector: !this.state.isDirector,
+        sendMailToTeamLead: this.state.isDirector || this.state.isTeamLead ? false : true,
+        sendMailToVp: true,
+        // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
+      }, () => {
+        console.log(this.state.sendMailToTeamLead);
+        console.log(this.state.sendMailToDirector);
+        console.log(this.state.sendMailToVp);
+        this.SaveForm(true)
+        //  return;
+      })
+
+    }
 
   }
 
@@ -914,18 +932,21 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       directorMail: this.state.directorData.Email,
       vpMail: this.state.vpData.Email,
       moneyType: this.state.moneyTypeChosen,
-      teamLeadFullName:this.state.teamLeadData.Title,
-      directorFullName:this.state.directorData.Title,
-      vpFullName:this.state.vpData.Title,
-      creatorEmail:this.state.userData.Email,
-      creatorFullName:this.state.userData.Title
+      teamLeadFullName: this.state.teamLeadData.Title,
+      directorFullName: this.state.directorData.Title,
+      vpFullName: this.state.vpData.Title,
+      creatorEmail: this.state.userData.Email,
+      creatorFullName: this.state.userData.Title,
+      teamLeadSign: this.state.teamLeadSign,
+      directorSign: this.state.directorSign,
+      vpSign: this.state.directorSign
     }
   }
 
-saveData = () =>{
-  console.log();
-  
-}
+  saveData = () => {
+    console.log();
+
+  }
 
 
   ValidateForm = () => {
@@ -1000,7 +1021,7 @@ saveData = () =>{
   // Save The form
   SaveForm = (OnClick: boolean) => {
     // If butten save was clicked
-    let TitleName = this.state.userData.Title+ " " + this.ConvertToDisplayDate();
+    let TitleName = this.state.userData.Title + " " + this.ConvertToDisplayDate();
     // this.createApprovalRoad();
     if (OnClick) {
       // Start Saving loader
@@ -1035,7 +1056,7 @@ saveData = () =>{
 
       if (this.state.FormId !== null && this.state.FormId !== undefined && this.state.FormId !== 0 && !isNaN(this.state.FormId)) {
 
-        let FormUrl = this.props.LinkToEditForm + "?FormID=" + this.state.FormId.toString();
+        let FormUrl = "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx"+ "?FormID=" + this.state.FormId.toString();
         const itemToUpdate = this.GetItemToSave()
 
         // Update item
@@ -1062,7 +1083,7 @@ saveData = () =>{
         });
 
       } else {
-        
+
         const itemToSave = this.GetItemToSave()
         console.log('itemToSave:', itemToSave)
         web.lists.getById(this.props.saveToTableId).items.add(itemToSave).then(AddResult => {
@@ -1071,7 +1092,7 @@ saveData = () =>{
             formLink: {
               "__metadata": { "type": "SP.FieldUrlValue" },
               "Description": TitleName,
-              "Url": this.props.LinkToEditForm + "?FormID=" + AddResult.data.ID
+              "Url": "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx" + "?FormID=" + AddResult.data.ID
             }
           }).then(UpdateResult => {
             console.log('UpdateResult:', UpdateResult)

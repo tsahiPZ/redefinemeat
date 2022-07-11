@@ -40,15 +40,32 @@ export default class EditRow extends React.Component<IEditRowProps, IEditRowStat
       description: this.props.description,
       date: new Date(this.props.date),
       validation: false,
-    
+      rowID:''
 
     };
   }
 
   componentDidMount() {
-
+    console.log("edit");
+    console.log(this.state);
+    
+    
   }
-
+componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEditRowStates>, snapshot?: any): void {
+  if(prevProps.editVisability !== this.props.editVisability)
+  {
+    this.setState ({
+      rowID:this.props.SubjectID,
+      identyfier: this.props.identyfier,
+      amount: this.props.amount,
+      pricePerUnit: this.props.pricePerUnit,
+      cost: this.props.cost,
+      description: this.props.description,
+      date: new Date(this.props.date),
+      validation: false,
+    })
+  }
+}
   toggle = () => {
     // Reset states values
     this.setState({

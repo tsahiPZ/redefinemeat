@@ -52,6 +52,7 @@ export default class TableNewRow extends React.Component<ITableNewRowProps, ITab
 
                         <EditIcon style={{cursor:'pointer'}} onClick={() => this.openEditModal()} color={'primary'} />
                         <DeleteForeverIcon style={{cursor:'pointer'}} color={'primary'}  onClick={() => this.props.deleteItem(this.props.row)} />
+                        
                         <EditRow OnEditItem={this.props.OnEditItem} editVisability={this.state.editVisability} SubjectID={this.props.row.rowID} identyfier={this.props.row.identyfier}
                     amount={this.props.row.amount} pricePerUnit={this.props.row.pricePerUnit} cost={this.props.row.cost} description={this.props.row.description}
                     date={this.props.row.date} closeModal={()=>this.closeEditModal()} />
