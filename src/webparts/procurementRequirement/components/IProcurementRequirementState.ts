@@ -122,4 +122,7 @@ export interface IProcurementRequirementState {
      WhatWasPurchasedValidation:boolean;
      tableValidation:boolean;
      userData:any;
+     elseSupplierValidation:boolean;
+     elseSupplierName:string;
+     elseSupplierNumber:string;
 }

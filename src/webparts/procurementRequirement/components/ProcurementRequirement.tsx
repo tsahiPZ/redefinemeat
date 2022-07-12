@@ -214,6 +214,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       forWhatValidation: false,
       WhatWasPurchasedValidation: false,
       tableValidation: false,
+      elseSupplierValidation: false,
+      elseSupplierName: '',
+      elseSupplierNumber: ''
 
     };
   }
@@ -223,10 +226,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
     let tempArr = this.state.tableRows.filter(row => row.rowID !== item.rowID);
     console.log(tempArr);
-    
+
     this.setState({
       tableRows: tempArr
-    },() =>{
+    }, () => {
       this.calcCosts();
       console.log(this.state.tableRows);
     })
@@ -543,7 +546,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 web.lists.getById(this.props.suppliersListId).items.get().then(result => {
                   tempSupplierArr = result;
                   this.setState({
-                    supplierArr: [...tempSupplierArr.map(item => item.Title), "בחר"],
+                    supplierArr: [...tempSupplierArr.map(item => item.Title), "בחר","אחר"],
                     approversArr: tempApproversArr,
                     deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
                     moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title), "בחר"],
@@ -866,7 +869,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       this.setState({
         teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
         directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
-        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',        sendMailToDirector: !this.state.isDirector,
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '', sendMailToDirector: !this.state.isDirector,
         sendMailToTeamLead: !this.state.isTeamLead,
         sendMailToVp: false,
         // Status: this.state.isDirector ? 'הסתיים' : 'בתהליך'
@@ -886,7 +889,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       this.setState({
         teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
         directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
-        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',        sendMailToDirector: !this.state.isDirector,
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '', sendMailToDirector: !this.state.isDirector,
         sendMailToTeamLead: this.state.isDirector || this.state.isTeamLead ? false : true,
         sendMailToVp: true,
         // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
@@ -917,7 +920,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       date: this.state.VisitDate,
       department: this.state.department,
       subDepartment: this.state.subDepartment,
-      supplier: this.state.supplier,
+      supplier: this.state.supplier === 'אחר' ? this.state.elseSupplierName : this.state.supplier,
+      supplierNumber: this.state.supplier === 'אחר' ? this.state.elseSupplierNumber:'',
       whatPurchased: this.state.WhatWasPurchased,
       forWhat: this.state.forWhat,
       forDepartment: this.state.forDepartment,
@@ -951,11 +955,16 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
   ValidateForm = () => {
     // console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
-    let supplierValidation: boolean = false;
+    let supplierValidation: boolean = false , elseSupplierValidation:boolean = false;
     let validated: boolean = true;
     if (this.state.supplier === "בחר" || this.state.supplier === "") {
       supplierValidation = true;
       validated = false;
+    }else{
+      if((this.state.elseSupplierName === '' || this.state.elseSupplierNumber === '') && this.state.supplier === 'אחר'){
+        validated = false;
+        elseSupplierValidation = true;
+      }
     }
     let moneyTypeValidation: boolean = false;
     if (this.state.moneyTypeChosen === "בחר" || this.state.moneyTypeChosen === "") {
@@ -994,7 +1003,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       departmentValidation: forDepartmentValidation,
       WhatWasPurchasedValidation: WhatWasPurchasedValidation,
       forWhatValidation: forWhatValidation,
-      tableValidation: tableValidation
+      tableValidation: tableValidation,
+      elseSupplierValidation : elseSupplierValidation
 
     })
 
@@ -1056,7 +1066,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       if (this.state.FormId !== null && this.state.FormId !== undefined && this.state.FormId !== 0 && !isNaN(this.state.FormId)) {
 
-        let FormUrl = "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx"+ "?FormID=" + this.state.FormId.toString();
+        let FormUrl = "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx" + "?FormID=" + this.state.FormId.toString();
         const itemToUpdate = this.GetItemToSave()
 
         // Update item
@@ -1234,40 +1244,41 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     })
   }
 
-  SetDayCareValue = (DayCareName: string) => {
-    if (DayCareName !== null && DayCareName !== '') {
-      let SelectedDayCare = this.state.ListOfDayCares.filter(DayCare => DayCare.Title === DayCareName);
-      console.log('SelectedDayCare:', SelectedDayCare)
-      if (SelectedDayCare.length == 1) {
-        this.setState({
-          DayCareCity: SelectedDayCare[0].DayCareCity,
-          DayCareName: DayCareName,
+  // SetDayCareValue = (DayCareName: string) => {
+  //   if (DayCareName !== null && DayCareName !== '') {
+  //     let SelectedDayCare = this.state.ListOfDayCares.filter(DayCare => DayCare.Title === DayCareName);
+  //     console.log('SelectedDayCare:', SelectedDayCare)
+  //     if (SelectedDayCare.length == 1) {
+  //       this.setState({
+  //         DayCareCity: SelectedDayCare[0].DayCareCity,
+  //         DayCareName: DayCareName,
 
-          DirectorId: SelectedDayCare[0].DirectorId,
-          DirectorEmail: SelectedDayCare[0].DirectorEmail,
+  //         DirectorId: SelectedDayCare[0].DirectorId,
+  //         DirectorEmail: SelectedDayCare[0].DirectorEmail,
 
-          VisitDateValidationError: false,
-          DayCareValidationError: false,
-          ValidationError: false
-        });
-      }
-    } else {
-      this.setState({
-        DayCareCity: '',
-        DayCareName: '',
-        VisitDateValidationError: false,
-        DayCareValidationError: false,
-        ValidationError: false
-      });
-    }
-  }
+  //         VisitDateValidationError: false,
+  //         DayCareValidationError: false,
+  //         ValidationError: false
+  //       });
+  //     }
+  //   } else {
+  //     this.setState({
+  //       DayCareCity: '',
+  //       DayCareName: '',
+  //       VisitDateValidationError: false,
+  //       DayCareValidationError: false,
+  //       ValidationError: false
+  //     });
+  //   }
+  // }
   SetSupplierValue = (supplier: string) => {
     if (supplier !== null && supplier !== '') {
-      if (supplier !== '' && supplier !== 'בחר') {
+      if (supplier !== '' && supplier !== 'בחר' ) {
         this.setState({
           supplier: supplier
         });
       }
+    
     }
   }
   SetForDepartmentValue = (department: string) => {
@@ -1289,26 +1300,26 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  SetScoreValue = (FieldName: string, ScoreValue: string) => {
-    // console.log('ScoreValue:', ScoreValue);
-    // console.log('FieldName:', FieldName);
+  // SetScoreValue = (FieldName: string, ScoreValue: string) => {
+  //   // console.log('ScoreValue:', ScoreValue);
+  //   // console.log('FieldName:', FieldName);
 
-    if (ScoreValue === null) {
-      this.setState(PrevState => ({
-        ...PrevState,
-        [FieldName]: null,
-        ValidationError: false
-      }));
+  //   if (ScoreValue === null) {
+  //     this.setState(PrevState => ({
+  //       ...PrevState,
+  //       [FieldName]: null,
+  //       ValidationError: false
+  //     }));
 
-    } else {
-      this.setState(PrevState => ({
-        ...PrevState,
-        [FieldName]: ScoreValue,
-        ValidationError: false
-      }));
+  //   } else {
+  //     this.setState(PrevState => ({
+  //       ...PrevState,
+  //       [FieldName]: ScoreValue,
+  //       ValidationError: false
+  //     }));
 
-    }
-  }
+  //   }
+  // }
 
   ToggleModal = () => {
     this.setState({ IsModalOpen: !this.state.IsModalOpen })
@@ -1348,11 +1359,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       <Row form >
         <Col md={12} sm={12}>
           <FormGroup row className="EOFormGroupRow">
-
             <Col md={4} sm={12} xs={12} className="flex align-end justify-start title-cell" >
               <FormLabel style={IsCritical ? { color: 'red', fontWeight: 'bold' } : {}} >{Label}</FormLabel>
             </Col>
-
             <Col style={{ marginBottom: '10px' }} md={2} sm={12} xs={12} className="flex align-end justify-center" >
               <Autocomplete
                 value={Score}
@@ -1664,6 +1673,63 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </FormGroup>
                         </Col>
                       </Row>
+                      {this.state.supplier === "אחר" ?
+                        <div>
+                          <Row form style={{ marginTop: '5px' }}>
+                            <Col md={12} sm={12} >
+                              <FormGroup row className="EOFormGroupRow">
+                                <Col sm={1}></Col>
+                                <Col lg={5} md={6} sm={6} className='field-col'>
+
+                                  <TextField
+                                    id="d"
+                                    label="שם הספק:"
+                                    type="string"
+                                    name="elseSupplierName"
+                                    value={this.state.elseSupplierName}
+                                    margin="normal"
+                                    size="small"
+                                    onChange={this.onChange}
+
+                                    // error={this.state.elseSupplierValidation}
+                                    // helperText={this.state.elseSupplierValidation ? 'יש למלא שם ספק וח.פ' : ''}
+                                    className="TextFieldFadeInTrans"
+                                    fullWidth
+                                  />
+                                </Col>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          <Row form style={{ marginTop: '5px' }}>
+                            <Col md={12} sm={12} >
+                              <FormGroup row className="EOFormGroupRow">
+                                <Col sm={1}></Col>
+                                <Col lg={5} md={6} sm={6} className='field-col'>
+
+                                  <TextField
+                                    id="d"
+                                    label="ח.פ:"
+                                    type="string"
+                                    name="elseSupplierNumber"
+                                    value={this.state.elseSupplierNumber}
+                                    margin="normal"
+                                    size="small"
+                                    onChange={this.onChange}
+
+                                    error={this.state.elseSupplierValidation}
+                                    helperText={this.state.elseSupplierValidation ? 'יש למלא שם ספק וח.פ' : ''}
+                                    className="TextFieldFadeInTrans"
+                                    fullWidth
+                                  />
+                                </Col>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                        </div>
+
+                        :
+                        <div></div>
+                      }
                       {/*  */}
                       <Col sm={1}></Col>
                       <div className='sectionTitle' style={{ backgroundColor: '#d7182a', borderRadius: '15px' }}>
@@ -1680,11 +1746,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 label="מה נרכש? (תיאור כללי – ברגים / חלקי חילוף / ייעוץ וכד'. רצוי להוסיף קובץ מפורט)"
                                 type="string"
                                 name="WhatWasPurchased"
-                                inputProps={{ maxLength: 150 }}
+                                inputProps={{ maxLength: 250 }}
                                 value={this.state.WhatWasPurchased}
                                 onChange={this.onChange}
                                 margin="normal"
-                                size="small"
+                                size="medium"
                                 className="TextFieldFadeInTrans"
                                 multiline
                                 error={this.state.WhatWasPurchasedValidation}
@@ -1711,11 +1777,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 label="לטובת מה?"
                                 type="string"
                                 name="forWhat"
-                                inputProps={{ maxLength: 150 }}
+                                inputProps={{ maxLength: 250 }}
                                 value={this.state.forWhat}
                                 onChange={this.onChange}
                                 margin="normal"
-                                size="small"
+                                size="medium"
                                 className="TextFieldFadeInTrans"
                                 multiline
                                 error={this.state.forWhatValidation}
@@ -1733,7 +1799,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                       </Row>
 
                       {/*  */}
-                      <Row form className="">
+                      <Row form className="" style={{ marginTop: '5px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
@@ -1744,7 +1810,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 onChange={(event, newValue) => {
                                   this.SetForDepartmentValue(newValue);
                                 }}
-                                id="supplier"
+                                id=""
                                 options={this.state.deparmentsArr}
                                 renderInput={(params) =>
                                   <TextField
@@ -1787,7 +1853,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </FormGroup>
                         </Col>
                       </Row> */}
-                      <Row form style={{ marginTop: '5px', marginRight: '2%', marginLeft: '2%' }}>
+                      <Row form style={{ marginTop: '5%', marginRight: '2%', marginLeft: '2%' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>

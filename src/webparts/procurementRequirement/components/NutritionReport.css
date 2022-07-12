@@ -4,6 +4,7 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
     background-size: cover;
     background-position: center;
 }
+
 .sectionTitle{
     border-radius: 15px;
     background-color: '#d7182a';
@@ -38,6 +39,12 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
     line-height: 1.5rem;
     font-weight: bold;
 }
+.MuiInputBase-inputMarginDense {
+    padding-top: 9px !important;
+}
+.MuiInputBase-input {
+    height: 1.6876em!important;
+}
 .calculatedScore{
     display: flex;
     flex-direction: row;
@@ -56,6 +63,9 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
     color: '#d7182a';
 }
 
+.MuiOutlinedInput-inputMultiline {
+    padding-top: 2% !important;
+}
 .EOFormSectionTitle {
     display: block;
     position: relative;
