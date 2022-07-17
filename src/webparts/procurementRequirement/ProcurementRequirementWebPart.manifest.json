@@ -33,7 +33,9 @@
       "sumGapsListId":"962aba64-b385-497c-973b-0b083748868e",
       "moneyTypesListId":"f3bc4641-a205-41e2-8372-30c8ef8bfd65",
       "departmentsAndSubDeplistid" : "894c2a5b-ce7b-4f86-96ab-8e252d8460dc",
-      "saveToTableId":"7c05637c-810d-4064-9b4f-aae030d52ad3"
+      "saveToTableId":"7c05637c-810d-4064-9b4f-aae030d52ad3",
+      "unitListId" : "36157774-222E-47B0-8DF2-223E995A4061",
+      "buyersListId" : "B9F90226-6B6F-4C08-A4A1-79FD824C95DA"
     }
   }]
 }

@@ -27,6 +27,11 @@ import {
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import heLocale from "date-fns/locale/he";
+import {
+  Autocomplete, Alert
+} from '@material-ui/lab';
+
+
 export default class EditRow extends React.Component<IEditRowProps, IEditRowStates> {
   constructor(props) {
     super(props);
@@ -38,9 +43,19 @@ export default class EditRow extends React.Component<IEditRowProps, IEditRowStat
       pricePerUnit: this.props.pricePerUnit,
       cost: this.props.cost,
       description: this.props.description,
-      date: new Date(this.props.date),
+      date: this.props.date,
       validation: false,
-      rowID:''
+      rowID:'',
+      companyIdentyfier: this.props.companyIdentyfier,
+      unit: this.props.unit,
+      unitOptions: this.props.unitOptions,
+      dateValidate: false,
+      amontValidate: false,
+      pricePerUnitValidate: false,
+      descriptionValidate: false,
+      companyIdentyfierValidate:false,
+      identyfierValidate:false,
+      unitValidation:false
 
     };
   }
@@ -57,12 +72,17 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
     this.setState ({
       rowID:this.props.SubjectID,
       identyfier: this.props.identyfier,
+      companyIdentyfier: this.props.companyIdentyfier,
       amount: this.props.amount,
       pricePerUnit: this.props.pricePerUnit,
       cost: this.props.cost,
       description: this.props.description,
-      date: new Date(this.props.date),
+      date: this.props.date,
       validation: false,
+      
+    } , () => {
+      console.log(this.state);
+      
     })
   }
 }
@@ -139,8 +159,8 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
       console.log(this.ConvertToDisplayDate(this.state.date));
       
       let AddItemObject = {
-        rowID: this.props.SubjectID, date: this.ConvertToDisplayDate(this.state.date), identyfier: this.state.identyfier,
-        amount: this.state.amount, pricePerUnit: this.state.pricePerUnit, cost: (this.state.amount * this.state.pricePerUnit), description: this.state.description
+        rowID: this.props.SubjectID, date: this.state.date, identyfier: this.state.identyfier,
+        amount: this.state.amount, pricePerUnit: this.state.pricePerUnit, cost: (this.state.amount * this.state.pricePerUnit), description: this.state.description ,unit:this.state.unit , companyIdentyfier:this.state.companyIdentyfier 
       }
       this.props.OnEditItem(AddItemObject);
       this.toggle();
@@ -175,7 +195,16 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
     // }
 
   }
+  SetUnitValue = (unit: string) => {
+    if (unit !== null && unit !== '') {
+      if (unit !== '' && unit !== 'בחר') {
+        this.setState({
+          unit: unit
+        });
+      }
 
+    }
+  }
   public render(): React.ReactElement<IEditRowProps> {
 
     return (
@@ -188,7 +217,7 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
             ערוך פריט
           </ModalHeader>
           <ModalBody dir='ltr'>
-            <Form>
+            {/* <Form>
               <Row form>
                 <ListGroup className="AddItemGroup">
                   <ListGroupItem className="AddItem">
@@ -315,6 +344,234 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
 
 
                   </ListGroupItem>
+
+                </ListGroup>
+              </Row>
+            </Form> */}
+            <Form>
+              <Row form>
+
+                <ListGroup className="AddItemGroup">
+                  <ListGroupItem className="AddItem">
+                    <div className='AddItemContainer'>
+                      <TextField
+                        id="VisitPurpose"
+                        name="companyIdentyfier"
+                        label='מק"ט רידיפיינמיט'
+                        multiline
+                        rows={2}
+                        value={this.state.companyIdentyfier}
+                        onChange={this.onChange}
+                        size="small"
+                        fullWidth
+                        error={this.state.companyIdentyfierValidate}
+                        helperText={this.state.companyIdentyfierValidate ? 'יש למלא תיבה זו' : ''}
+                        inputProps={{
+                          maxLength: 15,
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                        placeholder='מק"ט'
+                      />
+                    </div>
+                    <div className='AddItemContainer'>
+                      <TextField
+                        id="VisitPurpose"
+                        name="identyfier"
+                        label='מק"ט'
+                        multiline
+                        rows={2}
+                        error={this.state.identyfierValidate}
+                        helperText={this.state.identyfierValidate ? 'יש למלא תיבה זו' : ''}
+                        value={this.state.identyfier}
+                        onChange={this.onChange}
+                        size="small"
+                        fullWidth
+                        inputProps={{
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                        placeholder='מק"ט'
+                      />
+                    </div>
+                    <div className='AddItemContainer'>
+                      <TextField
+                        id="DaycareWorkGoals"
+                        name="description"
+                        label="תאור"
+                        multiline
+                        rows={2}
+                        value={this.state.description}
+                        onChange={this.onChange}
+                        fullWidth
+                        size="small"
+                        error={this.state.descriptionValidate}
+                        helperText={this.state.descriptionValidate ? 'יש להזין תאור' : ''}
+                        required
+                        inputProps={{
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                        placeholder='תאור'
+                      />
+                    </div>
+
+                  </ListGroupItem>
+                  <ListGroupItem className="AddItem">
+                    <div className='AddItemContainer'>
+                      <TextField
+                        id="DaycareWorkGoals"
+                        name="amount"
+                        label="כמות"
+                        multiline
+                        rows={2}
+                        value={this.state.amount}
+                        onChange={this.onChange}
+                        type='number'
+                        size="small"
+                        fullWidth
+                        error={this.state.amontValidate}
+                        helperText={this.state.amontValidate ? 'יש להזין כמות ' : ''}
+                        required
+                        inputProps={{
+
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                        placeholder='כמות'
+                      />
+                    </div>
+                    <div className='AddItemContainer'>
+                      <Autocomplete
+                        value={this.state.unit}
+                        onChange={(event, newValue) => {
+                          this.SetUnitValue(newValue);
+                        }}
+                        id="DayCareName"
+                        options={this.props.unitOptions}
+                        renderInput={(params) =>
+                          <TextField
+                            {...params}
+                            label="יחידת מידה"
+                            error={this.state.unitValidation}
+                            helperText={this.state.unitValidation ? 'נא לבחור יחידת מידה' : ''}
+                            required
+                          />}
+                        size="medium"
+                        className="TextFieldFadeInTrans AutoCompleteStyle"
+                        fullWidth
+                      />
+                      {/* <TextField
+                        id="DaycareWorkGoals"
+                        name="unit"
+                        label="יחידת מידה"
+                        multiline
+                        rows={2}
+                        value={this.state.unit}
+                        onChange={this.onChange}
+                        type='number'
+                        size="small"
+                        fullWidth
+                        // error={this.state.yearValidate}
+                        // helperText={this.state.yearValidate ? 'Enter a 4-digit date in the following format: 19xx' : ''}
+                        required
+                        inputProps={{
+
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                        placeholder='כמות'
+                      /> */}
+                    </div>
+                    <div className='AddItemContainer'>
+                      <TextField
+                        id="RequiredActions"
+                        name="pricePerUnit"
+                        label="מחיר ליחידה"
+                        multiline
+                        rows={2}
+                        placeholder="מחיר ליחידה"
+                        value={this.state.pricePerUnit}
+                        error={this.state.pricePerUnitValidate}
+                        helperText={this.state.pricePerUnitValidate ? 'נא למלא מחיר ליחידה' : ''}
+                        onChange={this.onChange}
+                        size="small"
+                        fullWidth
+                        type='number'
+                        inputProps={{
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className='AddItemContainer'>
+                      <ThemeProvider theme={DatePickerTheme}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale} >
+                          <KeyboardDatePicker
+                            margin="normal"
+                            id="date-picker-dialog"
+                            label="תאריך קבלה צפוי"
+                            format="dd/MM/yyyy"
+                            value={this.state.date}
+                            inputProps={{
+                              style: {
+                                marginTop: 10
+                              }
+                            }}
+                            onChange={(newValue: any) => {
+                              this.SetVisitDateValue(newValue);
+                            }}
+                            KeyboardButtonProps={{
+                              'aria-label': 'שנה תאריך',
+                            }}
+                            size="small"
+                            emptyLabel=''
+                            orientation="landscape"
+                            className="TextFieldFadeInTrans"
+                            // error={this.state.VisitDateValidationError}
+                            // helperText={this.state.VisitDateValidationError ? 'נא למלא תאריך' : ''}
+                            required
+                            fullWidth
+                          />
+                        </MuiPickersUtilsProvider>
+                      </ThemeProvider>
+                    </div>
+                  </ListGroupItem>
+                  {/* <ListGroupItem className="AddItem">
+                    <div className='AddItemContainer'>
+                      <TextField
+                        id="DaycareWorkGoals"
+                        name="description"
+                        label="תאור"
+                        multiline
+                        rows={2}
+                        value={this.state.description}
+                        onChange={this.onChange}
+
+                        size="small"
+                        fullWidth
+                        // error={this.state.yearValidate}
+                        // helperText={this.state.yearValidate ? 'Enter a 4-digit date in the following format: 19xx' : ''}
+                        required
+                        inputProps={{
+                          style: {
+                            marginTop: 10
+                          }
+                        }}
+                        placeholder='תאור'
+                      />
+                    </div>
+                    <div className='AddItemContainer'>&nbsp;</div>
+
+
+
+                  </ListGroupItem> */}
 
                 </ListGroup>
               </Row>

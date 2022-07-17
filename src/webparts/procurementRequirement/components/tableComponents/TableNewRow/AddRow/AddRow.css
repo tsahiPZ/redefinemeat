@@ -48,6 +48,7 @@
     float: right;
     margin-left: 3%;
     margin-right: 3%;
+    /* width: 30%; */
 }
 
 .FooterContainer{
@@ -126,7 +127,7 @@
 @media only screen and (min-width: 1000px) {
 
     .AddItem .AddItemContainer {
-        width: 44%;
+        width: 22%;
     }
 
     .modal-dialog {

@@ -216,7 +216,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       tableValidation: false,
       elseSupplierValidation: false,
       elseSupplierName: '',
-      elseSupplierNumber: ''
+      elseSupplierNumber: '',
+      unitOptions: [],
+      buyersOptions: [],
+      buyerName: 'בחר'
 
     };
   }
@@ -399,6 +402,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     // get current user
     const web = Web(this.props.WebUri);
     let tempSupplierArr: Array<any> = [];
+    let tempUnitArr: Array<any> = [];
     let tempApproversArr: Array<any> = [];
     let tempEmployeeDataArr: Array<any> = [];
     let tempMoneyTypeArr: Array<any> = [];
@@ -411,7 +415,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     let tempDirectorData: any, tempVpData: any, tempTeamLeadData: any;
     let tempApproversData: any;
     let vpScale: number, directorScale: number, teamLeadScale: number, scalesArr: Array<any>;
-
+    let tempBuyers: Array<string>;
     web.getUserById
     web.currentUser.get().then(result => {
       console.log(result);
@@ -545,42 +549,67 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 tempApproversArr = result;
                 web.lists.getById(this.props.suppliersListId).items.get().then(result => {
                   tempSupplierArr = result;
-                  this.setState({
-                    supplierArr: [...tempSupplierArr.map(item => item.Title), "בחר","אחר"],
-                    approversArr: tempApproversArr,
-                    deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
-                    moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title), "בחר"],
-                    employeeArr: tempEmployeeDataArr,
-                    department: tempDepartment,
-                    forDepartment: tempDepartment,
-                    subDepartment: tempSubDepartment,
-                    managerEmail: tempMangerEmail,
-                    teamLeadData: tempTeamLeadData,
-                    directorData: tempDirectorData,
-                    vpData: tempVpData,
-                    IsLoading: false,
-                    FormIsActiveStatus: true,
-                    teamLeaderScale: teamLeadScale,
-                    directorScale: directorScale,
-                    vpScale: vpScale,
-                    userData: userData
-                  }, () => {
-                    // tests
-                    // console.log(this.state.supplierArr);
-                    // console.log(this.state.approversArr);
-                    // console.log(this.state.deparmentsArr);
-                    // console.log(this.state.moneyTypeArr);
-                    // console.log(this.state.employeeArr);
-                    console.log(tempTeamLeadData);
-                    console.log(tempDirectorData);
-                    console.log(tempVpData);
-                    // console.log(this.state.teamLeaderScale);
-                    // console.log(this.state.directorScale);
-                    // console.log(this.state.vpScale);
 
-                    // this.setState({
-                    //   FormSubmitError:true
-                    // })
+                  // get unit options
+                  web.lists.getById(this.props.unitListId).items.get().then(result => {
+                    tempUnitArr = [...result.map(item => item.Title), "בחר"];
+                    console.log(tempUnitArr);
+                    web.lists.getById(this.props.buyersListId).items.get().then(result => {
+                      tempBuyers = [...result.map(buyer => buyer.buyerName), 'בחר']
+
+                      this.setState({
+                        supplierArr: [...tempSupplierArr.map(item => item.Title), "בחר", "אחר"],
+                        approversArr: tempApproversArr,
+                        deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
+                        moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title), "בחר"],
+                        employeeArr: tempEmployeeDataArr,
+                        department: tempDepartment,
+                        forDepartment: tempDepartment,
+                        subDepartment: tempSubDepartment,
+                        managerEmail: tempMangerEmail,
+                        teamLeadData: tempTeamLeadData,
+                        directorData: tempDirectorData,
+                        vpData: tempVpData,
+                        IsLoading: false,
+                        FormIsActiveStatus: true,
+                        teamLeaderScale: teamLeadScale,
+                        directorScale: directorScale,
+                        vpScale: vpScale,
+                        userData: userData,
+                        unitOptions: [...tempUnitArr],
+                        buyersOptions: tempBuyers
+                      }, () => {
+                        // tests
+                        // console.log(this.state.supplierArr);
+                        // console.log(this.state.approversArr);
+                        // console.log(this.state.deparmentsArr);
+                        // console.log(this.state.moneyTypeArr);
+                        // console.log(this.state.employeeArr);
+                        // console.log(tempTeamLeadData);
+                        // console.log(tempDirectorData);
+                        // console.log(tempVpData);
+                        // console.log(this.state.teamLeaderScale);
+                        // console.log(this.state.directorScale);
+                        // console.log(this.state.vpScale);
+                        console.log(this.state.unitOptions);
+
+                        // this.setState({
+                        //   FormSubmitError:true
+                        // })
+                      })
+                    }).catch(Err => {
+                      console.log(Err);
+                      // here Error modal
+                      this.setState({
+                        FormSubmitError: true
+                      })
+                    })
+                  }).catch(Err => {
+                    console.log(Err);
+                    // here Error modal
+                    this.setState({
+                      FormSubmitError: true
+                    })
                   })
                 }).catch(Err => {
                   console.log(Err);
@@ -921,7 +950,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       department: this.state.department,
       subDepartment: this.state.subDepartment,
       supplier: this.state.supplier === 'אחר' ? this.state.elseSupplierName : this.state.supplier,
-      supplierNumber: this.state.supplier === 'אחר' ? this.state.elseSupplierNumber:'',
+      supplierNumber: this.state.supplier === 'אחר' ? this.state.elseSupplierNumber : '',
       whatPurchased: this.state.WhatWasPurchased,
       forWhat: this.state.forWhat,
       forDepartment: this.state.forDepartment,
@@ -943,7 +972,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       creatorFullName: this.state.userData.Title,
       teamLeadSign: this.state.teamLeadSign,
       directorSign: this.state.directorSign,
-      vpSign: this.state.directorSign
+      vpSign: this.state.directorSign,
+      totalSum: this.state.cost,
+      buyerName:this.state.buyerName,
+      
     }
   }
 
@@ -955,13 +987,13 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
   ValidateForm = () => {
     // console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
-    let supplierValidation: boolean = false , elseSupplierValidation:boolean = false;
+    let supplierValidation: boolean = false, elseSupplierValidation: boolean = false;
     let validated: boolean = true;
     if (this.state.supplier === "בחר" || this.state.supplier === "") {
       supplierValidation = true;
       validated = false;
-    }else{
-      if((this.state.elseSupplierName === '' || this.state.elseSupplierNumber === '') && this.state.supplier === 'אחר'){
+    } else {
+      if ((this.state.elseSupplierName === '' || this.state.elseSupplierNumber === '') && this.state.supplier === 'אחר') {
         validated = false;
         elseSupplierValidation = true;
       }
@@ -1004,7 +1036,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       WhatWasPurchasedValidation: WhatWasPurchasedValidation,
       forWhatValidation: forWhatValidation,
       tableValidation: tableValidation,
-      elseSupplierValidation : elseSupplierValidation
+      elseSupplierValidation: elseSupplierValidation
 
     })
 
@@ -1273,12 +1305,22 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   // }
   SetSupplierValue = (supplier: string) => {
     if (supplier !== null && supplier !== '') {
-      if (supplier !== '' && supplier !== 'בחר' ) {
+      if (supplier !== '' && supplier !== 'בחר') {
         this.setState({
           supplier: supplier
         });
       }
-    
+
+    }
+  }
+  SetBuyersValue = (buyerName: string) => {
+    if (buyerName !== null && buyerName !== '') {
+      if (buyerName !== '' && buyerName !== 'בחר') {
+        this.setState({
+          buyerName: buyerName
+        });
+      }
+
     }
   }
   SetForDepartmentValue = (department: string) => {
@@ -1730,6 +1772,36 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         :
                         <div></div>
                       }
+                      <Row form className="">
+                        <Col md={12} sm={12} >
+                          <FormGroup row className="EOFormGroupRow">
+                            <Col sm={1}></Col>
+                            <Col lg={5} md={6} sm={8} className='field-col'>
+
+                              <Autocomplete
+                                value={this.state.buyerName}
+                                onChange={(event, newValue) => {
+                                  this.SetBuyersValue(newValue);
+                                }}
+                                id="supplier"
+                                options={this.state.buyersOptions}
+                                renderInput={(params) =>
+                                  <TextField
+                                    {...params}
+                                    label="קניין"
+                                    error={this.state.supplierValidation}
+                                    helperText={this.state.supplierValidation ? 'נא לבחור קניין' : ''}
+                                    required
+                                  />}
+                                size="medium"
+                                className="TextFieldFadeInTrans AutoCompleteStyle"
+                                fullWidth
+                              />
+
+                            </Col>
+                          </FormGroup>
+                        </Col>
+                      </Row>
                       {/*  */}
                       <Col sm={1}></Col>
                       <div className='sectionTitle' style={{ backgroundColor: '#d7182a', borderRadius: '15px' }}>
@@ -1862,12 +1934,14 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                               <Table aria-label="simple table">
                                 <TableHead>
                                   <TableRow>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">מק"ט רידיפיינדמיט</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">מק"ט</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">כמות</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">יחידת מידה</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">מחיר ליחידה</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">עלות</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">תיאור</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">תאריך הגעה צפוי</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#d7182a' }} align="left">תאריך קבלה צפוי</TableCell>
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -1875,7 +1949,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
                                   {this.state.tableRows ? this.state.tableRows.map((row) => (
 
-                                    <TableNewRows OnEditItem={this.updateItem} deleteItem={this.delItem} row={row} />
+                                    <TableNewRows OnEditItem={this.updateItem} unitOptions={this.state.unitOptions} deleteItem={this.delItem} row={row} />
 
                                   )) : <div></div>}
                                 </TableBody>
@@ -1888,7 +1962,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         {this.state.tableValidation ? <p> <h5>יש צורך למלא לפחות שורה אחת בטבלה</h5></p> : <div></div>}
                         {this.state.tableRows.length === 0 ? <p> <h5>אין נתונים בטבלה</h5></p> : <div></div>}
 
-                        <AddRow IsDisabled={false} OnAddItem={this.addRow} />
+                        <AddRow IsDisabled={false} unitOptions={this.state.unitOptions} OnAddItem={this.addRow} />
                         {/* if table emty set message */}
                         <Row form style={{ marginTop: '5px' }}>
                           <Col md={12} sm={12} >
@@ -2035,7 +2109,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Row form>
                           <div className="EOFormSectionTitle">אישורים</div>
                         </Row>
-                        <Row form>
+                        <Row form >
+                          
                           <Col md={12} sm={12}>
                             <FormGroup row className="EOFormGroupRow">
                               <Col sm={4}></Col>
@@ -2058,7 +2133,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </Col>
                         </Row>
 
-                        <Row form>
+                        <Row form style={{marginTop:'10px'}}>
                           <Col md={12} sm={12}>
                             <FormGroup row className="EOFormGroupRow">
                               <Label className="ApproverTitle" for="DepartmentManagerName">ראש צוות מאשר</Label>
@@ -2083,7 +2158,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </Row>
 
                         {this.approvalsWhoTakePart('director', this.state.cost) ?
-                          < Row form>
+                          < Row form style={{marginTop:'10px'}}>
                             <Col md={12} sm={12}>
                               <FormGroup row className="EOFormGroupRow">
                                 <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
@@ -2111,7 +2186,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         {this.approvalsWhoTakePart('vp', this.state.cost) ?
 
 
-                          <Row form>
+                          <Row form  style={{marginTop:'10px'}}>
                             <Col md={12} sm={12}>
                               <FormGroup row className="EOFormGroupRow">
                                 <Label className="ApproverTitle" for="SystemName">VP</Label>

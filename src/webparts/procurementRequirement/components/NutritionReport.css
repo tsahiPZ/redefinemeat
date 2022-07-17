@@ -4,7 +4,9 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
     background-size: cover;
     background-position: center;
 }
-
+/* .AddItemContainer{
+    width: 30%;
+} */
 .sectionTitle{
     border-radius: 15px;
     background-color: '#d7182a';
@@ -15,6 +17,9 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
 .ListOfFilesItemName{
     text-decoration:none;
     color:#330911;
+}
+.ControlZone--control {
+    width: 115% !important;
 }
 /* Main */
 .EONewFormContainer {

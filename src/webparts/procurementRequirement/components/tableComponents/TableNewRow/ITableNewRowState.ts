@@ -6,4 +6,7 @@ export interface ITableNewRowState{
     description:string,
     date:string,
     editVisability:boolean;
+    companyIdentyfier:string;
+    unit:string;
+    
 }

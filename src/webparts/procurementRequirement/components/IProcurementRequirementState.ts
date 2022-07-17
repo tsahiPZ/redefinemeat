@@ -125,4 +125,7 @@ export interface IProcurementRequirementState {
      elseSupplierValidation:boolean;
      elseSupplierName:string;
      elseSupplierNumber:string;
+     unitOptions:Array<any>;
+     buyersOptions:Array<any>;
+     buyerName:string;
 }

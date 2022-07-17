@@ -9,4 +9,14 @@ export interface IEditRowStates {
     date:Date;
     validation:boolean;
     rowID:string;
+    companyIdentyfier: string,
+    unit: string,
+    unitOptions: Array<string>,
+    dateValidate: boolean,
+    amontValidate: boolean,
+    pricePerUnitValidate: boolean,
+    descriptionValidate: boolean,
+    companyIdentyfierValidate:boolean,
+    identyfierValidate:boolean,
+    unitValidation:boolean
 }
