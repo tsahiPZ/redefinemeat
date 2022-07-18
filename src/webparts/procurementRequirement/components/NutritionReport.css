@@ -18,9 +18,19 @@ div[data-automation-id="CanvasLayout"] div.CanvasZone {
     text-decoration:none;
     color:#330911;
 }
-.ControlZone--control {
-    width: 115% !important;
+.k_c_50a7110f.j_c_50a7110f {
+    max-width: 1500px !important;
 }
+.centerContainer{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .ControlZone--control {
+    width: 115% !important;
+} */
 /* Main */
 .EONewFormContainer {
     display: block;

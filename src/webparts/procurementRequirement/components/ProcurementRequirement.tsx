@@ -974,8 +974,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       directorSign: this.state.directorSign,
       vpSign: this.state.directorSign,
       totalSum: this.state.cost,
-      buyerName:this.state.buyerName,
-      
+      buyerName: this.state.buyerName,
+
     }
   }
 
@@ -1512,7 +1512,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12}>
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
                               <ThemeProvider theme={DatePickerTheme}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale} >
                                   <KeyboardDatePicker
@@ -1546,7 +1546,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
 
                               <PeoplePicker
                                 context={this.props.context}
@@ -1610,7 +1610,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={6} className='field-col'>
+                            <Col lg={4} md={6} sm={6} className='field-col'>
 
                               <TextField
                                 id="d"
@@ -1634,7 +1634,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={6} className='field-col'>
+                            <Col lg={4} md={6} sm={6} className='field-col'>
 
                               <TextField
                                 id="d"
@@ -1658,7 +1658,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
 
                               <PeoplePicker
                                 context={this.props.context}
@@ -1689,7 +1689,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
 
                               <Autocomplete
                                 value={this.state.supplier}
@@ -1721,7 +1721,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             <Col md={12} sm={12} >
                               <FormGroup row className="EOFormGroupRow">
                                 <Col sm={1}></Col>
-                                <Col lg={5} md={6} sm={6} className='field-col'>
+                                <Col lg={4} md={6} sm={6} className='field-col'>
 
                                   <TextField
                                     id="d"
@@ -1746,7 +1746,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             <Col md={12} sm={12} >
                               <FormGroup row className="EOFormGroupRow">
                                 <Col sm={1}></Col>
-                                <Col lg={5} md={6} sm={6} className='field-col'>
+                                <Col lg={4} md={6} sm={6} className='field-col'>
 
                                   <TextField
                                     id="d"
@@ -1776,7 +1776,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
 
                               <Autocomplete
                                 value={this.state.buyerName}
@@ -1875,7 +1875,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
 
                               <Autocomplete
                                 value={this.state.forDepartment}
@@ -1991,19 +1991,18 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
 
                       </div>
-                      <Row form>
+                      <Row form style={{ marginTop: '20px' }}>
                         <Col md={12} sm={12}>
                           <FormGroup row className="EOFormGroupRow">
-                            <Col sm={5}></Col>
-                            <Col lg={4} md={4} sm={4} className='field-col'>
-                              {/* <div className='AddItemContainer'> ,application/msword,ods,.pps,.ppt,.pptx,.msg,.oft,.ost,.pst,.vcf */}
-                              <Input type="file" accept="image/*,.pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsm,.xls,.xlsx"
-                                name="MoreDataFiles1" id="MoreDataFiles1" onChange={this.handleUploadFile} bsSize="sm" style={{ 'opacity': '0' }} />
-                              <Button style={{ backgroundColor: '#d7182a', color: 'white', textTransform: "none" }} onClick={this.TriggerUploadFiles} name="TriggerUpload1" className="SaveFilesButton">
-                                <InsertDriveFileIcon id='fileIcon' />
-                                צירוף קובץ הצעת מחיר</Button>
-                              {/* </div> */}
-                            </Col>
+                            <div className='centerContainer'>
+                                {/* <div className='AddItemContainer'> ,application/msword,ods,.pps,.ppt,.pptx,.msg,.oft,.ost,.pst,.vcf */}
+                                <Input type="file" accept="image/*,.pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsm,.xls,.xlsx"
+                                  name="MoreDataFiles1" id="MoreDataFiles1" onChange={this.handleUploadFile} bsSize="sm" style={{ 'opacity': '0' }} />
+                                <Button style={{ backgroundColor: '#d7182a', color: 'white', textTransform: "none" }} onClick={this.TriggerUploadFiles} name="TriggerUpload1" className="SaveFilesButton">
+                                  <InsertDriveFileIcon id='fileIcon' />
+                                  צירוף קובץ הצעת מחיר</Button>
+                                {/* </div> */}
+                            </div>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -2052,7 +2051,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
+                            <Col lg={4} md={6} sm={8} className='field-col'>
 
                               <Autocomplete
                                 value={this.state.moneyTypeChosen}
@@ -2083,7 +2082,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           <Col md={12} sm={12} >
                             <FormGroup row className="EOFormGroupRow">
                               <Col sm={1}></Col>
-                              <Col lg={5} md={6} sm={8} className='field-col'>
+                              <Col lg={4} md={6} sm={8} className='field-col'>
                                 <TextField
                                   id="d"
                                   onChange={this.onChange}
@@ -2110,7 +2109,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           <div className="EOFormSectionTitle">אישורים</div>
                         </Row>
                         <Row form >
-                          
+
                           <Col md={12} sm={12}>
                             <FormGroup row className="EOFormGroupRow">
                               <Col sm={4}></Col>
@@ -2133,7 +2132,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </Col>
                         </Row>
 
-                        <Row form style={{marginTop:'10px'}}>
+                        <Row form style={{ marginTop: '10px' }}>
                           <Col md={12} sm={12}>
                             <FormGroup row className="EOFormGroupRow">
                               <Label className="ApproverTitle" for="DepartmentManagerName">ראש צוות מאשר</Label>
@@ -2158,7 +2157,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </Row>
 
                         {this.approvalsWhoTakePart('director', this.state.cost) ?
-                          < Row form style={{marginTop:'10px'}}>
+                          < Row form style={{ marginTop: '10px' }}>
                             <Col md={12} sm={12}>
                               <FormGroup row className="EOFormGroupRow">
                                 <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
@@ -2186,7 +2185,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         {this.approvalsWhoTakePart('vp', this.state.cost) ?
 
 
-                          <Row form  style={{marginTop:'10px'}}>
+                          <Row form style={{ marginTop: '10px' }}>
                             <Col md={12} sm={12}>
                               <FormGroup row className="EOFormGroupRow">
                                 <Label className="ApproverTitle" for="SystemName">VP</Label>
