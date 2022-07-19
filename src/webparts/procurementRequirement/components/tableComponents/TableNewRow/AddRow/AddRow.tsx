@@ -290,7 +290,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
                       <TextField
                         id="VisitPurpose"
                         name="companyIdentyfier"
-                        label='מק"ט רידיפיינמיט'
+                        label='Redefinemeat - מק"ט'
                         multiline
                         rows={2}
                         value={this.state.companyIdentyfier}

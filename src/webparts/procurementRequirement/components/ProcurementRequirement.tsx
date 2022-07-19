@@ -1732,7 +1732,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                     margin="normal"
                                     size="small"
                                     onChange={this.onChange}
-
+                                    required
                                     // error={this.state.elseSupplierValidation}
                                     // helperText={this.state.elseSupplierValidation ? 'יש למלא שם ספק וח.פ' : ''}
                                     className="TextFieldFadeInTrans"
@@ -1757,7 +1757,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                     margin="normal"
                                     size="small"
                                     onChange={this.onChange}
-
+                                    required
                                     error={this.state.elseSupplierValidation}
                                     helperText={this.state.elseSupplierValidation ? 'יש למלא שם ספק וח.פ' : ''}
                                     className="TextFieldFadeInTrans"
