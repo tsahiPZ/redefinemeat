@@ -204,6 +204,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       isTeamLead: false,
       isDirector: false,
       isVp: false,
+      noTeamLead: false,
+      noDirector: false,
+      noVp:false,
       sendMailToTeamLead: false,
       sendMailToDirector: false,
       sendMailToVp: false,
@@ -243,13 +246,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
   updateItem = (newData: any) => {
     // checks
-    console.log(newData);
-
-    console.log(this.state.tableRows);
-
+    // console.log(newData);
+    // console.log(this.state.tableRows);
     // 
     let tempArr = this.state.tableRows;
-
     if (tempArr.length === 1) {
       let tempArr = [];
       tempArr.push(newData)
@@ -257,11 +257,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         tableRows: tempArr
       }, () => {
         this.calcCosts();
-
       })
-
     } else {
-
       for (let i = 0; i < this.state.tableRows.length; i++) {
         if (this.state.tableRows[i].rowID === newData.rowID) {
           tempArr.splice(i, 1, newData);
@@ -274,11 +271,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       })
     }
-
-    console.log('here');
-    console.log(tempArr);
-
-
   }
 
   addRow = (item: any) => {
@@ -290,9 +282,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       tableRows: tempArr
     }, () => {
       this.calcCosts();
-
     })
-
   }
 
   calcCosts = () => {
@@ -423,6 +413,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       userId = result.Id
       // console.log(result);//test
 
+
       this.GetCheckerPeoplePickerItems(result);
       web.lists.getById(this.props.emloyeeListsData).items.get().then(result => {
         console.log("here");
@@ -434,16 +425,15 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             console.log("here manager");
             // check if creator is a team leader
             if (userId === employee.managerId) {
-              // mark as true
-
+              // mark as true and set the flag to true
               this.setState({
                 isTeamLead: true,
                 sendMailToTeamLead: false
               }, () => {
                 console.log("im teamlead");
-
               })
             }
+            // 
             web.getUserById(employee.managerId).get().then(result => {
               console.log(result);
               tempMangerEmail = result.Email;
@@ -454,7 +444,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               console.log(Err);
               // here Error modal
               this.setState({
-                FormSubmitError: true
+                noTeamLead: true
               });
             })
             tempMangerId = employee.managerId;
@@ -492,6 +482,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             if (approvers.department === tempDepartment && approvers.subDepartment === tempSubDepartment) {
               console.log(approvers);
               tempApproversData = approvers;
+
               web.getUserById(tempApproversData.vpId).get().then(result => {
                 tempVpData = result;
                 // check if Vp
@@ -514,30 +505,38 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                   FormSubmitError: true
                 });
               })
-              web.getUserById(tempApproversData.DirectorId).get().then(result => {
-                tempDirectorData = result;
-                console.log(tempDirectorData);
+              if (tempApproversData.DirectorId) {
+                web.getUserById(tempApproversData.DirectorId).get().then(result => {
+                  tempDirectorData = result;
+                  console.log(tempDirectorData);
 
-                // check if director
-                if (userId === tempDirectorData.Id) {
-                  // mark as true
+                  // check if director
+                  if (userId === tempDirectorData.Id) {
+                    // mark as true
+                    this.setState({
+                      isDirector: true,
+                      sendMailToDirector: false,
+                      sendMailToTeamLead: false
+                    }, () => {
+                      console.log("im director");
+
+                    })
+                  }
+                }).catch(Err => {
+                  console.log(Err);
+                  // here Error modal
                   this.setState({
-                    isDirector: true,
-                    sendMailToDirector: false,
-                    sendMailToTeamLead: false
-                  }, () => {
-                    console.log("im director");
-
-                  })
-                }
-              }).catch(Err => {
-                console.log(Err);
-                // here Error modal
+                    noDirector: true
+                  });
+                })
+              } else {
                 this.setState({
-                  FormSubmitError: true
-                });
-              })
+                  noDirector:true
+                }, () => {
+                  console.log("no director");
 
+                })
+              }
             }
           })
 
@@ -1995,13 +1994,13 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         <Col md={12} sm={12}>
                           <FormGroup row className="EOFormGroupRow">
                             <div className='centerContainer'>
-                                {/* <div className='AddItemContainer'> ,application/msword,ods,.pps,.ppt,.pptx,.msg,.oft,.ost,.pst,.vcf */}
-                                <Input type="file" accept="image/*,.pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsm,.xls,.xlsx"
-                                  name="MoreDataFiles1" id="MoreDataFiles1" onChange={this.handleUploadFile} bsSize="sm" style={{ 'opacity': '0' }} />
-                                <Button style={{ backgroundColor: '#d7182a', color: 'white', textTransform: "none" }} onClick={this.TriggerUploadFiles} name="TriggerUpload1" className="SaveFilesButton">
-                                  <InsertDriveFileIcon id='fileIcon' />
-                                  צירוף קובץ הצעת מחיר</Button>
-                                {/* </div> */}
+                              {/* <div className='AddItemContainer'> ,application/msword,ods,.pps,.ppt,.pptx,.msg,.oft,.ost,.pst,.vcf */}
+                              <Input type="file" accept="image/*,.pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsm,.xls,.xlsx"
+                                name="MoreDataFiles1" id="MoreDataFiles1" onChange={this.handleUploadFile} bsSize="sm" style={{ 'opacity': '0' }} />
+                              <Button style={{ backgroundColor: '#d7182a', color: 'white', textTransform: "none" }} onClick={this.TriggerUploadFiles} name="TriggerUpload1" className="SaveFilesButton">
+                                <InsertDriveFileIcon id='fileIcon' />
+                                צירוף קובץ הצעת מחיר</Button>
+                              {/* </div> */}
                             </div>
                           </FormGroup>
                         </Col>

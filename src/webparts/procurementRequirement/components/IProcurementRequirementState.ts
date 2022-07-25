@@ -112,6 +112,9 @@ export interface IProcurementRequirementState {
      isTeamLead:boolean;
      isDirector:boolean;
      isVp:boolean;
+     noTeamLead: boolean,
+     noDirector: boolean,
+     noVp:boolean,
      sendMailToTeamLead:boolean;
      sendMailToDirector:boolean;
      sendMailToVp:boolean;
