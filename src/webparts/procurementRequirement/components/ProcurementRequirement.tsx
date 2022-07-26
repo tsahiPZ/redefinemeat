@@ -998,6 +998,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       teamLeadMail: this.state.noTeamLead !== true ? this.state.teamLeadData.Email : 'noTeamLead',
       directorMail: this.state.noDirector !== true ? this.state.directorData.Email : 'noDirector',
       vpMail: this.state.vpData.Email,
+      noTeamLead: this.state.noTeamLead,
+      noDirector: this.state.noDirector,
       moneyType: this.state.moneyTypeChosen,
       teamLeadFullName:  this.state.noTeamLead !== true ? this.state.teamLeadData.Title:'',
       directorFullName: this.state.noDirector !== true ?this.state.directorData.Title:'',
