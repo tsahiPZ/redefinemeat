@@ -206,7 +206,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       isVp: false,
       noTeamLead: false,
       noDirector: false,
-      noVp:false,
+      noVp: false,
       sendMailToTeamLead: false,
       sendMailToDirector: false,
       sendMailToVp: false,
@@ -307,10 +307,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   // ============== End tableFunctions ============== 
 
   approvalsWhoTakePart = (title: string, price: number) => {
-    if (title === 'vp' && price >= this.state.directorScale) {
+    if (title === 'vp' && price > this.state.directorScale) {
       return true;
     }
-    if (title === 'director' && price >= this.state.teamLeaderScale) {
+    if (title === 'director' && price > this.state.teamLeaderScale) {
       return true;
     }
   }
@@ -424,30 +424,30 @@ export default class ProcurementRequirement extends React.Component<IProcurement
           if (employee.fullNameId === userId) {
             console.log("here manager");
             // check if creator is a team leader
-            if (userId === employee.managerId) {
-              // mark as true and set the flag to true
-              this.setState({
-                isTeamLead: true,
-                sendMailToTeamLead: false
-              }, () => {
-                console.log("im teamlead");
-              })
-            }
+            // if (userId === employee.managerId) {
+            //   // mark as true and set the flag to true
+            //   this.setState({
+            //     isTeamLead: true,
+            //     sendMailToTeamLead: false
+            //   }, () => {
+            //     console.log("im teamlead");
+            //   })
+            // };
             // 
-            web.getUserById(employee.managerId).get().then(result => {
-              console.log(result);
-              tempMangerEmail = result.Email;
-              tempTeamLeadData = result;
+            // web.getUserById(employee.managerId).get().then(result => {
+            //   console.log(result);
+            //   tempMangerEmail = result.Email;
+            //   tempTeamLeadData = result;
 
 
-            }).catch(Err => {
-              console.log(Err);
-              // here Error modal
-              this.setState({
-                noTeamLead: true
-              });
-            })
-            tempMangerId = employee.managerId;
+            // }).catch(Err => {
+            //   console.log(Err);
+            //   // here Error modal
+            //   this.setState({
+            //     noTeamLead: true
+            //   });
+            // })
+            // tempMangerId = employee.managerId;
             tempDepartment = employee.department;
             if (employee.subDepartment) {
               tempSubDepartment = employee.subDepartment
@@ -470,6 +470,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
         })
         web.lists.getById(this.props.approversListsData).items.get().then(result => {
+          let errorFlag: boolean = true;
           console.log(result);
           tempApproversArr = result;
           tempApproversArr.forEach(approvers => {
@@ -482,7 +483,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             if (approvers.department === tempDepartment && approvers.subDepartment === tempSubDepartment) {
               console.log(approvers);
               tempApproversData = approvers;
-
+              errorFlag = false;
               web.getUserById(tempApproversData.vpId).get().then(result => {
                 tempVpData = result;
                 // check if Vp
@@ -505,7 +506,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                   FormSubmitError: true
                 });
               })
-              if (tempApproversData.DirectorId) {
+              // if (tempApproversData.DirectorId) {
                 web.getUserById(tempApproversData.DirectorId).get().then(result => {
                   tempDirectorData = result;
                   console.log(tempDirectorData);
@@ -525,21 +526,51 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 }).catch(Err => {
                   console.log(Err);
                   // here Error modal
+                  // test this sfter finish changes
                   this.setState({
                     noDirector: true
                   });
                 })
-              } else {
-                this.setState({
-                  noDirector:true
-                }, () => {
-                  console.log("no director");
+              // }
 
+              // if (tempApproversData.teamLeadId) {
+                web.getUserById(tempApproversData.teamLeadId).get().then(result => {
+                  tempTeamLeadData = result;
+                  
+                  console.log(tempTeamLeadData);
+
+                  // check if director
+                  if (userId === tempTeamLeadData.Id) {
+                    // mark as true
+                    this.setState({
+                      isTeamLead: true,
+                      sendMailToTeamLead: false
+                    }, () => {
+                      console.log("im TeamLead");
+
+                    })
+                  }
+                }).catch(Err => {
+                  console.log(Err);
+                  // here Error modal
+                  // test this sfter finish changes
+                  this.setState({
+                    noTeamLead: true,
+                    sendMailToTeamLead: false
+                  });
                 })
-              }
-            }
-          })
+              // }
 
+            }
+
+          })
+          this.setState({
+            FormSubmitError: errorFlag
+          }, () => {
+            console.log("error flag is on : approvals list didnt contains youre subDep and Dep ");
+
+            return;
+          })
           web.lists.getById(this.props.moneyTypesListId).items.get().then(result => {
             tempMoneyTypeArr = result;
             web.lists.getById(this.props.departmentsAndSubDeplistid).items.get().then(result => {
@@ -867,7 +898,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
 
     // set the conditions 
-    if (globalCost <= this.state.teamLeaderScale) {
+    if (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead !== true) {
 
       console.log("here team leader");
 
@@ -886,19 +917,20 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         console.log(this.state.sendMailToVp);
         this.SaveForm(true)
 
-        //  return;
+       
       })
-
+      return;
     }
-    if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale) {
+    if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector !== true || (this.state.noDirector !== true && this.state.noTeamLead && globalCost <= this.state.directorScale)) {
       console.log("here director");
       console.log(this.state.isDirector);
 
       this.setState({
         teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
         directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
-        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '', sendMailToDirector: !this.state.isDirector,
-        sendMailToTeamLead: !this.state.isTeamLead,
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',
+        sendMailToDirector: !this.state.isDirector,
+        sendMailToTeamLead: this.state.isTeamLead === false && this.state.noTeamLead !== true,
         sendMailToVp: false,
         // Status: this.state.isDirector ? 'הסתיים' : 'בתהליך'
 
@@ -909,16 +941,19 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         this.SaveForm(true)
         //  return;
       })
-
+      return;
     }
-    if (globalCost > this.state.directorScale) {
+    if (globalCost > this.state.directorScale 
+      || (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector === true) 
+      || (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead === true)) {
       console.log("here vp");
 
       this.setState({
         teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
         directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
-        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '', sendMailToDirector: !this.state.isDirector,
-        sendMailToTeamLead: this.state.isDirector || this.state.isTeamLead ? false : true,
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',
+        sendMailToDirector: !this.state.isDirector && this.state.noDirector !== true,
+        sendMailToTeamLead: (this.state.isDirector  || this.state.isTeamLead) || this.state.noTeamLead === true ? false : true,
         sendMailToVp: true,
         // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
       }, () => {
@@ -928,7 +963,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         this.SaveForm(true)
         //  return;
       })
-
+      return;
     }
 
   }
@@ -960,12 +995,12 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       vpScale: this.state.vpScale,
       directorScale: this.state.directorScale,
       teamLeadScale: this.state.teamLeaderScale,
-      teamLeadMail: this.state.managerEmail,
-      directorMail: this.state.directorData.Email,
+      teamLeadMail: this.state.noTeamLead !== true ? this.state.teamLeadData.Email : 'noTeamLead',
+      directorMail: this.state.noDirector !== true ? this.state.directorData.Email : 'noDirector',
       vpMail: this.state.vpData.Email,
       moneyType: this.state.moneyTypeChosen,
-      teamLeadFullName: this.state.teamLeadData.Title,
-      directorFullName: this.state.directorData.Title,
+      teamLeadFullName:  this.state.noTeamLead !== true ? this.state.teamLeadData.Title:'',
+      directorFullName: this.state.noDirector !== true ?this.state.directorData.Title:'',
       vpFullName: this.state.vpData.Title,
       creatorEmail: this.state.userData.Email,
       creatorFullName: this.state.userData.Title,
@@ -2130,58 +2165,64 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             </FormGroup>
                           </Col>
                         </Row>
-
-                        <Row form style={{ marginTop: '10px' }}>
-                          <Col md={12} sm={12}>
-                            <FormGroup row className="EOFormGroupRow">
-                              <Label className="ApproverTitle" for="DepartmentManagerName">ראש צוות מאשר</Label>
-                              <Col className="ApproverName">
-                                <Input type="text" name="DepartmentManagerName" id="DepartmentManagerName" onChange={this.onChange} value={this.state.teamLeadData.Title} bsSize="sm" disabled />
-                              </Col>
-                              <Col className="ApproverApprovel">
-                                <Input className="form-select form-select-sm" type="select" name="teamLeadStatus" id="DepartmentManagerApprove" onChange={this.onChange} value={this.state.teamLeadStatus} bsSize="sm" disabled>
-                                  {this.state.ApprovelsOptions.map((Title, Index) => (
-                                    <option key={"DepartmentManagerApprove" + Index}>{Title}</option>
-                                  ))}
-                                </Input>
-                              </Col>
-                              <Col className="ApproverSign">
-                                <Input type="text" name="teamLeadSign" id="DepartmentManagerSign" onChange={this.onChange} value={this.state.teamLeadSign} bsSize="sm" disabled />
-                              </Col>
-                              <Col className="ApproverComment">
-                                <Input type="textarea" rows="1" name="temaLeadComment" id="DepartmentManagerComment" onChange={this.onChange} value={this.state.temaLeadComment} bsSize="sm" disabled />
-                              </Col>
-                            </FormGroup>
-                          </Col>
-                        </Row>
-
-                        {this.approvalsWhoTakePart('director', this.state.cost) ?
-                          < Row form style={{ marginTop: '10px' }}>
+                        {this.state.noTeamLead === false ?
+                          <Row form style={{ marginTop: '10px' }}>
                             <Col md={12} sm={12}>
                               <FormGroup row className="EOFormGroupRow">
-                                <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
+                                <Label className="ApproverTitle" for="DepartmentManagerName">ראש צוות מאשר</Label>
                                 <Col className="ApproverName">
-                                  <Input type="text" name="PayrollDepartmentName" id="PayrollDepartmentName" onChange={this.onChange} value={this.state.directorData.Title} bsSize="sm" disabled />
+                                  <Input type="text" name="DepartmentManagerName" id="DepartmentManagerName" onChange={this.onChange} value={this.state.teamLeadData.Title} bsSize="sm" disabled />
                                 </Col>
                                 <Col className="ApproverApprovel">
-                                  <Input className="form-select form-select-sm" type="select" name="directorStatus" id="PayrollDepartmentApprove" onChange={this.onChange} value={this.state.directorStatus} bsSize="sm" disabled>
+                                  <Input className="form-select form-select-sm" type="select" name="teamLeadStatus" id="DepartmentManagerApprove" onChange={this.onChange} value={this.state.teamLeadStatus} bsSize="sm" disabled>
                                     {this.state.ApprovelsOptions.map((Title, Index) => (
-                                      <option key={"PayrollDepartmentApprove" + Index}>{Title}</option>
+                                      <option key={"DepartmentManagerApprove" + Index}>{Title}</option>
                                     ))}
                                   </Input>
                                 </Col>
                                 <Col className="ApproverSign">
-                                  <Input type="text" name="directorSign" id="PayrollDepartmentSign" onChange={this.onChange} value={this.state.directorSign} bsSize="sm" disabled />
+                                  <Input type="text" name="teamLeadSign" id="DepartmentManagerSign" onChange={this.onChange} value={this.state.teamLeadSign} bsSize="sm" disabled />
                                 </Col>
                                 <Col className="ApproverComment">
-                                  <Input type="textarea" rows="1" name="directorComment" id="PayrollDepartmentComment" onChange={this.onChange} value={this.state.directorComment} bsSize="sm" disabled />
+                                  <Input type="textarea" rows="1" name="temaLeadComment" id="DepartmentManagerComment" onChange={this.onChange} value={this.state.temaLeadComment} bsSize="sm" disabled />
                                 </Col>
                               </FormGroup>
                             </Col>
                           </Row>
                           : <div></div>}
+                        {this.state.noDirector === false ? <div>
+                          {this.approvalsWhoTakePart('director', this.state.cost) || this.state.noTeamLead ?
+                            < Row form style={{ marginTop: '10px' }}>
+                              <Col md={12} sm={12}>
+                                <FormGroup row className="EOFormGroupRow">
+                                  <Label className="ApproverTitle" for="PayrollDepartmentName">דירקטור</Label>
+                                  <Col className="ApproverName">
+                                    <Input type="text" name="PayrollDepartmentName" id="PayrollDepartmentName" onChange={this.onChange} value={this.state.directorData.Title} bsSize="sm" disabled />
+                                  </Col>
+                                  <Col className="ApproverApprovel">
+                                    <Input className="form-select form-select-sm" type="select" name="directorStatus" id="PayrollDepartmentApprove" onChange={this.onChange} value={this.state.directorStatus} bsSize="sm" disabled>
+                                      {this.state.ApprovelsOptions.map((Title, Index) => (
+                                        <option key={"PayrollDepartmentApprove" + Index}>{Title}</option>
+                                      ))}
+                                    </Input>
+                                  </Col>
+                                  <Col className="ApproverSign">
+                                    <Input type="text" name="directorSign" id="PayrollDepartmentSign" onChange={this.onChange} value={this.state.directorSign} bsSize="sm" disabled />
+                                  </Col>
+                                  <Col className="ApproverComment">
+                                    <Input type="textarea" rows="1" name="directorComment" id="PayrollDepartmentComment" onChange={this.onChange} value={this.state.directorComment} bsSize="sm" disabled />
+                                  </Col>
+                                </FormGroup>
+                              </Col>
+                            </Row>
 
-                        {this.approvalsWhoTakePart('vp', this.state.cost) ?
+                            : <div></div>}
+                        </div>
+                          : <div></div>}
+
+                        {this.approvalsWhoTakePart('vp', this.state.cost) 
+                        ||(this.approvalsWhoTakePart('director', this.state.cost) && this.state.noDirector ) 
+                        || (this.state.noDirector && this.state.noTeamLead)?
 
 
                           <Row form style={{ marginTop: '10px' }}>
