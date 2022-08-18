@@ -448,10 +448,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
           console.log(result);
           tempApproversArr = result;
           tempApproversArr.forEach(approvers => {
-            console.log(approvers.department);
-            console.log(approvers.subDepartment);
-            console.log(tempDepartment);
-            console.log(tempSubDepartment);
+            // console.log(approvers.department);
+            // console.log(approvers.subDepartment);
+            // console.log(tempDepartment);
+            // console.log(tempSubDepartment);
 
 
             if (approvers.department === tempDepartment && approvers.subDepartment === tempSubDepartment) {
@@ -518,7 +518,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                     // mark as true
                     this.setState({
                       isTeamLead: true,
-                      sendMailToTeamLead: false
+                      sendMailToTeamLead: false,
+                      
                     }, () => {
                       console.log("im TeamLead");
 
@@ -1676,7 +1677,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 principalTypes={[PrincipalType.User]}
                                 ensureUser={true}
                                 resolveDelay={1000}
-                                defaultSelectedUsers={[this.state.managerEmail]}
+                                defaultSelectedUsers={[this.state.teamLeadData.Email ? this.state.teamLeadData.Email : null]}
                               />
                               {this.state.CheckerNameValidationError ?
                                 <Fade in={this.state.CheckerNameValidationError} tag="h5" className="mt-3 ValidationError">
