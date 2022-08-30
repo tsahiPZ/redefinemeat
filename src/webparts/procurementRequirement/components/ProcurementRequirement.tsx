@@ -274,8 +274,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
 
   addRow = (item: any) => {
-    console.log(item);
-    console.log(this.state.tableRows);
+    // console.log(item);
+    // console.log(this.state.tableRows);
 
     let tempArr = [...this.state.tableRows, item];
     this.setState({
@@ -289,7 +289,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     let sum = 0;
     console.log(this.state.tableRows);
     this.state.tableRows.forEach(element => {
-      console.log(element);
+      // console.log(element);
 
       sum += element.cost;
     });
@@ -299,7 +299,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     this.setState({
       cost: sum
     }, () => {
-      console.log(this.state.cost);
+      // console.log(this.state.cost);
 
     })
   }
@@ -408,46 +408,20 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     let tempBuyers: Array<string>;
     web.getUserById
     web.currentUser.get().then(result => {
-      console.log(result);
+      // console.log(result);
       userData = result;
       userId = result.Id
       // console.log(result);//test
 
 
       this.GetCheckerPeoplePickerItems(result);
-      web.lists.getById(this.props.emloyeeListsData).items.get().then(result => {
+      web.lists.getById(this.props.emloyeeListsData).items.getAll().then(result => {
         console.log("here");
 
         tempEmployeeDataArr = result;
         tempEmployeeDataArr.forEach(employee => {
-          console.log("here loop");
+          // console.log("here loop");
           if (employee.fullNameId === userId) {
-            console.log("here manager");
-            // check if creator is a team leader
-            // if (userId === employee.managerId) {
-            //   // mark as true and set the flag to true
-            //   this.setState({
-            //     isTeamLead: true,
-            //     sendMailToTeamLead: false
-            //   }, () => {
-            //     console.log("im teamlead");
-            //   })
-            // };
-            // 
-            // web.getUserById(employee.managerId).get().then(result => {
-            //   console.log(result);
-            //   tempMangerEmail = result.Email;
-            //   tempTeamLeadData = result;
-
-
-            // }).catch(Err => {
-            //   console.log(Err);
-            //   // here Error modal
-            //   this.setState({
-            //     noTeamLead: true
-            //   });
-            // })
-            // tempMangerId = employee.managerId;
             tempDepartment = employee.department;
             if (employee.subDepartment) {
               tempSubDepartment = employee.subDepartment
@@ -474,14 +448,14 @@ export default class ProcurementRequirement extends React.Component<IProcurement
           console.log(result);
           tempApproversArr = result;
           tempApproversArr.forEach(approvers => {
-            console.log(approvers.department);
-            console.log(approvers.subDepartment);
-            console.log(tempDepartment);
-            console.log(tempSubDepartment);
+            // console.log(approvers.department);
+            // console.log(approvers.subDepartment);
+            // console.log(tempDepartment);
+            // console.log(tempSubDepartment);
 
 
             if (approvers.department === tempDepartment && approvers.subDepartment === tempSubDepartment) {
-              console.log(approvers);
+              // console.log(approvers);
               tempApproversData = approvers;
               errorFlag = false;
               web.getUserById(tempApproversData.vpId).get().then(result => {
@@ -509,7 +483,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               // if (tempApproversData.DirectorId) {
                 web.getUserById(tempApproversData.DirectorId).get().then(result => {
                   tempDirectorData = result;
-                  console.log(tempDirectorData);
+                  // console.log(tempDirectorData);
 
                   // check if director
                   if (userId === tempDirectorData.Id) {
@@ -537,14 +511,15 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 web.getUserById(tempApproversData.teamLeadId).get().then(result => {
                   tempTeamLeadData = result;
                   
-                  console.log(tempTeamLeadData);
+                  // console.log(tempTeamLeadData);
 
                   // check if director
                   if (userId === tempTeamLeadData.Id) {
                     // mark as true
                     this.setState({
                       isTeamLead: true,
-                      sendMailToTeamLead: false
+                      sendMailToTeamLead: false,
+                      
                     }, () => {
                       console.log("im TeamLead");
 
@@ -566,10 +541,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
           })
           this.setState({
             FormSubmitError: errorFlag
-          }, () => {
-            console.log("error flag is on : approvals list didnt contains youre subDep and Dep ");
-
-            return;
           })
           web.lists.getById(this.props.moneyTypesListId).items.get().then(result => {
             tempMoneyTypeArr = result;
@@ -583,7 +554,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                   // get unit options
                   web.lists.getById(this.props.unitListId).items.get().then(result => {
                     tempUnitArr = [...result.map(item => item.Title), "בחר"];
-                    console.log(tempUnitArr);
+                    // console.log(tempUnitArr);
                     web.lists.getById(this.props.buyersListId).items.get().then(result => {
                       tempBuyers = [...result.map(buyer => buyer.buyerName), 'בחר']
 
@@ -1708,7 +1679,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 principalTypes={[PrincipalType.User]}
                                 ensureUser={true}
                                 resolveDelay={1000}
-                                defaultSelectedUsers={[this.state.managerEmail]}
+                                defaultSelectedUsers={[this.state.teamLeadData.Email ? this.state.teamLeadData.Email : null]}
                               />
                               {this.state.CheckerNameValidationError ?
                                 <Fade in={this.state.CheckerNameValidationError} tag="h5" className="mt-3 ValidationError">
