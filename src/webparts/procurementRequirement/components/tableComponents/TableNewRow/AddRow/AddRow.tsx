@@ -100,14 +100,14 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
     let validated = true;
     // console.log('out');
     let tempIdentyfier: boolean,tempCompanyIdentyfire:boolean, tempAmount: boolean, tempPricePerUnit: boolean, tempdescription: boolean, tempDate: boolean , tempUnit:boolean;
-    if (this.state.identyfier === '' || this.state.identyfier === null) {
-      tempIdentyfier = true;
-      validated = false;
-    }
-    if (this.state.companyIdentyfier === '' || this.state.companyIdentyfier=== null) {
-      tempCompanyIdentyfire = true;
-      validated = false;
-    }
+    // if (this.state.identyfier === '' || this.state.identyfier === null) {
+    //   tempIdentyfier = true;
+    //   validated = false;
+    // }
+    // if (this.state.companyIdentyfier === '' || this.state.companyIdentyfier=== null) {
+    //   tempCompanyIdentyfire = true;
+    //   validated = false;
+    // }
 
     if (isNaN(this.state.amount) || this.state.amount === null || this.state.amount === 0) {
       tempAmount = true;

@@ -1525,7 +1525,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                   <KeyboardDatePicker
                                     margin="normal"
                                     id="date-picker-dialog"
-                                    label="תאריך ביקור"
+                                    label="תאריך יצירת הטופס"
                                     format="dd/MM/yyyy"
                                     value={this.state.VisitDate}
                                     onChange={(newValue: any) => {
@@ -1661,7 +1661,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </FormGroup>
                         </Col>
                       </Row>
-                      <Row form className="" style={{ marginTop: '30px' }}>
+                      {/* <Row form className="" style={{ marginTop: '30px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
                             <Col sm={1}></Col>
@@ -1690,7 +1690,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                             </Col>
                           </FormGroup>
                         </Col>
-                      </Row>
+                      </Row> */}
                       {/*  */}
                       <Row form className="">
                         <Col md={12} sm={12} >

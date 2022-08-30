@@ -102,9 +102,51 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
   };
   ValidateForm = () => {
     let validated = true;
+    // console.log('out');
+    let tempIdentyfier: boolean,tempCompanyIdentyfire:boolean, tempAmount: boolean, tempPricePerUnit: boolean, tempdescription: boolean, tempDate: boolean , tempUnit:boolean;
+    // if (this.state.identyfier === '' || this.state.identyfier === null) {
+    //   tempIdentyfier = true;
+    //   validated = false;
+    // }
+    // if (this.state.companyIdentyfier === '' || this.state.companyIdentyfier=== null) {
+    //   tempCompanyIdentyfire = true;
+    //   validated = false;
+    // }
 
-    // validate  (not empty)
-    // if ( this.state.year === null  && (this.state.FreeCashFlow === '' || this.state.FreeCashFlow === null) && (this.state.other === '' || this.state.other === null) && (this.state.totalAssets === '' || this.state.totalAssets === null) && (this.state.netSales === '' || this.state.netSales === null)) {
+    if (isNaN(this.state.amount) || this.state.amount === null || this.state.amount === 0) {
+      tempAmount = true;
+      validated = false;
+    }
+
+    if (isNaN(this.state.pricePerUnit) || this.state.pricePerUnit === null ||  this.state.pricePerUnit === 0) {
+      tempPricePerUnit = true;
+      validated = false;
+    }
+    if ( this.state.unit === null || this.state.unit === 'בחר' ||  this.state.unit === '') {
+      tempUnit = true;
+      validated = false;
+    }
+    if (this.state.description === '' || this.state.description === null) {
+      tempdescription = true;
+      validated = false;
+    }
+
+    if (this.state.date === null) {
+      tempDate = true;
+      validated = false;
+    }
+    this.setState({
+      validation: validated,
+      dateValidate: tempDate,
+      amontValidate: tempAmount,
+      pricePerUnitValidate: tempPricePerUnit,
+      descriptionValidate: tempdescription,
+      companyIdentyfierValidate: tempCompanyIdentyfire,
+      identyfierValidate:tempIdentyfier,
+      unitValidation:tempUnit
+    })
+    // // validate  (not empty)
+    // if ( this.state.date === null  && (this.state.identyfier === 0 || this.state.identyfier === null) && (this.state.other === '' || this.state.other === null) && (this.state.totalAssets === '' || this.state.totalAssets === null) && (this.state.netSales === '' || this.state.netSales === null)) {
     //   console.log('in');
 
     //   this.setState({
@@ -113,9 +155,13 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
     //   validated = false;
     // }
 
-    // //validate year  
+
+    // console.log(this.state.year+'' !== '');
+    // console.log((this.state.year+'').length);
+
     // if (this.state.year && (this.state.year <= 1950)) {
     //   validated = false;
+    //   console.log('in');
 
     //   this.setState({ yearValidate: true })
     // }
