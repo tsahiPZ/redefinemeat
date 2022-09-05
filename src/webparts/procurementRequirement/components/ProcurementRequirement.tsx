@@ -548,7 +548,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               tempDepartmentsArr = result;
               web.lists.getById(this.props.approversListsData).items.get().then(result => {
                 tempApproversArr = result;
-                web.lists.getById(this.props.suppliersListId).items.get().then(result => {
+                web.lists.getById(this.props.suppliersListId).items.getAll().then(result => {
                   tempSupplierArr = result;
 
                   // get unit options

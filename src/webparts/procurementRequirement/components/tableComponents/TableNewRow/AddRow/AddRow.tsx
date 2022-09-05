@@ -46,7 +46,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
     this.state = {
       modal: false,
       identyfier: '',
-      amount: 0,
+      amount: 1,
       pricePerUnit: 0,
       cost: 0,
       description: '',
@@ -78,7 +78,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
       unit:'',
       modal: !this.state.modal,
       identyfier: '',
-      amount: 0,
+      amount: 1,
       pricePerUnit: 0,
       cost: 0,
       description: '',
@@ -138,7 +138,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
       pricePerUnitValidate: tempPricePerUnit,
       descriptionValidate: tempdescription,
       companyIdentyfierValidate: tempCompanyIdentyfire,
-      identyfierValidate:tempIdentyfier,
+      // identyfierValidate:tempIdentyfier,
       unitValidation:tempUnit
     })
     // // validate  (not empty)
@@ -364,6 +364,7 @@ export default class AddRow extends React.Component<IAddRowProps, IAddRowStates>
                         value={this.state.amount}
                         onChange={this.onChange}
                         type='number'
+                        defaultValue={1}
                         size="small"
                         fullWidth
                         error={this.state.amontValidate}

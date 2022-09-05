@@ -142,7 +142,7 @@ componentDidUpdate(prevProps: Readonly<IEditRowProps>, prevState: Readonly<IEdit
       pricePerUnitValidate: tempPricePerUnit,
       descriptionValidate: tempdescription,
       companyIdentyfierValidate: tempCompanyIdentyfire,
-      identyfierValidate:tempIdentyfier,
+      // identyfierValidate:tempIdentyfier,
       unitValidation:tempUnit
     })
     // // validate  (not empty)
