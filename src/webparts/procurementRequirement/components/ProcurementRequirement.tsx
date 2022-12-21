@@ -1104,7 +1104,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       let web = Web(this.props.WebUri);
 
       if (this.state.FormId !== null && this.state.FormId !== undefined && this.state.FormId !== 0 && !isNaN(this.state.FormId)) {
-
         let FormUrl = "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx" + "?FormID=" + this.state.FormId.toString();
         const itemToUpdate = this.GetItemToSave()
 
@@ -1160,7 +1159,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             });
             if (OnClick) {
               // If butten save was clicked
-              this.CloseTheForm();
+              if(this.state.MoreDataFiles1.length === 0 )
+              {
+                this.CloseTheForm();
+              }
             } else {
               this.setState({
                 FormId: AddResult.data.ID
