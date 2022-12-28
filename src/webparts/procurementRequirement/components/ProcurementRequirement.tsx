@@ -481,59 +481,59 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                 });
               })
               // if (tempApproversData.DirectorId) {
-                web.getUserById(tempApproversData.DirectorId).get().then(result => {
-                  tempDirectorData = result;
-                  // console.log(tempDirectorData);
+              web.getUserById(tempApproversData.DirectorId).get().then(result => {
+                tempDirectorData = result;
+                // console.log(tempDirectorData);
 
-                  // check if director
-                  if (userId === tempDirectorData.Id) {
-                    // mark as true
-                    this.setState({
-                      isDirector: true,
-                      sendMailToDirector: false,
-                      sendMailToTeamLead: false
-                    }, () => {
-                      console.log("im director");
-
-                    })
-                  }
-                }).catch(Err => {
-                  console.log(Err);
-                  // here Error modal
-                  // test this sfter finish changes
+                // check if director
+                if (userId === tempDirectorData.Id) {
+                  // mark as true
                   this.setState({
-                    noDirector: true
-                  });
-                })
+                    isDirector: true,
+                    sendMailToDirector: false,
+                    sendMailToTeamLead: false
+                  }, () => {
+                    console.log("im director");
+
+                  })
+                }
+              }).catch(Err => {
+                console.log(Err);
+                // here Error modal
+                // test this sfter finish changes
+                this.setState({
+                  noDirector: true
+                });
+              })
               // }
 
               // if (tempApproversData.teamLeadId) {
-                web.getUserById(tempApproversData.teamLeadId).get().then(result => {
-                  tempTeamLeadData = result;
-                  
-                  // console.log(tempTeamLeadData);
+              web.getUserById(tempApproversData.teamLeadId).get().then(result => {
+                tempTeamLeadData = result;
 
-                  // check if director
-                  if (userId === tempTeamLeadData.Id) {
-                    // mark as true
-                    this.setState({
-                      isTeamLead: true,
-                      sendMailToTeamLead: false,
-                      
-                    }, () => {
-                      console.log("im TeamLead");
+                // console.log(tempTeamLeadData);
 
-                    })
-                  }
-                }).catch(Err => {
-                  console.log(Err);
-                  // here Error modal
-                  // test this sfter finish changes
+                // check if director
+                if (userId === tempTeamLeadData.Id) {
+                  // mark as true
                   this.setState({
-                    noTeamLead: true,
-                    sendMailToTeamLead: false
-                  });
-                })
+                    isTeamLead: true,
+                    sendMailToTeamLead: false,
+
+                  }, () => {
+                    console.log("im TeamLead");
+
+                  })
+                }
+              }).catch(Err => {
+                console.log(Err);
+                // here Error modal
+                // test this sfter finish changes
+                this.setState({
+                  noTeamLead: true,
+                  sendMailToTeamLead: false
+                });
+              })
               // }
 
             }
@@ -888,7 +888,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         console.log(this.state.sendMailToVp);
         this.SaveForm(true)
 
-       
+
       })
       return;
     }
@@ -914,8 +914,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       })
       return;
     }
-    if (globalCost > this.state.directorScale 
-      || (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector === true) 
+    if (globalCost > this.state.directorScale
+      || (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector === true)
       || (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead === true)) {
       console.log("here vp");
 
@@ -924,7 +924,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
         vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',
         sendMailToDirector: !this.state.isDirector && this.state.noDirector !== true,
-        sendMailToTeamLead: (this.state.isDirector  || this.state.isTeamLead) || this.state.noTeamLead === true ? false : true,
+        sendMailToTeamLead: (this.state.isDirector || this.state.isTeamLead) || this.state.noTeamLead === true ? false : true,
         sendMailToVp: true,
         // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
       }, () => {
@@ -972,8 +972,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       noTeamLead: this.state.noTeamLead,
       noDirector: this.state.noDirector,
       moneyType: this.state.moneyTypeChosen,
-      teamLeadFullName:  this.state.noTeamLead !== true ? this.state.teamLeadData.Title:'',
-      directorFullName: this.state.noDirector !== true ?this.state.directorData.Title:'',
+      teamLeadFullName: this.state.noTeamLead !== true ? this.state.teamLeadData.Title : '',
+      directorFullName: this.state.noDirector !== true ? this.state.directorData.Title : '',
       vpFullName: this.state.vpData.Title,
       creatorEmail: this.state.userData.Email,
       creatorFullName: this.state.userData.Title,
@@ -993,9 +993,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
 
   ValidateForm = () => {
-    // console.log('VisitDate: ' + this.state.VisitDate + " DayCareName: " + this.state.DayCareName + " CheckerEmail: " + this.state.CheckerEmail);
-    let supplierValidation: boolean = false, elseSupplierValidation: boolean = false;
-    let validated: boolean = true;
+    // Validate form Variable 
+    // set flags 
+    let supplierValidation: boolean = false, elseSupplierValidation: boolean = false, validated: boolean = true;
+    // start validation process
     if (this.state.supplier === "בחר" || this.state.supplier === "") {
       supplierValidation = true;
       validated = false;
@@ -1035,7 +1036,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       validated = false;
 
     }
-
+    // set state validtions variable
     this.setState({
       supplierValidation: supplierValidation,
       moneyTypeValidation: moneyTypeValidation,
@@ -1049,7 +1050,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
     return validated
   }
-
+  // convert Date format to adapted format
   ConvertToDisplayDate = () => {
     let ReleventDate = this.state.VisitDate;
     let dd = String(ReleventDate.getDate());
@@ -1078,6 +1079,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         IsSaving: true
       });
     }
+    // set vars for file uploading and push 
     let fileInfos: IAttachmentFileInfo[] = [];
     for (let i = 0; this.state.MoreDataFiles1.length > i; i++) {
       let File = this.state.MoreDataFiles1[i];
@@ -1100,9 +1102,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       })(File);
       reader.readAsArrayBuffer(File);
     }
+    // check validation func
     if (this.ValidateForm()) {
+      // set web variable
       let web = Web(this.props.WebUri);
-
+      //check if we have form id  
       if (this.state.FormId !== null && this.state.FormId !== undefined && this.state.FormId !== 0 && !isNaN(this.state.FormId)) {
         let FormUrl = "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx" + "?FormID=" + this.state.FormId.toString();
         const itemToUpdate = this.GetItemToSave()
@@ -1131,11 +1135,13 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         });
 
       } else {
-
+        // get object to save 
         const itemToSave = this.GetItemToSave()
-        console.log('itemToSave:', itemToSave)
+        //console.log('itemToSave:', itemToSave)// test
+        // add new object
         web.lists.getById(this.props.saveToTableId).items.add(itemToSave).then(AddResult => {
-          console.log('AddResult:', AddResult)
+          // console.log('AddResult:', AddResult) //test
+          // set Form link col
           web.lists.getById(this.props.saveToTableId).items.getById(AddResult.data.ID).update({
             formLink: {
               "__metadata": { "type": "SP.FieldUrlValue" },
@@ -1143,7 +1149,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               "Url": "https://newmeat.sharepoint.com/sites/HQ/SitePages/EditProcurementRequirementForm.aspx" + "?FormID=" + AddResult.data.ID
             }
           }).then(UpdateResult => {
-            console.log('UpdateResult:', UpdateResult)
+            // console.log('UpdateResult:', UpdateResult)//test
+            // upload file 
             web.lists.getById(this.props.saveToTableId).items.getById(AddResult.data.ID).attachmentFiles.addMultiple(fileInfos).then(Item => {
               this.CloseTheForm();
             }).catch(Err => {
@@ -1159,8 +1166,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             });
             if (OnClick) {
               // If butten save was clicked
-              if(this.state.MoreDataFiles1.length === 0 )
-              {
+              if (this.state.MoreDataFiles1.length === 0) {
                 this.CloseTheForm();
               }
             } else {
@@ -1217,8 +1223,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     return Field ? true : false
   }
 
-  Sum = (...para) => para.reduce((d, b) => d + b);
-
+  // Sum = (...para) => para.reduce((d, b) => d + b);
+  
   SetVisitDateValue = (VisitDate: Date | null) => {
     if (VisitDate) {
       let VisitDateMonth = VisitDate.getMonth();
@@ -1341,6 +1347,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       }
     }
   }
+  // set money chosen type 
   SetMoneyTypeValue = (type: string) => {
     if (type !== null && type !== '') {
       if (type !== '' && type !== 'בחר') {
@@ -1351,26 +1358,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  // SetScoreValue = (FieldName: string, ScoreValue: string) => {
-  //   // console.log('ScoreValue:', ScoreValue);
-  //   // console.log('FieldName:', FieldName);
 
-  //   if (ScoreValue === null) {
-  //     this.setState(PrevState => ({
-  //       ...PrevState,
-  //       [FieldName]: null,
-  //       ValidationError: false
-  //     }));
-
-  //   } else {
-  //     this.setState(PrevState => ({
-  //       ...PrevState,
-  //       [FieldName]: ScoreValue,
-  //       ValidationError: false
-  //     }));
-
-  //   }
-  // }
 
   ToggleModal = () => {
     this.setState({ IsModalOpen: !this.state.IsModalOpen })
@@ -1384,8 +1372,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
           CheckerEmail: item.Email.toLowerCase(),
           CheckerNameValidationError: false,
           ValidationError: false,
-        }, () => {
-          console.log(this.state.CheckerEmail);
         });
       } else {
         this.setState({
@@ -2195,9 +2181,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </div>
                           : <div></div>}
 
-                        {this.approvalsWhoTakePart('vp', this.state.cost) 
-                        ||(this.approvalsWhoTakePart('director', this.state.cost) && this.state.noDirector ) 
-                        || (this.state.noDirector && this.state.noTeamLead)?
+                        {this.approvalsWhoTakePart('vp', this.state.cost)
+                          || (this.approvalsWhoTakePart('director', this.state.cost) && this.state.noDirector)
+                          || (this.state.noDirector && this.state.noTeamLead) ?
 
 
                           <Row form style={{ marginTop: '10px' }}>
