@@ -30,6 +30,7 @@ export interface IProcurementRequirementWebPartProps {
   saveToTableId:string;
   unitListId:string;
   buyersListId:string;
+  financeDirectorAndCeoDataList:string;
 }
 
 export default class ProcurementRequirementWebPart extends BaseClientSideWebPart<IProcurementRequirementWebPartProps> {
@@ -53,7 +54,8 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
         sumGapsListId:this.properties.sumGapsListId,
         saveToTableId:this.properties.saveToTableId,
         unitListId:this.properties.unitListId,
-        buyersListId:this.properties.buyersListId
+        buyersListId:this.properties.buyersListId,
+        financeDirectorAndCeoDataList:this.properties.financeDirectorAndCeoDataList
       }
     );
 
@@ -96,6 +98,9 @@ export default class ProcurementRequirementWebPart extends BaseClientSideWebPart
                 }),
                 PropertyPaneTextField('approversListsData', {
                   label: "Approvers List Id"
+                }),
+                PropertyPaneTextField('financeDirectorAndCeoDataList', {
+                  label: "Finance Director and CEO data List Id"
                 }),
                 PropertyPaneTextField('suppliersListId', {
                   label: "Suppliers List Id"

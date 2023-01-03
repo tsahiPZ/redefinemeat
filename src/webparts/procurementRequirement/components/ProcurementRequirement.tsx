@@ -98,11 +98,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       CheckerEmail: '',
       DirectorId: null,
       DirectorEmail: '',
-      NumberOfMeals: null,
-      GeneralImpression: '',
-      LabResultsFindings: '',
-      LabResultsRisk: '',
-      LabResultsSuggestions: '',
+      // NumberOfMeals: null,
+      // GeneralImpression: '',
+      // LabResultsFindings: '',
+      // LabResultsRisk: '',
+      // LabResultsSuggestions: '',
       HelperName: '',
       cooker: '',
       Baby: null,
@@ -167,6 +167,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       MoreDataFiles1: [],
       MoreDataFilesProps1: [],
       FileNameError: false,
+      moneyTypeAndValue: [],
       moneyTypeArr: [],
       moneyTypeChosen: 'בחר',
       TermsOfPayment: 'שוטף 30',
@@ -185,28 +186,52 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       managerEmail: '',
       managerId: '',
       Status: 'עדיין לא הופץ',
+      // signs test
+      financeDirectorSign: '',
+      ceoSign: '',
       teamLeadSign: '',
       vpSign: '',
       directorSign: '',
+      // managers data
+      ceoData: null,
+      financeDirectorData: null,
       directorData: null,
       teamLeadData: null,
       userData: null,
       vpData: null,
+      // status
       teamLeadStatus: '',
       directorStatus: '',
       vpStatus: '',
+      financeDirectorStatus: '',
+      ceoStatus: '',
+      // comments
       temaLeadComment: '',
       directorComment: '',
       vpComment: '',
+      financeDirectorComment: '',
+      ceoComment: '',
+      // scales
       vpScale: 0,
       directorScale: 0,
+      financeDirectorScale: 0,
+      ceoScale: 0,
       teamLeaderScale: 0,
+      // manager flags
+      isCeo: false,
+      isFinanceDirector: false,
       isTeamLead: false,
       isDirector: false,
       isVp: false,
+      // ===========
       noTeamLead: false,
       noDirector: false,
       noVp: false,
+      noFinanceDirector: false,
+      noCeo: false,
+      // send mail flags
+      sendMailToCeo: false,
+      sendMailToFinanceDirector: false,
       sendMailToTeamLead: false,
       sendMailToDirector: false,
       sendMailToVp: false,
@@ -220,10 +245,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       elseSupplierValidation: false,
       elseSupplierName: '',
       elseSupplierNumber: '',
+      // =====unit and buyer ==========
       unitOptions: [],
       buyersOptions: [],
-      buyerName: 'בחר'
-
+      buyerName: 'בחר',
+      costInDollar: 0
     };
   }
   // table functions
@@ -240,8 +266,87 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       console.log(this.state.tableRows);
     })
 
+  }
 
+  getCeoAndFinanceDirector = () => {
+    const web = Web(this.props.WebUri);
+    console.log(this.props.financeDirectorAndCeoDataList);
+    web.currentUser.get().then(myAcc => {
+      console.log(myAcc);
+      let userData = myAcc;
+      let userId = myAcc.Id
+      //get financeDirector list data 
+      web.lists.getById(this.props.financeDirectorAndCeoDataList).items.get().then(result => {
+        console.log("here:", result[0]);
+        let approversData: any = result;
+        let financeDirectorData: any, ceoData: any;
+        // get ceo data
+        web.getUserById(approversData[0].ceoId).get().then(result => {
+          ceoData = result;
+          // check if CEO
+          if (userId === ceoData.Id) {
+            // mark as true
+            this.setState({
+              isCeo: true,
+              sendMailToDirector: false,
+              sendMailToVp: false,
+              sendMailToTeamLead: false,
+              sendMailToFinanceDirector: false,
+              sendMailToCeo: false,
+              ceoData: ceoData
+            }, () => {
+              console.log("im Ceo");
+            })
+          } else {
+            this.setState({ ceoData: ceoData }, () => {
+              console.log("Not a CEO");
 
+            })
+          }
+        }).catch(Err => {
+          console.log(Err);
+          // here Error modal
+          this.setState({
+            FormSubmitError: true
+          });
+        })
+        // get financeDirector data
+        web.getUserById(approversData[0].financeDirectorId).get().then(result => {
+          financeDirectorData = result;
+          // check if CEO
+
+          if (userId === financeDirectorData.Id) {
+            // mark as true
+            this.setState({
+              isFinanceDirector: true,
+              sendMailToDirector: false,
+              sendMailToVp: false,
+              sendMailToTeamLead: false,
+              sendMailToFinanceDirector: false,
+              sendMailToCeo: true,
+              financeDirectorData: financeDirectorData
+            }, () => {
+              console.log("im finance director");
+            })
+          } else {
+            this.setState({ financeDirectorData: financeDirectorData }, () => {
+              console.log("Not a financeDirector");
+            })
+          }
+        }).catch(Err => {
+          console.log(Err);
+          // here Error modal
+          this.setState({
+            FormSubmitError: true
+          });
+        })
+      }).catch(error => {
+        console.log(error);
+      })
+    }).catch(Err => {
+      console.log(Err);
+
+    })
   }
 
   updateItem = (newData: any) => {
@@ -293,48 +398,66 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
       sum += element.cost;
     });
-    if (sum >= this.state.vpScale) {
 
-    }
+    console.log(this.state.moneyTypeChosen);
+
+
+    // let tempMoneyArr : Array<any> = this.state.moneyTypeAndValue;
+
+    // switch(this.state.moneyTypeChosen)
+    // {
+    //   case 'יורו':
+    //     let tempValueUro : any = tempMoneyArr.filter( e => e.Title === 'יורו')
+    //     console.log(tempValueUro);
+
+    //     let tempValueIls : any = tempMoneyArr.filter( e => e.Title === 'שקל')
+    //     console.log(tempValueIls);
+
+    //     sum = (sum/Number(tempValueIls.value)) * Number(tempValueUro[0].value);
+    //     console.log("sum in dollar" , sum);
+
+    // }
     this.setState({
       cost: sum
-    }, () => {
-      // console.log(this.state.cost);
-
     })
   }
 
   // ============== End tableFunctions ============== 
 
   approvalsWhoTakePart = (title: string, price: number) => {
-    if (title === 'vp' && price > this.state.directorScale) {
-      return true;
-    }
-    if (title === 'director' && price > this.state.teamLeaderScale) {
-      return true;
+    switch (title) {
+      case 'ceo':
+        if (price > this.state.ceoScale) {
+          return true;
+        }
+        break;
+      case 'financeDirector':
+        if (price > this.state.financeDirectorScale) {
+          return true;
+        }
+        break;
+      case 'vp':
+        if (price > this.state.directorScale) {
+          return true;
+        }
+        break;
+      case 'director':
+        if (price > this.state.teamLeaderScale) {
+          return true;
+        }
+        break;
     }
   }
 
 
   // file upload functions
-
   handleUploadFile = e => {
-
     console.log('other file');
     const Allfiles = e.target.files;
     let FilesProperties = []
     let Files = [];
     let IDCounter = this.state.MoreDataFilesProps1.length;
     console.log(Allfiles.length);
-
-    // If there are any files
-    // if (Allfiles && Allfiles.length > 0) {
-    //   // Create Files Properties Array
-    //   for (let i = 0; Allfiles.length > i; i++) {
-    //     FilesProperties.push({ ID: IDCounter.toString(), FileName: Allfiles[i].name, FileType: Allfiles[i].type });
-    //     Files.push(Allfiles[i]);
-    //     IDCounter++;
-    //   }
     FilesProperties.push({ ID: '0', FileName: Allfiles[0].name, FileType: Allfiles[0].type });
     Files.push(Allfiles[0]);
     this.setState({
@@ -342,18 +465,14 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       MoreDataFilesProps1: FilesProperties,
       FileNameError: false,
     });
-
     e.target.value = null;
   }
-
-
 
   // Triger system default File picker
   TriggerUploadFiles = e => {
     e.preventDefault();
     document.getElementById("MoreDataFiles1").click()
   }
-
 
   RemoveFile = (ID: string) => {
     let FilesProperties = [...this.state.MoreDataFilesProps1]
@@ -375,6 +494,36 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
   }
   // ============= files upload functions END =====================
+  componentDidUpdate(prevProps: Readonly<IProcurementRequirementProps>, prevState: Readonly<IProcurementRequirementState>, snapshot?: any): void {
+    if (prevState.moneyTypeChosen !== this.state.moneyTypeChosen || prevState.cost !== this.state.cost) {
+      if (this.state.cost != 0) {
+
+        let globalCost = this.state.cost, costInDollar: number, dollar: number = 0.00, tempMoneyTypeChosenValue: number = 1.00;
+        this.state.moneyTypeAndValue.forEach(element => {
+          if (element.Title === 'דולר') {
+            dollar = element.value;
+          }
+          if (element.Title === this.state.moneyTypeChosen) {
+            tempMoneyTypeChosenValue = element.value;
+          }
+        });
+        if (this.state.moneyTypeChosen !== "דולר") {
+          costInDollar = (this.state.cost * tempMoneyTypeChosenValue) / dollar
+          console.log(costInDollar);
+          this.setState({
+            costInDollar: costInDollar
+          })
+        } else {
+          this.setState({
+            costInDollar: this.state.cost
+          })
+        }
+
+      }
+      this.calcCosts();
+
+    }
+  }
   componentDidMount = () => {
     this.setState({
       // FormIsActiveStatus: true,//  delete at finishes
@@ -386,27 +535,16 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     // }, this.ResetForm);
     this.StartNewForm();
     this.SetVisitDateValue(new Date())
-
+    this.getCeoAndFinanceDirector();
   }
   StartNewForm = () => {
     // get current user
     const web = Web(this.props.WebUri);
-    let tempSupplierArr: Array<any> = [];
-    let tempUnitArr: Array<any> = [];
-    let tempApproversArr: Array<any> = [];
-    let tempEmployeeDataArr: Array<any> = [];
-    let tempMoneyTypeArr: Array<any> = [];
-    let tempDepartmentsArr: Array<any> = [];
-    let userId: number, userData: any;
-    let tempMangerId: number;
-    let tempDepartment: string;
-    let tempSubDepartment: string;
-    let tempMangerEmail: string;
-    let tempDirectorData: any, tempVpData: any, tempTeamLeadData: any;
-    let tempApproversData: any;
-    let vpScale: number, directorScale: number, teamLeadScale: number, scalesArr: Array<any>;
-    let tempBuyers: Array<string>;
-    web.getUserById
+    let tempSupplierArr: Array<any> = [], tempUnitArr: Array<any> = [], tempApproversArr: Array<any> = [], tempEmployeeDataArr: Array<any> = [], tempMoneyTypeArr: Array<any> = []
+      , tempDepartmentsArr: Array<any> = [], userId: number, userData: any, tempDepartment: string, tempSubDepartment: string, tempMangerEmail: string, tempDirectorData: any, tempVpData: any
+      , tempTeamLeadData: any, tempApproversData: any, vpScale: number, directorScale: number, teamLeadScale: number, scalesArr: Array<any>, tempBuyers: Array<string>, financeDirectorScale: number, ceoScale: number;
+
+    // web.getUserById
     web.currentUser.get().then(result => {
       // console.log(result);
       userData = result;
@@ -428,6 +566,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
             }
           }
         })
+
         // get managers scales
         web.lists.getById(this.props.sumGapsListId).items.get().then(result => {
           // set Scales
@@ -435,6 +574,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
           teamLeadScale = scalesArr[0].TeamLead;
           directorScale = scalesArr[0].Director;
           vpScale = scalesArr[0].VP;
+          financeDirectorScale = scalesArr[0].FinanceDirector;
+          ceoScale = scalesArr[0].CEO
         }).catch(Err => {
           console.log(Err);
           // here Error modal
@@ -445,19 +586,14 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         })
         web.lists.getById(this.props.approversListsData).items.get().then(result => {
           let errorFlag: boolean = true;
-          console.log(result);
+          // console.log(result);//test
           tempApproversArr = result;
           tempApproversArr.forEach(approvers => {
-            // console.log(approvers.department);
-            // console.log(approvers.subDepartment);
-            // console.log(tempDepartment);
-            // console.log(tempSubDepartment);
-
-
             if (approvers.department === tempDepartment && approvers.subDepartment === tempSubDepartment) {
               // console.log(approvers);
               tempApproversData = approvers;
               errorFlag = false;
+              // get vp data
               web.getUserById(tempApproversData.vpId).get().then(result => {
                 tempVpData = result;
                 // check if Vp
@@ -480,7 +616,30 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                   FormSubmitError: true
                 });
               })
-              // if (tempApproversData.DirectorId) {
+              // get vp data
+              web.getUserById(tempApproversData.vpId).get().then(result => {
+                tempVpData = result;
+                // check if Vp
+                if (userId === tempVpData.Id) {
+                  // mark as true
+                  this.setState({
+                    isVp: true,
+                    sendMailToDirector: false,
+                    sendMailToVp: false,
+                    sendMailToTeamLead: false
+                  }, () => {
+                    console.log("im vp");
+
+                  })
+                }
+              }).catch(Err => {
+                console.log(Err);
+                // here Error modal
+                this.setState({
+                  FormSubmitError: true
+                });
+              })
+              // get director data
               web.getUserById(tempApproversData.DirectorId).get().then(result => {
                 tempDirectorData = result;
                 // console.log(tempDirectorData);
@@ -507,7 +666,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               })
               // }
 
-              // if (tempApproversData.teamLeadId) {
+              // get team lead data
               web.getUserById(tempApproversData.teamLeadId).get().then(result => {
                 tempTeamLeadData = result;
 
@@ -562,6 +721,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         supplierArr: [...tempSupplierArr.map(item => item.Title), "בחר", "אחר"],
                         approversArr: tempApproversArr,
                         deparmentsArr: tempDepartmentsArr.map(dep => dep.department),
+                        moneyTypeAndValue: tempMoneyTypeArr,
                         moneyTypeArr: [...tempMoneyTypeArr.map(item => item.Title), "בחר"],
                         employeeArr: tempEmployeeDataArr,
                         department: tempDepartment,
@@ -576,27 +736,16 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         teamLeaderScale: teamLeadScale,
                         directorScale: directorScale,
                         vpScale: vpScale,
+                        financeDirectorScale: financeDirectorScale,
+                        ceoScale: ceoScale,
                         userData: userData,
                         unitOptions: [...tempUnitArr],
                         buyersOptions: tempBuyers
                       }, () => {
-                        // tests
-                        // console.log(this.state.supplierArr);
-                        // console.log(this.state.approversArr);
-                        // console.log(this.state.deparmentsArr);
-                        // console.log(this.state.moneyTypeArr);
-                        // console.log(this.state.employeeArr);
-                        // console.log(tempTeamLeadData);
-                        // console.log(tempDirectorData);
-                        // console.log(tempVpData);
-                        // console.log(this.state.teamLeaderScale);
-                        // console.log(this.state.directorScale);
-                        // console.log(this.state.vpScale);
-                        console.log(this.state.unitOptions);
+                        console.log("ceoScale:", this.state.ceoScale);
+                        console.log("financeDirectorScale:", this.state.financeDirectorScale);
+                        // console.log(this.state.unitOptions);//test
 
-                        // this.setState({
-                        //   FormSubmitError:true
-                        // })
                       })
                     }).catch(Err => {
                       console.log(Err);
@@ -669,14 +818,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   AutoSave = () => {
     if (this.props.FormAutoSaveTiming !== null && !isNaN(this.props.FormAutoSaveTiming)) {
       setInterval(() => {
-        // console.log('AutoSave triggered.');
-        // console.log("VisitDate:  " + this.state.VisitDate);
-        // console.log("DayCareName:  " + this.state.DayCareName);
-        // console.log("CheckerEmail:  " + this.state.CheckerEmail);
-        // console.log("Baby:  " + this.state.Baby);
-        // console.log("child:  " + this.state.child);
-        // console.log("adult:  " + this.state.adult);
-
         if ((this.state.VisitDate !== null && this.state.VisitDate !== undefined && !isNaN(this.state.VisitDate.getTime())) &&
           (this.state.DayCareName !== null && this.state.DayCareName !== '' && this.state.CheckerEmail !== ''
             && this.state.CheckerEmail !== null && this.state.Baby !== null && this.state.child !== null && this.state.adult !== null)) {
@@ -713,134 +854,134 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  ResetForm = async () => {
-    try {
-      // Get Current Web
+  // ResetForm = async () => {
+  //   try {
+  //     // Get Current Web
 
-      let web = Web(this.props.WebUri);
+  //     let web = Web(this.props.WebUri);
 
-      const Fields = await web.lists.getByTitle(this.props.sections).items.select('Title, Label, Section, IsCritical').getAll()
-      console.log('Fields:', Fields)
+  //     const Fields = await web.lists.getByTitle(this.props.sections).items.select('Title, Label, Section, IsCritical').getAll()
+  //     console.log('Fields:', Fields)
 
-      const TooLongNameFields = Fields.filter(Field => Field.Title.length >= 32)
-      console.log('TooLongNameFields:', TooLongNameFields)
+  //     const TooLongNameFields = Fields.filter(Field => Field.Title.length >= 32)
+  //     console.log('TooLongNameFields:', TooLongNameFields)
 
-      const FieldsData = await Fields.reduce((Acc, CurrName) => {
+  //     const FieldsData = await Fields.reduce((Acc, CurrName) => {
 
-        if (!Acc[CurrName.Section]) {
-          Acc[CurrName.Section] = {}
-        }
+  //       if (!Acc[CurrName.Section]) {
+  //         Acc[CurrName.Section] = {}
+  //       }
 
-        if (Acc[CurrName.Section]) {
-          Acc[CurrName.Section][CurrName.Title] = {
-            Title: CurrName.Title,
-            Section: CurrName.Section,
-            Label: CurrName.Label,
-            details: '',
-            Suggestions: '',
-            Score: '',
-            IsCritical: CurrName.IsCritical
-          }
-        }
+  //       if (Acc[CurrName.Section]) {
+  //         Acc[CurrName.Section][CurrName.Title] = {
+  //           Title: CurrName.Title,
+  //           Section: CurrName.Section,
+  //           Label: CurrName.Label,
+  //           details: '',
+  //           Suggestions: '',
+  //           Score: '',
+  //           IsCritical: CurrName.IsCritical
+  //         }
+  //       }
 
-        return Acc
-      }, {})
+  //       return Acc
+  //     }, {})
 
 
-      console.log('FieldsData:', FieldsData)
+  //     console.log('FieldsData:', FieldsData)
 
-      console.log('Object.keys(this.state.FieldsData):', Object.keys(FieldsData['1']))
+  //     console.log('Object.keys(this.state.FieldsData):', Object.keys(FieldsData['1']))
 
-      // Set Today Date
-      let today = new Date();
-      let mm = String(today.getMonth() + 1); //January is 0!
-      let VisitDateMonthHeb = this.state.HebrewMonthes[parseInt(mm) - 1];
+  //     // Set Today Date
+  //     let today = new Date();
+  //     let mm = String(today.getMonth() + 1); //January is 0!
+  //     let VisitDateMonthHeb = this.state.HebrewMonthes[parseInt(mm) - 1];
 
-      var DaysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  //     var DaysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
-      console.log('DaysInMonth:', DaysInMonth)
+  //     console.log('DaysInMonth:', DaysInMonth)
 
-      const DayCares = await this.GetDayCaresList()
-      const DayCaresItems = DayCares.map(DayCare => DayCare.Title).sort();
+  //     const DayCares = await this.GetDayCaresList()
+  //     const DayCaresItems = DayCares.map(DayCare => DayCare.Title).sort();
 
-      const MonthStartDate = new Date(today.getFullYear(), today.getMonth(), 1)
-      console.log('MonthStartDate:', MonthStartDate)
+  //     const MonthStartDate = new Date(today.getFullYear(), today.getMonth(), 1)
+  //     console.log('MonthStartDate:', MonthStartDate)
 
-      const MonthLastDate = new Date(today.getFullYear(), today.getMonth(), DaysInMonth)
-      console.log('MonthLastDate:', MonthLastDate)
+  //     const MonthLastDate = new Date(today.getFullYear(), today.getMonth(), DaysInMonth)
+  //     console.log('MonthLastDate:', MonthLastDate)
 
-      this.setState({
-        VisitDate: today,
-        VisitMonthInHebrew: VisitDateMonthHeb,
-        DayCareOptions: DayCaresItems,
-        ListOfDayCares: DayCares,
-        FieldsData
-      }, () => {
-        clearInterval(this.state.LoadingInterval)
-        console.log('this.state.LoadingTime:', this.state.LoadingTime)
-        const TimeOutDuration = this.state.LoadingTime >= 3400 ? 0 : 3400 - this.state.LoadingTime
-        console.log('TimeOutDuration:', TimeOutDuration)
-        setTimeout(() => {
-          this.setState({
-            IsLoading: false,
-            FormIsActiveStatus: true,
-          })
-        }, TimeOutDuration);
+  //     this.setState({
+  //       VisitDate: today,
+  //       VisitMonthInHebrew: VisitDateMonthHeb,
+  //       DayCareOptions: DayCaresItems,
+  //       ListOfDayCares: DayCares,
+  //       FieldsData
+  //     }, () => {
+  //       clearInterval(this.state.LoadingInterval)
+  //       console.log('this.state.LoadingTime:', this.state.LoadingTime)
+  //       const TimeOutDuration = this.state.LoadingTime >= 3400 ? 0 : 3400 - this.state.LoadingTime
+  //       console.log('TimeOutDuration:', TimeOutDuration)
+  //       setTimeout(() => {
+  //         this.setState({
+  //           IsLoading: false,
+  //           FormIsActiveStatus: true,
+  //         })
+  //       }, TimeOutDuration);
 
-        this.AutoSave()
-        "auto save is ON"
-        // Create all fields in sharepoint list.
-        // this.AddFields(Fields);
-      })
+  //       this.AutoSave()
+  //       "auto save is ON"
+  //       // Create all fields in sharepoint list.
+  //       // this.AddFields(Fields);
+  //     })
 
-    } catch (error) {
-      console.log('error:', error)
+  //   } catch (error) {
+  //     console.log('error:', error)
 
-    }
+  //   }
 
-  }
+  // }
 
-  WasMonthlyReviewPerformed = async (MonthStartDate, MonthLastDate) => {
-    console.log('MonthStartDate:', MonthStartDate)
-    console.log('MonthLastDate:', MonthLastDate)
-    try {
-      let web = Web(this.props.WebUri);
-      const FormsFilledThisMonth = await web.lists.getByTitle(this.props.listsData).items.filter(`VisitDate ge datetime'${MonthStartDate.toISOString()}' and VisitDate le datetime'${MonthLastDate.toISOString()}'`).get()
-      console.log('FormsFilledThisMonth:', FormsFilledThisMonth)
+  // WasMonthlyReviewPerformed = async (MonthStartDate, MonthLastDate) => {
+  //   console.log('MonthStartDate:', MonthStartDate)
+  //   console.log('MonthLastDate:', MonthLastDate)
+  //   try {
+  //     let web = Web(this.props.WebUri);
+  //     const FormsFilledThisMonth = await web.lists.getByTitle(this.props.listsData).items.filter(`VisitDate ge datetime'${MonthStartDate.toISOString()}' and VisitDate le datetime'${MonthLastDate.toISOString()}'`).get()
+  //     console.log('FormsFilledThisMonth:', FormsFilledThisMonth)
 
-      // If a review was performed this month already return True.
-      if (FormsFilledThisMonth.length > 0) {
-        return true
-      } else {
-        return false
-      }
+  //     // If a review was performed this month already return True.
+  //     if (FormsFilledThisMonth.length > 0) {
+  //       return true
+  //     } else {
+  //       return false
+  //     }
 
-    } catch (error) {
-      console.log('error:', error)
-      this.setState({
-        FormSubmitError: true,
-        FormSubmitErrorMessage: 'לא מצליח לחפש טפסים שמולאו החודש.'
-      })
-    }
-  }
+  //   } catch (error) {
+  //     console.log('error:', error)
+  //     this.setState({
+  //       FormSubmitError: true,
+  //       FormSubmitErrorMessage: 'לא מצליח לחפש טפסים שמולאו החודש.'
+  //     })
+  //   }
+  // }
 
-  GetDayCaresList = async () => {
-    try {
+  // GetDayCaresList = async () => {
+  //   try {
 
-      let web = Web(this.props.WebUri);
-      const DayCares = await web.lists.getByTitle('רשימת מעונות').items.select('Title, DayCareCity, DirectorEmail, DirectorId').get()
-      console.log('DayCares:', DayCares)
-      return DayCares
+  //     let web = Web(this.props.WebUri);
+  //     const DayCares = await web.lists.getByTitle('רשימת מעונות').items.select('Title, DayCareCity, DirectorEmail, DirectorId').get()
+  //     console.log('DayCares:', DayCares)
+  //     return DayCares
 
-    } catch (error) {
+  //   } catch (error) {
 
-      console.log('error:', error)
-      this.setState({
-        FormSubmitError: true,
-        FormSubmitErrorMessage: 'שגיאה בעת משיכת רשימת "מעונות".'
-      })
-    }
-  }
+  //     console.log('error:', error)
+  //     this.setState({
+  //       FormSubmitError: true,
+  //       FormSubmitErrorMessage: 'שגיאה בעת משיכת רשימת "מעונות".'
+  //     })
+  //   }
+  // }
 
   onChange = (e: { target: { name: any; value: any; }; }) => {
     const newState = { [e.target.name]: e.target.value } as Pick<IProcurementRequirementState, keyof IProcurementRequirementState>;
@@ -864,12 +1005,9 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
   createApprovalRoad = () => {
     // check who will get mail
-    let globalCost = this.state.cost;
-    console.log(globalCost);
-
-
     // set the conditions 
-    if (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead !== true) {
+    if (this.state.costInDollar <= this.state.teamLeaderScale && this.state.noTeamLead !== true) {
+      // if (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead !== true) {
 
       console.log("here team leader");
 
@@ -881,18 +1019,21 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         sendMailToTeamLead: !this.state.isTeamLead,
         sendMailToDirector: false,
         sendMailToVp: false,
+        sendMailToFinanceDirector: false,
+        sendMailToCeo: false
         // Status: this.state.isTeamLead  ? 'הסתיים' : 'בתהליך'
       }, () => {
-        console.log(this.state.sendMailToTeamLead);
-        console.log(this.state.sendMailToDirector);
-        console.log(this.state.sendMailToVp);
+        // console.log(this.state.sendMailToTeamLead);
+        // console.log(this.state.sendMailToDirector);
+        // console.log(this.state.sendMailToVp);
         this.SaveForm(true)
 
 
       })
       return;
     }
-    if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector !== true || (this.state.noDirector !== true && this.state.noTeamLead && globalCost <= this.state.directorScale)) {
+    // if (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector !== true || (this.state.noDirector !== true && this.state.noTeamLead && globalCost <= this.state.directorScale)) {
+    if (this.state.costInDollar <= this.state.directorScale && this.state.costInDollar > this.state.teamLeaderScale && this.state.noDirector !== true || (this.state.noDirector !== true && this.state.noTeamLead && this.state.costInDollar <= this.state.directorScale)) {
       console.log("here director");
       console.log(this.state.isDirector);
 
@@ -903,20 +1044,27 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         sendMailToDirector: !this.state.isDirector,
         sendMailToTeamLead: this.state.isTeamLead === false && this.state.noTeamLead !== true,
         sendMailToVp: false,
+        sendMailToFinanceDirector: false,
+        sendMailToCeo: false,
+
         // Status: this.state.isDirector ? 'הסתיים' : 'בתהליך'
 
       }, () => {
-        console.log(this.state.sendMailToTeamLead);
-        console.log(this.state.sendMailToDirector);
-        console.log(this.state.sendMailToVp);
+        // console.log(this.state.sendMailToTeamLead);
+        // console.log(this.state.sendMailToDirector);
+        // console.log(this.state.sendMailToVp);
         this.SaveForm(true)
         //  return;
       })
       return;
     }
-    if (globalCost > this.state.directorScale
-      || (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector === true)
-      || (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead === true)) {
+    // if ((globalCost >= this.state.directorScale && globalCost < this.state.vpScale)
+    //   || (globalCost <= this.state.directorScale && globalCost > this.state.teamLeaderScale && this.state.noDirector === true)
+    //   || (globalCost <= this.state.teamLeaderScale && this.state.noTeamLead === true)) {
+      
+    if ((this.state.costInDollar >= this.state.directorScale && this.state.costInDollar <= this.state.vpScale)
+      || (this.state.costInDollar <= this.state.directorScale && this.state.costInDollar > this.state.teamLeaderScale && this.state.noDirector === true)
+      || (this.state.costInDollar <= this.state.teamLeaderScale && this.state.noTeamLead === true)) {
       console.log("here vp");
 
       this.setState({
@@ -926,17 +1074,74 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         sendMailToDirector: !this.state.isDirector && this.state.noDirector !== true,
         sendMailToTeamLead: (this.state.isDirector || this.state.isTeamLead) || this.state.noTeamLead === true ? false : true,
         sendMailToVp: true,
+        sendMailToFinanceDirector: true,
+        sendMailToCeo: true,
         // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
       }, () => {
-        console.log(this.state.sendMailToTeamLead);
-        console.log(this.state.sendMailToDirector);
-        console.log(this.state.sendMailToVp);
+        // console.log(this.state.sendMailToTeamLead);
+        // console.log(this.state.sendMailToDirector);
+        // console.log(this.state.sendMailToVp);
         this.SaveForm(true)
         //  return;
       })
       return;
     }
 
+    // // finance director
+    // console.log("finance director");
+    // console.log(this.state.financeDirectorScale);
+    // console.log(globalCost);
+
+    // if (globalCost > this.state.financeDirectorScale) {
+    if (this.state.costInDollar > this.state.financeDirectorScale) {
+      console.log("finance director");
+      this.setState({
+
+        teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
+        directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
+        vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',
+        financeDirectorSign: this.state.isFinanceDirector ? this.ConvertToDisplayDate() + " " + this.state.financeDirectorData.Title : '',
+        ceoSign: this.state.isCeo ? this.ConvertToDisplayDate() + " " + this.state.ceoData.Title : '',
+
+        sendMailToDirector: this.state.isFinanceDirector ? false : !this.state.isDirector && this.state.noDirector !== true,
+        sendMailToTeamLead: this.state.isFinanceDirector ? false : !this.state.isTeamLead && this.state.noTeamLead !== true,
+        sendMailToVp: this.state.isFinanceDirector ? false : !this.state.isVp,
+        sendMailToFinanceDirector: this.state.isFinanceDirector ? false : true,
+        sendMailToCeo: this.state.isCeo ? false : true
+
+      }, () => {
+        // console.log(this.state.sendMailToTeamLead);
+        // console.log(this.state.sendMailToDirector);
+        // console.log(this.state.sendMailToVp);
+        this.SaveForm(true)
+        //  return;
+      })
+
+      return;
+    }
+    // // Ceo director
+    // if (globalCost > this.state.ceoScale) {
+    //   this.setState({
+    //     teamLeadSign: this.state.isTeamLead ? this.ConvertToDisplayDate() + " " + this.state.teamLeadData.Title : '',
+    //     directorSign: this.state.isDirector ? this.ConvertToDisplayDate() + " " + this.state.directorData.Title : '',
+    //     vpSign: this.state.isVp ? this.ConvertToDisplayDate() + " " + this.state.vpData.Title : '',
+    //     financeDirectorSign: this.state.isFinanceDirector ? this.ConvertToDisplayDate() + " " + this.state.financeDirectorData.Title : '',
+    //     ceoSign: this.state.isCeo ? this.ConvertToDisplayDate() + " " + this.state.financeDirectorData.Title : '',
+    //     sendMailToCeo: true,
+    //     sendMailToDirector: !this.state.isDirector && this.state.noDirector !== true,
+    //     sendMailToTeamLead:  !this.state.isTeamLead && this.state.noTeamLead !== true,
+    //     sendMailToVp: !this.state.isVp,
+    //     sendMailToFinanceDirector:false
+    //     // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
+    //   }, () => {
+    //     console.log(this.state.sendMailToTeamLead);
+    //     console.log(this.state.sendMailToDirector);
+    //     console.log(this.state.sendMailToVp);
+    //     this.SaveForm(true)
+    //     //  return;
+    //   })
+    //   return;
+    // }
   }
 
   GetItemToSave = () => {
@@ -959,16 +1164,14 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       whatPurchased: this.state.WhatWasPurchased,
       forWhat: this.state.forWhat,
       forDepartment: this.state.forDepartment,
-      teamLeaderStatus: this.state.sendMailToTeamLead ? "לשלוח" : "מאושר",
-      directorStatus: this.state.sendMailToDirector ? "לשלוח" : "מאושר",
-      vpStatus: this.state.sendMailToVp ? "לשלוח" : "מאושר",
-      formStatus: "בתהליך",
-      vpScale: this.state.vpScale,
-      directorScale: this.state.directorScale,
-      teamLeadScale: this.state.teamLeaderScale,
+
+      //Mails in string  
       teamLeadMail: this.state.noTeamLead !== true ? this.state.teamLeadData.Email : 'noTeamLead',
       directorMail: this.state.noDirector !== true ? this.state.directorData.Email : 'noDirector',
       vpMail: this.state.vpData.Email,
+      financeDirectorMail: this.state.financeDirectorData.Email,
+      ceoMail: this.state.ceoData.Email,
+      // 
       noTeamLead: this.state.noTeamLead,
       noDirector: this.state.noDirector,
       moneyType: this.state.moneyTypeChosen,
@@ -977,11 +1180,27 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       vpFullName: this.state.vpData.Title,
       creatorEmail: this.state.userData.Email,
       creatorFullName: this.state.userData.Title,
+      totalSum: this.state.cost,
+      buyerName: this.state.buyerName,
+      // status
+      teamLeaderStatus: this.state.sendMailToTeamLead ? "לשלוח" : "מאושר",
+      directorStatus: this.state.sendMailToDirector ? "לשלוח" : "מאושר",
+      vpStatus: this.state.sendMailToVp ? "לשלוח" : "מאושר",
+      financeDirectorStatus: this.state.sendMailToFinanceDirector ? "לשלוח" : "מאושר",
+      ceoStatus: this.state.sendMailToCeo ? "לשלוח" : "מאושר",
+      formStatus: "בתהליך",
+      // scales sacle
+      vpScale: this.state.vpScale,
+      directorScale: this.state.directorScale,
+      teamLeadScale: this.state.teamLeaderScale,
+      financeDirectorScale: this.state.financeDirectorScale,
+      ceoScale: this.state.ceoScale,
+      // Signs
       teamLeadSign: this.state.teamLeadSign,
       directorSign: this.state.directorSign,
       vpSign: this.state.directorSign,
-      totalSum: this.state.cost,
-      buyerName: this.state.buyerName,
+      financeDirectorSign: this.state.financeDirectorSign,
+      ceoSign: this.state.ceoSign
 
     }
   }
@@ -1072,7 +1291,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   SaveForm = (OnClick: boolean) => {
     // If butten save was clicked
     let TitleName = this.state.userData.Title + " " + this.ConvertToDisplayDate();
-    // this.createApprovalRoad();
+
     if (OnClick) {
       // Start Saving loader
       this.setState({
@@ -1224,7 +1443,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   }
 
   // Sum = (...para) => para.reduce((d, b) => d + b);
-  
+
   SetVisitDateValue = (VisitDate: Date | null) => {
     if (VisitDate) {
       let VisitDateMonth = VisitDate.getMonth();
@@ -1247,49 +1466,49 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  sumScores = () => {
+  // sumScores = () => {
 
-    const FieldsValues = Object.keys(this.state.FieldsData).reduce((Acc, CurrSection) => {
-      const CurrSectionFieldsValues = Object.keys(this.state.FieldsData[CurrSection]).reduce((Acc, CurrField) => {
-        const CurrValue = this.state.FieldsData[CurrSection][CurrField]['Score'] === '' ? 0 : Number(this.state.FieldsData[CurrSection][CurrField]['Score']);
-        return Acc + CurrValue
-      }, 0)
+  //   const FieldsValues = Object.keys(this.state.FieldsData).reduce((Acc, CurrSection) => {
+  //     const CurrSectionFieldsValues = Object.keys(this.state.FieldsData[CurrSection]).reduce((Acc, CurrField) => {
+  //       const CurrValue = this.state.FieldsData[CurrSection][CurrField]['Score'] === '' ? 0 : Number(this.state.FieldsData[CurrSection][CurrField]['Score']);
+  //       return Acc + CurrValue
+  //     }, 0)
 
-      return Acc + CurrSectionFieldsValues
-    }, 0)
-    let tempScore = FieldsValues + (this.state.GeneralImpression === '' || this.state.GeneralImpression === null ? 0 : parseInt(this.state.GeneralImpression))
-    this.setState({
-      score: tempScore > 100 ? 100 : tempScore
+  //     return Acc + CurrSectionFieldsValues
+  //   }, 0)
+  //   let tempScore = FieldsValues + (this.state.GeneralImpression === '' || this.state.GeneralImpression === null ? 0 : parseInt(this.state.GeneralImpression))
+  //   this.setState({
+  //     score: tempScore > 100 ? 100 : tempScore
 
-    })
-  }
-  HandleField = (NewValue, Section, FieldName, DataFieldName) => {
-    // console.log('NewValue:', NewValue)
-    // console.log('Section:', Section)
-    // console.log('FieldName:', FieldName)
-    // console.log('DataFieldName:', DataFieldName)
+  //   })
+  // }
+  // HandleField = (NewValue, Section, FieldName, DataFieldName) => {
+  //   // console.log('NewValue:', NewValue)
+  //   // console.log('Section:', Section)
+  //   // console.log('FieldName:', FieldName)
+  //   // console.log('DataFieldName:', DataFieldName)
 
 
-    let updatedScore: number = this.state.score + parseInt(NewValue);
-    this.setState(PrevState => ({
-      ...PrevState,
-      FieldsData: {
-        ...PrevState['FieldsData'],
-        [Section]: {
-          ...PrevState['FieldsData'][Section],
-          [FieldName]: {
-            ...PrevState['FieldsData'][Section][FieldName],
-            [DataFieldName]: NewValue === null ? '' : NewValue
-          }
-        }
-      },
-      score: updatedScore
-    }), () => {
-      console.log(this.state.score);
-      this.sumScores();
+  //   let updatedScore: number = this.state.score + parseInt(NewValue);
+  //   this.setState(PrevState => ({
+  //     ...PrevState,
+  //     FieldsData: {
+  //       ...PrevState['FieldsData'],
+  //       [Section]: {
+  //         ...PrevState['FieldsData'][Section],
+  //         [FieldName]: {
+  //           ...PrevState['FieldsData'][Section][FieldName],
+  //           [DataFieldName]: NewValue === null ? '' : NewValue
+  //         }
+  //       }
+  //     },
+  //     score: updatedScore
+  //   }), () => {
+  //     console.log(this.state.score);
+  //     this.sumScores();
 
-    })
-  }
+  //   })
+  // }
 
   // SetDayCareValue = (DayCareName: string) => {
   //   if (DayCareName !== null && DayCareName !== '') {
@@ -1385,77 +1604,77 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  ItemFormComponent = (FieldName, Section) => {
-    const Label = this.state.FieldsData[Section][FieldName]['Label']
-    const Score = this.state.FieldsData[Section][FieldName]['Score']
-    const details = this.state.FieldsData[Section][FieldName]['details']
-    const Suggestions = this.state.FieldsData[Section][FieldName]['Suggestions']
-    const IsCritical = this.state.FieldsData[Section][FieldName]['IsCritical']
+  // ItemFormComponent = (FieldName, Section) => {
+  //   const Label = this.state.FieldsData[Section][FieldName]['Label']
+  //   const Score = this.state.FieldsData[Section][FieldName]['Score']
+  //   const details = this.state.FieldsData[Section][FieldName]['details']
+  //   const Suggestions = this.state.FieldsData[Section][FieldName]['Suggestions']
+  //   const IsCritical = this.state.FieldsData[Section][FieldName]['IsCritical']
 
-    return (
-      <Row form >
-        <Col md={12} sm={12}>
-          <FormGroup row className="EOFormGroupRow">
-            <Col md={4} sm={12} xs={12} className="flex align-end justify-start title-cell" >
-              <FormLabel style={IsCritical ? { color: 'red', fontWeight: 'bold' } : {}} >{Label}</FormLabel>
-            </Col>
-            <Col style={{ marginBottom: '10px' }} md={2} sm={12} xs={12} className="flex align-end justify-center" >
-              <Autocomplete
-                value={Score}
-                onChange={(event, newValue) => {
-                  this.HandleField(newValue, Section, FieldName, 'Score')
-                }}
-                id="CoolingRoomOrFreezer"
-                options={this.state.ScoreOptions}
-                renderInput={(params) =>
-                  <TextField
-                    {...params}
-                    label="ציון"
-                    variant='outlined'
-                    size="medium"
-                  />}
-                size="medium"
-                className="AutoCompleteStyle"
-                fullWidth
-              />
+  //   return (
+  //     <Row form >
+  //       <Col md={12} sm={12}>
+  //         <FormGroup row className="EOFormGroupRow">
+  //           <Col md={4} sm={12} xs={12} className="flex align-end justify-start title-cell" >
+  //             <FormLabel style={IsCritical ? { color: 'red', fontWeight: 'bold' } : {}} >{Label}</FormLabel>
+  //           </Col>
+  //           <Col style={{ marginBottom: '10px' }} md={2} sm={12} xs={12} className="flex align-end justify-center" >
+  //             <Autocomplete
+  //               value={Score}
+  //               onChange={(event, newValue) => {
+  //                 this.HandleField(newValue, Section, FieldName, 'Score')
+  //               }}
+  //               id="CoolingRoomOrFreezer"
+  //               options={this.state.ScoreOptions}
+  //               renderInput={(params) =>
+  //                 <TextField
+  //                   {...params}
+  //                   label="ציון"
+  //                   variant='outlined'
+  //                   size="medium"
+  //                 />}
+  //               size="medium"
+  //               className="AutoCompleteStyle"
+  //               fullWidth
+  //             />
 
-            </Col>
+  //           </Col>
 
 
-            <Col style={{ marginBottom: '10px' }} md={6} sm={12} xs={12} className="flex align-end justify-center" >
-              <TextField
-                id="outlined-textarea"
-                label="פירוט"
-                variant="outlined"
-                multiline
-                fullWidth
-                onChange={(ev) => { this.HandleField(ev.target.value, Section, FieldName, 'details') }}
-                value={details}
-                name='ResidenceGateIsLockedNotes'
-                size='medium'
-              />
-            </Col>
-            <Col style={{ marginBottom: '10px' }} md={6} sm={0} xs={0} className="flex align-end justify-center" />
+  //           <Col style={{ marginBottom: '10px' }} md={6} sm={12} xs={12} className="flex align-end justify-center" >
+  //             <TextField
+  //               id="outlined-textarea"
+  //               label="פירוט"
+  //               variant="outlined"
+  //               multiline
+  //               fullWidth
+  //               onChange={(ev) => { this.HandleField(ev.target.value, Section, FieldName, 'details') }}
+  //               value={details}
+  //               name='ResidenceGateIsLockedNotes'
+  //               size='medium'
+  //             />
+  //           </Col>
+  //           <Col style={{ marginBottom: '10px' }} md={6} sm={0} xs={0} className="flex align-end justify-center" />
 
-            <Col style={{ marginBottom: '10px' }} md={6} sm={12} xs={12} className="flex align-start justify-center" >
-              <TextField
-                id="outlined-textarea"
-                label="הצעות"
-                variant="outlined"
-                multiline
-                fullWidth
-                onChange={(ev) => { this.HandleField(ev.target.value, Section, FieldName, 'Suggestions') }}
-                value={Suggestions}
-                name='ResidenceGateIsLockedNotes'
-                size='medium'
-              />
-            </Col>
+  //           <Col style={{ marginBottom: '10px' }} md={6} sm={12} xs={12} className="flex align-start justify-center" >
+  //             <TextField
+  //               id="outlined-textarea"
+  //               label="הצעות"
+  //               variant="outlined"
+  //               multiline
+  //               fullWidth
+  //               onChange={(ev) => { this.HandleField(ev.target.value, Section, FieldName, 'Suggestions') }}
+  //               value={Suggestions}
+  //               name='ResidenceGateIsLockedNotes'
+  //               size='medium'
+  //             />
+  //           </Col>
 
-          </FormGroup>
-        </Col>
-      </Row>
-    )
-  }
+  //         </FormGroup>
+  //       </Col>
+  //     </Row>
+  //   )
+  // }
 
 
   public render(): React.ReactElement<IProcurementRequirementProps> {
@@ -1513,7 +1732,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                   <KeyboardDatePicker
                                     margin="normal"
                                     id="date-picker-dialog"
-                                    label="תאריך יצירת הטופס"
+                                    label="ppppתאריך יצירת הטופס"
                                     format="dd/MM/yyyy"
                                     value={this.state.VisitDate}
                                     onChange={(newValue: any) => {
@@ -2152,7 +2371,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </Row>
                           : <div></div>}
                         {this.state.noDirector === false ? <div>
-                          {this.approvalsWhoTakePart('director', this.state.cost) || this.state.noTeamLead ?
+                          {this.approvalsWhoTakePart('director', this.state.costInDollar) || this.state.noTeamLead ?
                             < Row form style={{ marginTop: '10px' }}>
                               <Col md={12} sm={12}>
                                 <FormGroup row className="EOFormGroupRow">
@@ -2181,8 +2400,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                         </div>
                           : <div></div>}
 
-                        {this.approvalsWhoTakePart('vp', this.state.cost)
-                          || (this.approvalsWhoTakePart('director', this.state.cost) && this.state.noDirector)
+                        {this.approvalsWhoTakePart('vp', this.state.costInDollar)
+                          || (this.approvalsWhoTakePart('director', this.state.costInDollar) && this.state.noDirector)
                           || (this.state.noDirector && this.state.noTeamLead) ?
 
 
@@ -2205,6 +2424,61 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                                 </Col>
                                 <Col className="ApproverComment">
                                   <Input type="textarea" rows="1" name="vpComment" id="SystemComment" onChange={this.onChange} value={this.state.vpComment} bsSize="sm" disabled />
+                                </Col>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          : <div></div>}
+                        {this.approvalsWhoTakePart('financeDirector', this.state.costInDollar) ?
+
+
+                          <Row form style={{ marginTop: '10px' }}>
+                            <Col md={12} sm={12}>
+                              <FormGroup row className="EOFormGroupRow">
+                                <Label className="ApproverTitle" for="SystemName">Finance Director</Label>
+                                <Col className="ApproverName">
+                                  <Input type="text" name="SystemName" id="SystemName" onChange={this.onChange} value={this.state.financeDirectorData.Title} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverApprovel">
+                                  <Input className="form-select form-select-sm" type="select" name="vpStatus" id="SystemApprove" onChange={this.onChange} value={this.state.financeDirectorStatus} bsSize="sm" disabled>
+                                    {this.state.ApprovelsOptions.map((Title, Index) => (
+                                      <option key={"SystemApprove" + Index}>{Title}</option>
+                                    ))}
+                                  </Input>
+                                </Col>
+                                <Col className="ApproverSign">
+                                  <Input type="text" name="vpSign" id="SystemSign" onChange={this.onChange} value={this.state.financeDirectorSign} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverComment">
+                                  <Input type="textarea" rows="1" name="vpComment" id="SystemComment" onChange={this.onChange} value={this.state.financeDirectorComment} bsSize="sm" disabled />
+                                </Col>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          : <div></div>}
+
+                        {this.approvalsWhoTakePart('ceo', this.state.costInDollar) ?
+
+
+                          <Row form style={{ marginTop: '10px' }}>
+                            <Col md={12} sm={12}>
+                              <FormGroup row className="EOFormGroupRow">
+                                <Label className="ApproverTitle" for="SystemName">CEO</Label>
+                                <Col className="ApproverName">
+                                  <Input type="text" name="SystemName" id="SystemName" onChange={this.onChange} value={this.state.ceoData.Title} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverApprovel">
+                                  <Input className="form-select form-select-sm" type="select" name="vpStatus" id="SystemApprove" onChange={this.onChange} value={this.state.ceoStatus} bsSize="sm" disabled>
+                                    {this.state.ApprovelsOptions.map((Title, Index) => (
+                                      <option key={"SystemApprove" + Index}>{Title}</option>
+                                    ))}
+                                  </Input>
+                                </Col>
+                                <Col className="ApproverSign">
+                                  <Input type="text" name="vpSign" id="SystemSign" onChange={this.onChange} value={this.state.ceoSign} bsSize="sm" disabled />
+                                </Col>
+                                <Col className="ApproverComment">
+                                  <Input type="textarea" rows="1" name="vpComment" id="SystemComment" onChange={this.onChange} value={this.state.ceoComment} bsSize="sm" disabled />
                                 </Col>
                               </FormGroup>
                             </Col>

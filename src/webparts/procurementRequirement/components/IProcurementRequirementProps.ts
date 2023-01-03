@@ -18,4 +18,5 @@ export interface IProcurementRequirementProps {
   saveToTableId:string;
   unitListId:string;
   buyersListId:string;
+  financeDirectorAndCeoDataList:string;
 }

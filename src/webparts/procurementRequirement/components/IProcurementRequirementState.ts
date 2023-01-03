@@ -2,10 +2,10 @@ export interface IProcurementRequirementState {
      // New State
      CheckerId: number;
      CheckerEmail: string;
-     NumberOfMeals: number;
+     // NumberOfMeals: number;
      DirectorId: number;
      DirectorEmail: string;
-     GeneralImpression: string;
+     // GeneralImpression: string;
      HelperName: string;
      cooker: string;
      Baby: number;
@@ -15,9 +15,9 @@ export interface IProcurementRequirementState {
      // Final score
      score: number,
 
-     LabResultsFindings: string;
-     LabResultsRisk: string;
-     LabResultsSuggestions: string;
+     // LabResultsFindings: string;
+     // LabResultsRisk: string;
+     // LabResultsSuggestions: string;
 
 
      CheckerNameValidationError: boolean;
@@ -82,6 +82,7 @@ export interface IProcurementRequirementState {
      forDepartment:string;
      tableRows:Array<any>;
      cost:number;
+     costInDollar:number;
      MoreDataFiles1: Array<File>;
      MoreDataFilesProps1: Array<any>;
      FileNameError: boolean;
@@ -92,32 +93,56 @@ export interface IProcurementRequirementState {
      managerId:string;
      ApprovelsOptions:Array<string>,
      Status:string;
-     teamLeadStatus:'',
-     directorStatus:'',
-     vpStatus:''
-     // approvals vals
+     // aprovers status
+     ceoStatus:string;
+     financeDirectorStatus:string;
+     teamLeadStatus:string;
+     directorStatus:string;
+     vpStatus:string;
+     // approvals sign
      teamLeadSign:string;
      vpSign:string;
      directorSign:string;
+     financeDirectorSign:string;
+     ceoSign:string;
+     // approvers data
      teamLeadData:any;
      vpData:any;
      directorData:any;
+     financeDirectorData:any;
+     ceoData:any;
+     isLocked:boolean;
+     // comments
      temaLeadComment:string;
      directorComment:string;
      vpComment:string;
-     isLocked:boolean;
+     financeDirectorComment: string;
+     ceoComment:string;
+     //  money scales
      vpScale: number;
      directorScale: number;
      teamLeaderScale: number;
+     financeDirectorScale: number;
+     ceoScale:number;
+     // manager flag
+     isCeo:boolean;
+     isFinanceDirector:boolean;
      isTeamLead:boolean;
      isDirector:boolean;
      isVp:boolean;
+     // ======================
      noTeamLead: boolean,
      noDirector: boolean,
      noVp:boolean,
+     noCeo:boolean,
+     noFinanceDirector:boolean,
+     // send mail flag
+     sendMailToCeo:boolean,
+     sendMailToFinanceDirector:boolean,
      sendMailToTeamLead:boolean;
      sendMailToDirector:boolean;
      sendMailToVp:boolean;
+     // =============
      supplierValidation:boolean;
      moneyTypeValidation:boolean;
      departmentValidation:boolean;
@@ -131,4 +156,6 @@ export interface IProcurementRequirementState {
      unitOptions:Array<any>;
      buyersOptions:Array<any>;
      buyerName:string;
+     moneyTypeAndValue:any;
+
 }
