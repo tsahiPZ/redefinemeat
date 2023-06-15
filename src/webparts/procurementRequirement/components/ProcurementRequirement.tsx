@@ -47,7 +47,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 // import Grid from '@material-ui/core/Grid';
 // import Typography from '@material-ui/core/Typography';
 
-import "@pnp/sp/webs";
+// import "@pnp/sp/webs";
 import "@pnp/sp/lists/web";
 import "@pnp/sp/fields";
 
@@ -271,6 +271,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
   getCeoAndFinanceDirector = () => {
     const web = Web(this.props.WebUri);
     console.log(this.props.financeDirectorAndCeoDataList);
+    
     web.currentUser.get().then(myAcc => {
       console.log(myAcc);
       let userData = myAcc;
@@ -295,11 +296,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               sendMailToCeo: false,
               ceoData: ceoData
             }, () => {
-              console.log("im Ceo");
+              // console.log("im Ceo");
             })
           } else {
             this.setState({ ceoData: ceoData }, () => {
-              console.log("Not a CEO");
+              // console.log("Not a CEO");
 
             })
           }
@@ -326,11 +327,11 @@ export default class ProcurementRequirement extends React.Component<IProcurement
               sendMailToCeo: true,
               financeDirectorData: financeDirectorData
             }, () => {
-              console.log("im finance director");
+              // console.log("im finance director");
             })
           } else {
             this.setState({ financeDirectorData: financeDirectorData }, () => {
-              console.log("Not a financeDirector");
+              // console.log("Not a financeDirector");
             })
           }
         }).catch(Err => {
@@ -854,134 +855,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  // ResetForm = async () => {
-  //   try {
-  //     // Get Current Web
-
-  //     let web = Web(this.props.WebUri);
-
-  //     const Fields = await web.lists.getByTitle(this.props.sections).items.select('Title, Label, Section, IsCritical').getAll()
-  //     console.log('Fields:', Fields)
-
-  //     const TooLongNameFields = Fields.filter(Field => Field.Title.length >= 32)
-  //     console.log('TooLongNameFields:', TooLongNameFields)
-
-  //     const FieldsData = await Fields.reduce((Acc, CurrName) => {
-
-  //       if (!Acc[CurrName.Section]) {
-  //         Acc[CurrName.Section] = {}
-  //       }
-
-  //       if (Acc[CurrName.Section]) {
-  //         Acc[CurrName.Section][CurrName.Title] = {
-  //           Title: CurrName.Title,
-  //           Section: CurrName.Section,
-  //           Label: CurrName.Label,
-  //           details: '',
-  //           Suggestions: '',
-  //           Score: '',
-  //           IsCritical: CurrName.IsCritical
-  //         }
-  //       }
-
-  //       return Acc
-  //     }, {})
-
-
-  //     console.log('FieldsData:', FieldsData)
-
-  //     console.log('Object.keys(this.state.FieldsData):', Object.keys(FieldsData['1']))
-
-  //     // Set Today Date
-  //     let today = new Date();
-  //     let mm = String(today.getMonth() + 1); //January is 0!
-  //     let VisitDateMonthHeb = this.state.HebrewMonthes[parseInt(mm) - 1];
-
-  //     var DaysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-
-  //     console.log('DaysInMonth:', DaysInMonth)
-
-  //     const DayCares = await this.GetDayCaresList()
-  //     const DayCaresItems = DayCares.map(DayCare => DayCare.Title).sort();
-
-  //     const MonthStartDate = new Date(today.getFullYear(), today.getMonth(), 1)
-  //     console.log('MonthStartDate:', MonthStartDate)
-
-  //     const MonthLastDate = new Date(today.getFullYear(), today.getMonth(), DaysInMonth)
-  //     console.log('MonthLastDate:', MonthLastDate)
-
-  //     this.setState({
-  //       VisitDate: today,
-  //       VisitMonthInHebrew: VisitDateMonthHeb,
-  //       DayCareOptions: DayCaresItems,
-  //       ListOfDayCares: DayCares,
-  //       FieldsData
-  //     }, () => {
-  //       clearInterval(this.state.LoadingInterval)
-  //       console.log('this.state.LoadingTime:', this.state.LoadingTime)
-  //       const TimeOutDuration = this.state.LoadingTime >= 3400 ? 0 : 3400 - this.state.LoadingTime
-  //       console.log('TimeOutDuration:', TimeOutDuration)
-  //       setTimeout(() => {
-  //         this.setState({
-  //           IsLoading: false,
-  //           FormIsActiveStatus: true,
-  //         })
-  //       }, TimeOutDuration);
-
-  //       this.AutoSave()
-  //       "auto save is ON"
-  //       // Create all fields in sharepoint list.
-  //       // this.AddFields(Fields);
-  //     })
-
-  //   } catch (error) {
-  //     console.log('error:', error)
-
-  //   }
-
-  // }
-
-  // WasMonthlyReviewPerformed = async (MonthStartDate, MonthLastDate) => {
-  //   console.log('MonthStartDate:', MonthStartDate)
-  //   console.log('MonthLastDate:', MonthLastDate)
-  //   try {
-  //     let web = Web(this.props.WebUri);
-  //     const FormsFilledThisMonth = await web.lists.getByTitle(this.props.listsData).items.filter(`VisitDate ge datetime'${MonthStartDate.toISOString()}' and VisitDate le datetime'${MonthLastDate.toISOString()}'`).get()
-  //     console.log('FormsFilledThisMonth:', FormsFilledThisMonth)
-
-  //     // If a review was performed this month already return True.
-  //     if (FormsFilledThisMonth.length > 0) {
-  //       return true
-  //     } else {
-  //       return false
-  //     }
-
-  //   } catch (error) {
-  //     console.log('error:', error)
-  //     this.setState({
-  //       FormSubmitError: true,
-  //       FormSubmitErrorMessage: 'לא מצליח לחפש טפסים שמולאו החודש.'
-  //     })
-  //   }
-  // }
-
-  // GetDayCaresList = async () => {
-  //   try {
-
-  //     let web = Web(this.props.WebUri);
-  //     const DayCares = await web.lists.getByTitle('רשימת מעונות').items.select('Title, DayCareCity, DirectorEmail, DirectorId').get()
-  //     console.log('DayCares:', DayCares)
-  //     return DayCares
-
-  //   } catch (error) {
-
-  //     console.log('error:', error)
-  //     this.setState({
-  //       FormSubmitError: true,
-  //       FormSubmitErrorMessage: 'שגיאה בעת משיכת רשימת "מעונות".'
-  //     })
-  //   }
-  // }
+  
 
   onChange = (e: { target: { name: any; value: any; }; }) => {
     const newState = { [e.target.name]: e.target.value } as Pick<IProcurementRequirementState, keyof IProcurementRequirementState>;
@@ -1074,8 +948,8 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         sendMailToDirector: !this.state.isDirector && this.state.noDirector !== true,
         sendMailToTeamLead: (this.state.isDirector || this.state.isTeamLead) || this.state.noTeamLead === true ? false : true,
         sendMailToVp: true,
-        sendMailToFinanceDirector: true,
-        sendMailToCeo: true,
+        sendMailToFinanceDirector: false,
+        sendMailToCeo: false,
         // Status: this.state.isVp ? 'הסתיים' : 'בתהליך'
       }, () => {
         // console.log(this.state.sendMailToTeamLead);
@@ -1103,10 +977,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
         financeDirectorSign: this.state.isFinanceDirector ? this.ConvertToDisplayDate() + " " + this.state.financeDirectorData.Title : '',
         ceoSign: this.state.isCeo ? this.ConvertToDisplayDate() + " " + this.state.ceoData.Title : '',
 
-        sendMailToDirector: this.state.isFinanceDirector ? false : !this.state.isDirector && this.state.noDirector !== true,
-        sendMailToTeamLead: this.state.isFinanceDirector ? false : !this.state.isTeamLead && this.state.noTeamLead !== true,
-        sendMailToVp: this.state.isFinanceDirector ? false : !this.state.isVp,
-        sendMailToFinanceDirector: this.state.isFinanceDirector ? false : true,
+        sendMailToDirector: this.state.isFinanceDirector || this.state.isCeo ? false : !this.state.isDirector && this.state.noDirector !== true,
+        sendMailToTeamLead: this.state.isFinanceDirector || this.state.isCeo ? false : !this.state.isTeamLead && this.state.noTeamLead !== true,
+        sendMailToVp: this.state.isFinanceDirector || this.state.isCeo ? false : !this.state.isVp,
+        sendMailToFinanceDirector: this.state.isFinanceDirector || this.state.isCeo ? false : true,
         sendMailToCeo: this.state.isCeo ? false : true
 
       }, () => {
@@ -1148,10 +1022,10 @@ export default class ProcurementRequirement extends React.Component<IProcurement
 
 
     const tableRows = JSON.stringify(this.state.tableRows)
-    console.log(this.state.FieldsData);
-    console.log(this.state.sendMailToTeamLead);
-    console.log(this.state.sendMailToDirector);
-    console.log(this.state.sendMailToVp);
+    // console.log(this.state.FieldsData);
+    // console.log(this.state.sendMailToTeamLead);
+    // console.log(this.state.sendMailToDirector);
+    // console.log(this.state.sendMailToVp);
 
     return {
       tableData: tableRows,
@@ -1175,12 +1049,18 @@ export default class ProcurementRequirement extends React.Component<IProcurement
       noTeamLead: this.state.noTeamLead,
       noDirector: this.state.noDirector,
       moneyType: this.state.moneyTypeChosen,
+      // managers Full names
       teamLeadFullName: this.state.noTeamLead !== true ? this.state.teamLeadData.Title : '',
       directorFullName: this.state.noDirector !== true ? this.state.directorData.Title : '',
       vpFullName: this.state.vpData.Title,
+      financeDirectorFullName:this.state.financeDirectorData.Title,
+      ceoFullName:this.state.ceoData.Title,
+      // creator data
       creatorEmail: this.state.userData.Email,
       creatorFullName: this.state.userData.Title,
+      // total sum
       totalSum: this.state.cost,
+
       buyerName: this.state.buyerName,
       // status
       teamLeaderStatus: this.state.sendMailToTeamLead ? "לשלוח" : "מאושר",
@@ -1205,10 +1085,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  saveData = () => {
-    console.log();
 
-  }
 
 
   ValidateForm = () => {
@@ -1466,77 +1343,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  // sumScores = () => {
 
-  //   const FieldsValues = Object.keys(this.state.FieldsData).reduce((Acc, CurrSection) => {
-  //     const CurrSectionFieldsValues = Object.keys(this.state.FieldsData[CurrSection]).reduce((Acc, CurrField) => {
-  //       const CurrValue = this.state.FieldsData[CurrSection][CurrField]['Score'] === '' ? 0 : Number(this.state.FieldsData[CurrSection][CurrField]['Score']);
-  //       return Acc + CurrValue
-  //     }, 0)
-
-  //     return Acc + CurrSectionFieldsValues
-  //   }, 0)
-  //   let tempScore = FieldsValues + (this.state.GeneralImpression === '' || this.state.GeneralImpression === null ? 0 : parseInt(this.state.GeneralImpression))
-  //   this.setState({
-  //     score: tempScore > 100 ? 100 : tempScore
-
-  //   })
-  // }
-  // HandleField = (NewValue, Section, FieldName, DataFieldName) => {
-  //   // console.log('NewValue:', NewValue)
-  //   // console.log('Section:', Section)
-  //   // console.log('FieldName:', FieldName)
-  //   // console.log('DataFieldName:', DataFieldName)
-
-
-  //   let updatedScore: number = this.state.score + parseInt(NewValue);
-  //   this.setState(PrevState => ({
-  //     ...PrevState,
-  //     FieldsData: {
-  //       ...PrevState['FieldsData'],
-  //       [Section]: {
-  //         ...PrevState['FieldsData'][Section],
-  //         [FieldName]: {
-  //           ...PrevState['FieldsData'][Section][FieldName],
-  //           [DataFieldName]: NewValue === null ? '' : NewValue
-  //         }
-  //       }
-  //     },
-  //     score: updatedScore
-  //   }), () => {
-  //     console.log(this.state.score);
-  //     this.sumScores();
-
-  //   })
-  // }
-
-  // SetDayCareValue = (DayCareName: string) => {
-  //   if (DayCareName !== null && DayCareName !== '') {
-  //     let SelectedDayCare = this.state.ListOfDayCares.filter(DayCare => DayCare.Title === DayCareName);
-  //     console.log('SelectedDayCare:', SelectedDayCare)
-  //     if (SelectedDayCare.length == 1) {
-  //       this.setState({
-  //         DayCareCity: SelectedDayCare[0].DayCareCity,
-  //         DayCareName: DayCareName,
-
-  //         DirectorId: SelectedDayCare[0].DirectorId,
-  //         DirectorEmail: SelectedDayCare[0].DirectorEmail,
-
-  //         VisitDateValidationError: false,
-  //         DayCareValidationError: false,
-  //         ValidationError: false
-  //       });
-  //     }
-  //   } else {
-  //     this.setState({
-  //       DayCareCity: '',
-  //       DayCareName: '',
-  //       VisitDateValidationError: false,
-  //       DayCareValidationError: false,
-  //       ValidationError: false
-  //     });
-  //   }
-  // }
   SetSupplierValue = (supplier: string) => {
     if (supplier !== null && supplier !== '') {
       if (supplier !== '' && supplier !== 'בחר') {
@@ -1604,77 +1411,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
     }
   }
 
-  // ItemFormComponent = (FieldName, Section) => {
-  //   const Label = this.state.FieldsData[Section][FieldName]['Label']
-  //   const Score = this.state.FieldsData[Section][FieldName]['Score']
-  //   const details = this.state.FieldsData[Section][FieldName]['details']
-  //   const Suggestions = this.state.FieldsData[Section][FieldName]['Suggestions']
-  //   const IsCritical = this.state.FieldsData[Section][FieldName]['IsCritical']
-
-  //   return (
-  //     <Row form >
-  //       <Col md={12} sm={12}>
-  //         <FormGroup row className="EOFormGroupRow">
-  //           <Col md={4} sm={12} xs={12} className="flex align-end justify-start title-cell" >
-  //             <FormLabel style={IsCritical ? { color: 'red', fontWeight: 'bold' } : {}} >{Label}</FormLabel>
-  //           </Col>
-  //           <Col style={{ marginBottom: '10px' }} md={2} sm={12} xs={12} className="flex align-end justify-center" >
-  //             <Autocomplete
-  //               value={Score}
-  //               onChange={(event, newValue) => {
-  //                 this.HandleField(newValue, Section, FieldName, 'Score')
-  //               }}
-  //               id="CoolingRoomOrFreezer"
-  //               options={this.state.ScoreOptions}
-  //               renderInput={(params) =>
-  //                 <TextField
-  //                   {...params}
-  //                   label="ציון"
-  //                   variant='outlined'
-  //                   size="medium"
-  //                 />}
-  //               size="medium"
-  //               className="AutoCompleteStyle"
-  //               fullWidth
-  //             />
-
-  //           </Col>
-
-
-  //           <Col style={{ marginBottom: '10px' }} md={6} sm={12} xs={12} className="flex align-end justify-center" >
-  //             <TextField
-  //               id="outlined-textarea"
-  //               label="פירוט"
-  //               variant="outlined"
-  //               multiline
-  //               fullWidth
-  //               onChange={(ev) => { this.HandleField(ev.target.value, Section, FieldName, 'details') }}
-  //               value={details}
-  //               name='ResidenceGateIsLockedNotes'
-  //               size='medium'
-  //             />
-  //           </Col>
-  //           <Col style={{ marginBottom: '10px' }} md={6} sm={0} xs={0} className="flex align-end justify-center" />
-
-  //           <Col style={{ marginBottom: '10px' }} md={6} sm={12} xs={12} className="flex align-start justify-center" >
-  //             <TextField
-  //               id="outlined-textarea"
-  //               label="הצעות"
-  //               variant="outlined"
-  //               multiline
-  //               fullWidth
-  //               onChange={(ev) => { this.HandleField(ev.target.value, Section, FieldName, 'Suggestions') }}
-  //               value={Suggestions}
-  //               name='ResidenceGateIsLockedNotes'
-  //               size='medium'
-  //             />
-  //           </Col>
-
-  //         </FormGroup>
-  //       </Col>
-  //     </Row>
-  //   )
-  // }
+  
 
 
   public render(): React.ReactElement<IProcurementRequirementProps> {
@@ -1789,37 +1526,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                       </Row>
 
 
-                      {/* 
-                      <Row form className="">
-                        <Col md={12} sm={12} >
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={8} className='field-col'>
 
-                              <Autocomplete
-                                value={this.state.forDepartment}
-                                onChange={(event, newValue) => {
-                                  this.SetDayCareValue(newValue);
-                                }}
-                                id="DayCareName"
-                                options={this.state.DayCareOptions}
-                                renderInput={(params) =>
-                                  <TextField
-                                    {...params}
-                                    label="מחלקה"
-                                    error={this.state.DayCareValidationError}
-                                    helperText={this.state.DayCareValidationError ? 'נא למלא שם מעון' : ''}
-                                    required
-                                  />}
-                                size="medium"
-                                className="TextFieldFadeInTrans AutoCompleteStyle"
-                                fullWidth
-                              />
-
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row> */}
                       <Row form style={{ marginTop: '5px' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
@@ -1868,37 +1575,6 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </FormGroup>
                         </Col>
                       </Row>
-                      {/* <Row form className="" style={{ marginTop: '30px' }}>
-                        <Col md={12} sm={12} >
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={4} md={6} sm={8} className='field-col'>
-
-                              <PeoplePicker
-                                context={this.props.context}
-                                titleText="מנהל מאשר"
-                                personSelectionLimit={1}
-                                showtooltip={true}
-                                required={false}
-                                disabled={true}
-                                // onChange={this.GetCheckerPeoplePickerItems}
-                                showHiddenInUI={true}
-                                principalTypes={[PrincipalType.User]}
-                                ensureUser={true}
-                                resolveDelay={1000}
-                                defaultSelectedUsers={[this.state.teamLeadData.Email ? this.state.teamLeadData.Email : null]}
-                              />
-                              {this.state.CheckerNameValidationError ?
-                                <Fade in={this.state.CheckerNameValidationError} tag="h5" className="mt-3 ValidationError">
-                                  <Alert variant="outlined" severity="error">
-                                    אנא מלא את שם הבודק
-                                  </Alert>
-                                </Fade> : null}
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row> */}
-                      {/*  */}
                       <Row form className="">
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
@@ -2115,30 +1791,7 @@ export default class ProcurementRequirement extends React.Component<IProcurement
                           </FormGroup>
                         </Col>
                       </Row>
-                      {/* <Row form style={{ marginTop: '5px' }}>
-                        <Col md={12} sm={12} >
-                          <FormGroup row className="EOFormGroupRow">
-                            <Col sm={1}></Col>
-                            <Col lg={5} md={6} sm={6} className='field-col'>
 
-                              <TextField
-                                id="d"
-                                label="עבור מחלקה:"
-                                type="string"
-                                name="productElseStr"
-                                value={this.state.forDepartment}
-                                onChange={this.onChange}
-                                margin="normal"
-                                size="small"
-                                // error={this.state.productValidationError}
-                                // helperText={this.state.productValidationError ? 'Please enter any value' : ''}
-                                className="TextFieldFadeInTrans"
-                                fullWidth
-                              />
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                      </Row> */}
                       <Row form style={{ marginTop: '5%', marginRight: '2%', marginLeft: '2%' }}>
                         <Col md={12} sm={12} >
                           <FormGroup row className="EOFormGroupRow">
